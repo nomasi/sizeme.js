@@ -1,0 +1,32 @@
+{
+  "name": "sizeme.js",
+  "version": "v2.0.0-rc.1",
+  "homepage": "https://github.com/BA-Group/sizeme.js",
+  "authors": [
+    "Teppo Jalava <teppo.jalava@ba-group.fi>"
+  ],
+  "description": "Javascript utils for accessing the SizeMe API",
+  "main": "dist/sizeme-api.js",
+  "moduleType": [
+    "globals"
+  ],
+  "license": "MIT",
+  "private": true,
+  "keywords": [
+    "sizeme", "clothing", "fitting"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/BA-Group/sizeme.js.git"
+  },
+  "ignore": [
+    "**/.*",
+    "src",
+    "Gulpfile.coffee",
+    "*.iml",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
