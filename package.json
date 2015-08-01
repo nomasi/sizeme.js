@@ -1,9 +1,12 @@
 {
-  "name": "sizeme-js-api",
-  "version": "0.0.1",
-  "description": "JS helper classes for Sizeme API",
-  "main": "index.js",
-  "dependencies": {},
+  "name": "sizeme.js",
+  "version": "2.0.0-rc.1",
+  "description": "Javascript utils for accessing the SizeMe API",
+  "homepage": "https://github.com/BA-Group/sizeme.js",
+  "bugs": "https://github.com/BA-Group/sizeme.js/issues",
+  "keywords": [
+    "sizeme", "clothing", "fitting"
+  ],
   "devDependencies": {
     "coffee-script": "^1.9.3",
     "gulp": "^3.9.0",
@@ -12,9 +15,14 @@
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^1.2.0"
   },
+  "files": ["./dist"],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Teppo Jalava",
-  "license": "ISC"
+  "author": "Teppo Jalava <teppo.jalava@ba-group.fi>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/BA-Group/sizeme.js.git"
+  }
 }
