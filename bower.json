@@ -22,7 +22,7 @@
   "ignore": [
     "**/.*",
     "src",
-    "Gulpfile.coffee",
+    "gulpfile.coffee",
     "*.iml",
     "node_modules",
     "bower_components",
