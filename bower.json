@@ -28,6 +28,7 @@
     "test",
     "tests",
     "pom.xml",
-    "target"
+    "target",
+    "node"
   ]
 }

@@ -37,7 +37,7 @@
         };
         xhr.open(method, url, true);
         if (_authToken != null) {
-          xhr.setRequestHeader("X-AUTH-TOKEN", _authToken);
+          xhr.setRequestHeader("Authorization", "Bearer " + _authToken);
         }
       } else if (typeof XDomainRequest !== "undefined" && XDomainRequest !== null) {
         xhr = new XDomainRequest();

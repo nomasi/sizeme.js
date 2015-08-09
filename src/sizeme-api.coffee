@@ -22,7 +22,9 @@ class SizeMe
           else
             errorCallback(xhr)
       xhr.open(method, url, true)
-      xhr.setRequestHeader("X-AUTH-TOKEN", _authToken) if _authToken?
+      xhr.setRequestHeader(
+        "Authorization", "Bearer #{_authToken}"
+      ) if _authToken?
     else if XDomainRequest?
       xhr = new XDomainRequest()
       url = "#{url}?_tm=#{new Date().getTime()}"

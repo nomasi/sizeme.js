@@ -9,16 +9,16 @@
     </parent>
 
     <packaging>jar</packaging>
-    <groupId>org.webjars</groupId>
+    <groupId>org.webjars.bower</groupId>
     <artifactId>sizeme.js</artifactId>
-    <version>2.0.0-rc.1-SNAPSHOT</version>
+    <version>2.0.0-rc.2-SNAPSHOT</version>
     <name>SizeMe.js</name>
     <description>Javascript utils for accessing the SizeMe API</description>
     <url>http://webjars.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <upstream.version>2.0.0-rc.1</upstream.version>
+        <upstream.version>2.0.0-rc.2</upstream.version>
         <upstream.url>https://github.com/BA-Group/sizeme.js/archive/v${upstream.version}.zip</upstream.url>
         <destDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</destDir>
     </properties>
@@ -39,42 +39,21 @@
         </license>
     </licenses>
 
-    <scm>
-        <url>http://github.com/webjars/sizeme.js</url>
-        <connection>scm:git:https://github.com/webjars/sizeme.js.git</connection>
-        <developerConnection>scm:git:https://github.com/webjars/sizeme.js.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
-
     <dependencies>
     </dependencies>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <phase>process-resources</phase>
-                        <goals><goal>run</goal></goals>
-                        <configuration>
-                            <target>
-                                <echo message="download archive"/>
-                                <get src="${upstream.url}" dest="${project.build.directory}/${project.artifactId}.zip"/>
-                                <echo message="unzip archive"/>
-                                <unzip src="${project.build.directory}/${project.artifactId}.zip" dest="${project.build.directory}"/>
-                                <echo message="moving files"/>
-                                <move toDir="${destDir}">
-                                    <fileset dir="${project.build.directory}/${project.artifactId}-${upstream.version}/dist"/>
-                                </move>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.7</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
 
+        <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
@@ -94,5 +73,103 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>Dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+                        <version>0.0.23</version>
+                        <executions>
+                            <execution>
+                                <id>install node and npm</id>
+                                <goals>
+                                    <goal>install-node-and-npm</goal>
+                                </goals>
+                                <configuration>
+                                    <nodeVersion>v0.12.6</nodeVersion>
+                                    <npmVersion>2.12.1</npmVersion>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>npm install</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                            </execution>
+
+                            <execution>
+                                <id>gulp build</id>
+                                <goals>
+                                    <goal>gulp</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>process-resources</phase>
+                                <goals><goal>run</goal></goals>
+                                <configuration>
+                                    <target>
+                                        <echo message="copying files"/>
+                                        <copy toDir="${destDir}">
+                                            <fileset dir="${basedir}">
+                                                <include name="*.js"/>
+                                            </fileset>
+                                        </copy>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>Release</id>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>process-resources</phase>
+                                <goals><goal>run</goal></goals>
+                                <configuration>
+                                    <target>
+                                        <echo message="download archive"/>
+                                        <get src="${upstream.url}" dest="${project.build.directory}/${project.artifactId}.zip"/>
+                                        <echo message="unzip archive"/>
+                                        <unzip src="${project.build.directory}/${project.artifactId}.zip" dest="${project.build.directory}"/>
+                                        <echo message="moving files"/>
+                                        <move toDir="${destDir}">
+                                            <fileset dir="${project.build.directory}/${project.artifactId}-${upstream.version}"/>
+                                        </move>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 
 </project>
