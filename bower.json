@@ -18,6 +18,10 @@
     "type": "git",
     "url": "git://github.com/BA-Group/sizeme.js.git"
   },
+  "dependencies": {
+    "jquery-ui": "1.9.2",
+    "opentip": "2.4.6"
+  },
   "ignore": [
     "**/.*",
     "src",
