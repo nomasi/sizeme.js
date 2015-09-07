@@ -1,3 +1,5 @@
+/* globals jQuery: false */
+
 var sizeme_UI_options = {
     prependTopHeaderTo: "body",
     appendInContentToggler: ".slider_text_below",
@@ -10,6 +12,6 @@ var sizeme_UI_options = {
     appendDetailedView: ".slider_text_below",
     insertMessages: ".slider_text_more_below",
     appendSizeGuide: "#detail"
-}
+};
 
 jQuery.noConflict(true);

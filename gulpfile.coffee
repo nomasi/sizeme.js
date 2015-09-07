@@ -1,6 +1,7 @@
 gulp        = require 'gulp'
 coffee      = require 'gulp-coffee'
 coffeelint  = require 'gulp-coffeelint'
+jshint      = require 'gulp-jshint'
 uglify      = require 'gulp-uglify'
 rename      = require 'gulp-rename'
 concat      = require 'gulp-concat'
@@ -20,6 +21,11 @@ gulp.task 'api.js', ->
     .pipe uglify()
     .pipe rename extname: '.min.js'
     .pipe gulp.dest config.dest
+
+gulp.task 'magento.lint', ->
+  gulp.src config.magento.src
+  .pipe jshint()
+  .pipe jshint.reporter("default")
 
 gulp.task 'magento', ->
   gulp.src config.magento.src
@@ -44,4 +50,4 @@ gulp.task 'clean', (cb) ->
     'lib/*.*'
   ], cb
 
-gulp.task 'default', ['clean', 'api.lint', 'api.js', 'magento-with-deps']
+gulp.task 'default', ['clean', 'api.lint', 'api.js', 'magento.lint', 'magento-with-deps']
