@@ -8,12 +8,12 @@ series      = require 'stream-series'
 del         = require 'del'
 config      = require './gulp-config.json'
 
-gulp.task 'lint', ->
+gulp.task 'api.lint', ->
   gulp.src config.api.src
     .pipe coffeelint()
     .pipe coffeelint.reporter()
 
-gulp.task 'js', ->
+gulp.task 'api.js', ->
   gulp.src config.api.src
     .pipe coffee()
     .pipe gulp.dest config.dest
@@ -44,4 +44,4 @@ gulp.task 'clean', (cb) ->
     'lib/*.*'
   ], cb
 
-gulp.task 'default', ['clean', 'lint', 'js', 'magento-with-deps']
+gulp.task 'default', ['clean', 'api.lint', 'api.js', 'magento-with-deps']

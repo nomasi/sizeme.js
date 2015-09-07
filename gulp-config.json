@@ -4,7 +4,7 @@
     "src": "src/sizeme-api.coffee"
   },
   "magento": {
-    "src": "src/magento/sizeme-ui.js"
+    "src": [ "src/ui/sizeme-ui.js", "src/ui/magento/sizeme-magento.js" ]
   },
   "jquery_ui": {
     "src": [
