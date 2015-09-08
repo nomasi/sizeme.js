@@ -1,0 +1,6 @@
+--quiet
+--cautious
+--extension  coffee
+./src
+-
+LICENSE

@@ -1,7 +1,8 @@
 {
   "dest": {
     "js": "lib/js",
-    "css": "lib/css"
+    "css": "lib/css",
+    "doc": "lib/doc"
   },
   "api": {
     "src": "src/sizeme-api.coffee"

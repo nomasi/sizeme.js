@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>API documentation for SizeMe</title>
+  <script src='../javascript/application.js'></script>
+  <script src='../javascript/search.js'></script>
+  <link rel='stylesheet' href='../stylesheets/application.css' type='text/css'>
+</head>
+  <body>
+    <div id='base' data-path='../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../extra/README.md.html' title='SizeMe API'>
+      SizeMe API
+    </a>
+    &raquo;
+    <a href='../alphabetical_index.html' title='Index'>
+      Index
+    </a>
+    &raquo;
+    <span class='title'>SizeMe</span>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        SizeMe
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>src&#47;sizeme-api.coffee</td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Helper object to handle the communication to the SizeMe server.
+ Exposes two functions to fetch the profiles for the accountInfo and
+ get the match results for the items.</p><p> @version 2.0</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Variables Summary</h2>
+      <dl class='constants'>
+  <dt id='contextAddress-variable'>
+    contextAddress
+    =
+  </dt>
+  <dd>
+    <pre><code class='coffeescript'>&quot;https:&#47;&#47;www.sizeme.com&quot;</code></pre>
+    <div class='docstring'>
+  <p>Address for the SizeMe API service</p>
+</div>
+<div class='tags'>
+</div>
+  </dd>
+  <dt id='version-variable'>
+    version
+    =
+  </dt>
+  <dd>
+    <pre><code class='coffeescript'>&quot;2.0&quot;</code></pre>
+    <div class='docstring'>
+  <p>Version of the API</p>
+</div>
+<div class='tags'>
+</div>
+  </dd>
+</dl>
+      <h2>Class Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#getAuthToken-static'>
+        .
+(void)
+<b>getAuthToken</b><span>(callback, errorCallback = defaultErrorCallback)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Tries to fetch a new auth token from the SizeMe service. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#loginFrame-static'>
+        .
+(void)
+<b>loginFrame</b><span>(callback)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Open the login frame and set the callback function for logging in 
+    </span>
+  </li>
+</ul>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#fetchProfilesForAccount-dynamic'>
+        #
+(Object)
+<b>fetchProfilesForAccount</b><span>(callback, errorCallback = defaultErrorCallback)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Fetches an array of profiles for the accountInfo. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#match-dynamic'>
+        #
+(void)
+<b>match</b><span>(fitRequest, successCallback, errorCallback = defaultErrorCallback)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Calls the matching service with the measurements of the item to be matched against the selected profile.
+
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getItemTypes-dynamic'>
+        #
+(void)
+<b>getItemTypes</b><span>(callback, errorCallback = defaultErrorCallback)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Fetches item types and their measurement properties from the server. 
+    </span>
+  </li>
+</ul>
+      <h2>Class Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='getAuthToken-static'>
+      .
+(void)
+<b>getAuthToken</b><span>(callback, errorCallback = defaultErrorCallback)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Tries to fetch a new auth token from the SizeMe service. User needs to be
+logged in to the service to receive a valid token.</p><p>The returned token is passed as an argument to the callback function. If
+user is not logged in, the returned token is null.</p><p>This function is executed asynchronously, so it will return immediately.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (
+          <tt>Function</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>function to execute after the request is completed </span>
+    </li>
+    <li>
+      <span class='name'>errorCallback</span>
+      <span class='type'>
+        (
+          <tt>Function</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>function to execute if there was an error </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='loginFrame-static'>
+      .
+(void)
+<b>loginFrame</b><span>(callback)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Open the login frame and set the callback function for logging in</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>loggedInCallback</span>
+      <span class='type'>
+        (
+          <tt>Function</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>the function to execute when user logs themselves in </span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-dynamic'>
+      #
+(void)
+<b>constructor</b><span>(authToken)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Creates a new instance of SizeMe</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>authToken</span>
+      <span class='type'>
+        (
+          <tt>Object</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>the authentication token for the SizeMe service, obtained with the <a href='../class/SizeMe.html#getAuthToken-static'>SizeMe.getAuthToken</a> method. </span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='fetchProfilesForAccount-dynamic'>
+      #
+(Object)
+<b>fetchProfilesForAccount</b><span>(callback, errorCallback = defaultErrorCallback)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Fetches an array of profiles for the accountInfo.
+The format of the profile objects is</p><pre><code>{
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;properties&quot;: {
+    &quot;id&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;description&quot;: &quot;id of the profile.&quot;
+    },
+    &quot;profileName&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;description&quot;: &quot;name of the profile.&quot;
+    }
+  }
+}
+</code></pre><p>The array is passed as an argument to the callback function.
+This function is executed asynchronously, so it will return immediately.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (
+          <tt>Object</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>function to execute after the request is completed </span>
+    </li>
+    <li>
+      <span class='name'>errorCallback</span>
+      <span class='type'>
+        (
+          <tt>Function</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>function to execute if there was an error </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt>Object</tt>
+      )
+      &mdash;
+      <span class='desc'>profile </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='match-dynamic'>
+      #
+(void)
+<b>match</b><span>(fitRequest, successCallback, errorCallback = defaultErrorCallback)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Calls the matching service with the measurements of the item to be matched
+against the selected profile.</p><p>The result is an associative array mapping size labels to response objects.
+The format of a response object is</p><pre><code>{
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;properties&quot;: {
+    &quot;fitRangeLabel&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;enum&quot;: [
+        &quot;too_small&quot;,
+        &quot;slim&quot;,
+        &quot;regular&quot;,
+        &quot;loose&quot;,
+        &quot;huge&quot;,
+        &quot;too_big&quot;
+      ],
+      &quot;description&quot;: &quot;A label defining the range of the total fit.&quot;
+    },
+    &quot;totalFit&quot;: {
+      &quot;type&quot;: &quot;integer&quot;,
+      &quot;description&quot;: &quot;A total fit of the item. 100 is a perfect match.&quot;
+    },
+    &quot;matchMap&quot;: {
+      &quot;type&quot;: &quot;object&quot;,
+      &quot;description&quot;: &quot;An associative array containing the detailed fit
+                      for each measuring property&quot;
+    },
+    &quot;accuracy&quot;: {
+      &quot;type&quot;: &quot;number&quot;,
+      &quot;description&quot;: &quot;An accuracy percentage, ie. the percentage of
+                      measurement points of the item compared
+                      to the points specified in the profile&quot;
+    },
+    &quot;missingMeasurements&quot;: {
+      &quot;type&quot;: &quot;array&quot;,
+      &quot;description&quot;: &quot;An array of the measurement points that were
+                      missing in the profile. The items in the array
+                      are themselves also arrays of the size two;
+                      first item is the measurement&#39;s item property,
+                      the second is the property&#39;s human name&quot;
+    }
+  }
+}
+</code></pre><p>The response object contains an associative array (property matchMap)
+that maps each measuring property to a match object The format of a
+match object is</p><pre><code>{
+  &quot;type&quot;: &quot;object&quot;,
+  &quot;properties&quot;: {
+    &quot;overlap&quot;: {
+      &quot;type&quot;: &quot;integer&quot;,
+      &quot;description&quot;: &quot;difference of the item&#39;s measure
+                      (with corrective factors) and the
+                      person&#39;s measure&quot;.
+    },
+    &quot;percentage&quot;: {
+      &quot;type&quot;: &quot;number&quot;,
+      &quot;description&quot;: &quot;the percentage of the overlap.&quot;
+    },
+    &quot;componentFit&quot;: {
+      &quot;type&quot;: &quot;integer&quot;,
+      &quot;description&quot;: &quot;component&#39;s fit value.&quot;
+    },
+  }
+}
+</code></pre><p>The response object is passed as an argument to the
+successCallback-function.
+This function is executed asynchronously, so it will return immediately.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>fitrequest</span>
+      <span class='type'>
+        (
+          <tt><a href='../class/SizeMe/FitRequest.html'>SizeMe.FitRequest</a></tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>instance containing profile and item information </span>
+    </li>
+    <li>
+      <span class='name'>successCallback</span>
+      <span class='type'>
+        (
+          <tt>Function</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>function to call if match succeeds </span>
+    </li>
+    <li>
+      <span class='name'>errorCallback</span>
+      <span class='type'>
+        (
+          <tt>Function</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>function to call if there&#39;s an error </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getItemTypes-dynamic'>
+      #
+(void)
+<b>getItemTypes</b><span>(callback, errorCallback = defaultErrorCallback)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Fetches item types and their measurement properties from the server.
+Returned object contains item type id (&quot;id&quot;) as a key and an object
+containing the name of the item type (&quot;name&quot;) and defined properties
+of the item type as an array (&quot;properties&quot;)</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (
+          <tt>Function</tt>
+        )
+      </span>
+    </li>
+    <li>
+      <span class='name'>errorCallback</span>
+      <span class='type'>
+        (
+          <tt>Function</tt>
+        )
+      </span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  September 09, 15 01:00:30 by
+  <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
+    Codo
+  </a>
+  2.0.11
+  &#10034;
+  Press H to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/netzpirat' target='_parent'>@netzpirat</a>
+  &#10034;
+  <a href='http://twitter.com/_inossidabile' target='_parent'>@_inossidabile</a>
+</div>
+<iframe id='search_frame'></iframe>
+<div id='fuzzySearch'>
+  <input type='text'>
+  <ol></ol>
+</div>
+<div id='help'>
+  <p>
+    Quickly fuzzy find classes, mixins, methods, file:
+  </p>
+  <ul>
+    <li>
+      <span>T</span>
+      Open fuzzy finder dialog
+    </li>
+  </ul>
+  <p>
+    Control the navigation frame:
+  </p>
+  <ul>
+    <li>
+      <span>L</span>
+      Toggle list view
+    </li>
+    <li>
+      <span>C</span>
+      Show class list
+    </li>
+    <li>
+      <span>I</span>
+      Show mixin list
+    </li>
+    <li>
+      <span>F</span>
+      Show file list
+    </li>
+    <li>
+      <span>M</span>
+      Show method list
+    </li>
+    <li>
+      <span>E</span>
+      Show extras list
+    </li>
+  </ul>
+  <p>
+    You can focus and blur the search input:
+  </p>
+  <ul>
+    <li>
+      <span>S</span>
+      Focus search input
+    </li>
+    <li>
+      <span>Esc</span>
+      Blur search input
+    </li>
+  </ul>
+</div>
+  </body>
+</html>
