@@ -1,13 +1,17 @@
 {
-  "dest": "lib",
+  "dest": {
+    "js": "lib/js",
+    "css": "lib/css"
+  },
   "api": {
     "src": "src/sizeme-api.coffee"
   },
   "magento": {
-    "src": [ "src/ui/sizeme-ui.js", "src/ui/magento/sizeme-magento.js" ]
+    "js": [ "src/ui/js/sizeme-ui.js", "src/ui/js/magento/sizeme-magento.js" ],
+    "css": [ "src/ui/css/sizeme-ui.css", "src/ui/css/magento/sizeme-magento.css", "src/ui/css/style_override.css"]
   },
   "jquery_ui": {
-    "src": [
+    "js": [
       "bower_components/jquery-ui/ui/jquery.ui.core.js",
       "bower_components/jquery-ui/ui/jquery.ui.widget.js",
       "bower_components/jquery-ui/ui/jquery.ui.mouse.js",
@@ -16,9 +20,16 @@
       "bower_components/jquery-ui/ui/jquery.ui.resizable.js",
       "bower_components/jquery-ui/ui/jquery.ui.button.js",
       "bower_components/jquery-ui/ui/jquery.ui.dialog.js"
+    ],
+    "css": [
+      "bower_components/jquery-ui/themes/base/jquery.ui.core.css",
+      "bower_components/jquery-ui/themes/base/jquery.ui.resizable.css",
+      "bower_components/jquery-ui/themes/base/jquery.ui.button.css",
+      "bower_components/jquery-ui/themes/base/jquery.ui.dialog.css"
     ]
   },
   "opentip": {
-    "src": "bower_components/opentip/lib/opentip.js"
+    "js": "bower_components/opentip/lib/opentip.js",
+    "css": "bower_components/opentip/css/opentip.css"
   }
 }
