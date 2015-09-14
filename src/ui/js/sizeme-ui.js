@@ -1504,6 +1504,44 @@ function findMaxMeasurement() {
 	return maxVal;
 }
 
+var DataStorage = (function() {
+
+  function DataStorage(type) {
+    if(storageAvailable(type))
+    {
+      this.storage = window[type];
+    }else
+    {
+      this.storage = null;
+    }
+  }
+
+  DataStorage.prototype.storage = null;
+
+  function storageAvailable(type) {
+    try {
+      var _tstorage = window[type];
+      var x = '__storage_test__';
+      _tstorage.setItem(x, x);
+      _tstorage.removeItem(x);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  DataStorage.prototype.withStorage = function(callback) {
+    if(this.storage === null)
+    {
+      return;
+    }
+
+    return callback(this.storage);
+  };
+
+  return DataStorage;
+})();
+
 // Load on ready for all pages
 $(document).ready(function() {
 
@@ -1777,8 +1815,9 @@ $(document).ready(function() {
 	// end of function 	loggedOutCb
 	};
 
-  var sizeMe = null;
-  sizeMe = sizeMeInit();
+  var Storage = new DataStorage('sessionStorage');
+
+  var sizeMe = sizeMeInit();
   // *** End
 });
 function isLoggedIn() {
@@ -1818,18 +1857,6 @@ function eraseCookie(name) {
 	createCookie(name,"",-1);
 }
 
-function storageAvailable(type) {
-  try {
-    storage = window[type];
-    x = '__storage_test__';
-    storage.setItem(x, x);
-    storage.removeItem(x);
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
 function sizeMeInit() {
   var defered = jQuery.Deferred();
   jQuery.$when(getAuthToken()).then(function(authToken){
@@ -1842,20 +1869,18 @@ function sizeMeInit() {
 function sizeMeLogout() {
   sizeMe = null;
 
-  if ( storageAvailable('sessionStorage') )
-  {
-    window.sessionStorage.removeItem( 'authToken' );
-  }
+  Storage.withStorage(function(storage){
+    storage.removeItem( 'authToken' );
+  });
 }
 
 function getAuthToken() {
   var deferred;
 
-  if ( storageAvailable('sessionStorage') )
-  {
+  Storage.withStorage(function(storage){
     deferred = jQuery.Deferred();
 
-    storedToken = window.sessionStorage.getItem('authToken');
+    storedToken = storage.getItem('authToken');
     if ( storedToken.token !== null )
     {
       storedToken = JSON.parse( storedToken );
@@ -1866,23 +1891,21 @@ function getAuthToken() {
         deferred.resolve(storedToken);
       }
     }
-  }
+  });
 
   if ( !deferred.isResolved() )
   {
     SizeMe.getAuthToken(function (authToken) {
       if(authToken === null)
       {
-        if ( storageAvailable( 'sessionStorage' ) )
-        {
-          window.sessionStorage.removeItem( 'authToken' );
-        }
+        Storage.withStorage(function(storage){
+          storage.removeItem( 'authToken' );
+        });
         deferred.reject(null);
       } else {
-        if ( storageAvailable( 'sessionStorage' ) )
-        {
-          window.sessionStorage.setItem( 'authToken', JSON.stringify(authToken) );
-        }
+        Storage.withStorage(function(storage){
+          storage.setItem( 'authToken', JSON.stringify(authToken) );
+        });
         deferred.resolve(authToken);
       }
     });
