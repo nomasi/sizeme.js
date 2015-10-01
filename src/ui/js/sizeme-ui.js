@@ -1,5 +1,5 @@
 // SizeMe UI JS v1.0
-// based on SizeMe Item Types 2015-03-11
+// based on SizeMe Item Types 2015-10-01
 // (c) SizeMe Inc.
 // www.sizeme.com
 // License undecided
@@ -264,6 +264,12 @@ function loadArrows(isSizeGuide) {
 		LOCALIZED_STR.pant_waist = "Hem";
 
 		switch (itemTypeStr[2]) { // shoulder
+			case '3':	// dropped
+				if (itemTypeStr[1] !== '0') {
+					item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 369,Y: 196}]});
+				}
+				measurement_arrows.sleeve = { mirror: false, coords: [{X: 174,Y: -16}, {X: 329,Y: 27},{X: 569,Y: 975}], style: "line", lift: true, midCircle: {X: 437, Y: 444}, color: arrowColor };
+				break;
 			case '2':	// raglan line
 				if (itemTypeStr[1] !== '0') {
                     item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 185,Y: 6, cp1X: 220, cp1Y: 320, cp2X: 185, cp2Y: 6}]});
@@ -410,20 +416,27 @@ function loadArrows(isSizeGuide) {
 					measurement_arrows.pant_waist = { mirror: false, coords: [{X: -250,Y: 978}, {X: 250,Y: 978}], style: arcStyle, lift: false, color: arrowColor };
 				}
 				break;			
-			// case '4':	// hips
+			case '4':	// hips
+			/* falls through */
+			case '5':	// half-way-thigh
+			/* falls through */
 			default: 
+				var $base_y = 978;
+				if (itemTypeStr[5] === '5') {
+					$base_y = 1038;
+				}
 				if (itemTypeStr[6] === '1') {	// elastic
-					item_drawing.coords.push({X: 250,Y: 978, cp1X: 247, cp1Y: 402, cp2X: 247, cp2Y: 908},{X: 230,Y: 1038},{X: 0,Y: 1038}); 
+					item_drawing.coords.push({X: 250,Y: $base_y, cp1X: 247, cp1Y: 402, cp2X: 247, cp2Y: 908},{X: 230,Y: ($base_y+60)},{X: 0,Y: ($base_y+60)});
 					for ($i = 0; $i<15; $i++) {
 						$x = Math.round(($i+0.5)*(230/15));
-						item_drawing.accents.push({type: "line", coords: [{X: $x,Y: 988}, {X: $x,Y: 1038}]});
+						item_drawing.accents.push({type: "line", coords: [{X: $x,Y: ($base_y+10)}, {X: $x,Y: ($base_y+60)}]});
 					}
-					measurement_arrows.front_height.coords[1].Y = 1038;
-					measurement_arrows.hips = { mirror: false, coords: [{X: -250,Y: 978}, {X: 250,Y: 978}], style: arcStyle, lift: false, color: arrowColor };
+					measurement_arrows.front_height.coords[1].Y = ($base_y+60);
+					measurement_arrows.hips = { mirror: false, coords: [{X: -250,Y: $base_y}, {X: 250,Y: $base_y}], style: arcStyle, lift: false, color: arrowColor };
 				} else {
-					item_drawing.coords.push({X: 250,Y: 1038, cp1X: 245, cp1Y: 402, cp2X: 245, cp2Y: 978},{X: 0,Y: 1038}); 
-					measurement_arrows.front_height.coords[1].Y = 1038;
-					measurement_arrows.hips = { mirror: false, coords: [{X: -250,Y: 1038}, {X: 250,Y: 1038}], style: arcStyle, lift: false, color: arrowColor };
+					item_drawing.coords.push({X: 250,Y: ($base_y+60), cp1X: 245, cp1Y: 402, cp2X: 245, cp2Y: $base_y},{X: 0,Y: ($base_y+60)});
+					measurement_arrows.front_height.coords[1].Y = ($base_y+60);
+					measurement_arrows.hips = { mirror: false, coords: [{X: -250,Y: ($base_y+60)}, {X: 250,Y: ($base_y+60)}], style: arcStyle, lift: false, color: arrowColor };
 				}
 				break;
 		}
