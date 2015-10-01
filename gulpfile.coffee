@@ -77,4 +77,4 @@ gulp.task 'clean.css', (cb) ->
 
 gulp.task 'clean', [ 'clean.js', 'clean.css', 'clean.doc' ]
 
-gulp.task 'default', ['api.js', 'api.doc', 'magento-with-deps', 'magento.css']
+gulp.task 'default', ['api.js', 'magento-with-deps', 'magento.css']
