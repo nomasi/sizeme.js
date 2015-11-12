@@ -1561,14 +1561,6 @@
     var Storage = new DataStorage('sessionStorage');
     var sizeMe;
 
-    function sizeMeLogout() {
-        sizeMe = null;
-
-        Storage.withStorage(function(storage) {
-            storage.removeItem('authToken');
-        });
-    }
-
     function getAuthToken() {
         var deferred = $.Deferred();
 
@@ -1820,7 +1812,13 @@
 
         var loggedOutCb = function() {
             // clear sizeMe instance and related storage
-            sizeMeLogout();
+            SizeMe.logout(function () {
+                sizeMe = null;
+
+                Storage.withStorage(function(storage) {
+                    storage.removeItem('authToken');
+                });
+            });
             // show splash introduction banner
             // remove sizeme functionality from store (if exists)
             $("#sizeme_header").remove();

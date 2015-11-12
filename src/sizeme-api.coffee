@@ -87,7 +87,7 @@ class SizeMe
       iframe = document.createElement("iframe")
       cb = (event) ->
         if event.origin == SizeMe.contextAddress
-          tokenObj = JSON.parse(event.data)
+          tokenObj = event.data
           removeMessageListener(cb)
           document.body.removeChild(iframe)
           callback?(tokenObj) if callback?
@@ -279,6 +279,19 @@ class SizeMe
     addMessageListener cb
     window.open(url, "loginframe", options)
     return
+
+  @logout: (callback) ->
+    iframe = document.createElement("iframe")
+    cb = (event) ->
+      if event.origin == SizeMe.contextAddress and event.data == "logout"
+        removeMessageListener(cb)
+        document.body.removeChild(iframe)
+        callback() if callback?
+      return
+    addMessageListener(cb)
+    iframe.setAttribute("src", "#{SizeMe.contextAddress}/remote-logout")
+    iframe.setAttribute("style", "display:none")
+    document.body.appendChild(iframe)
 
 ###
   A simple map implementation to help pass the item properties to server
