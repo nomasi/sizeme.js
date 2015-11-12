@@ -29,6 +29,15 @@ class SizeMe
   constructor: (authToken) ->
     _authToken = authToken
 
+  addMessageListener = (callback) ->
+    if window.attachEvent? then window.attachEvent "onmessage", callback
+    else window.addEventListener "message", callback
+
+  removeMessageListener = (callback) ->
+    if window.detachEvent? then window.detachEvent "onmessage", callback
+    else window.removeEventListener "message", callback
+
+
   createCORSRequest = (method, service, callback, errorCallback) ->
     xhr = undefined
     url = "#{SizeMe.contextAddress}#{service}"
@@ -77,12 +86,13 @@ class SizeMe
     if _facepalm()
       iframe = document.createElement("iframe")
       cb = (event) ->
-        tokenObj = JSON.parse(event.data)
-        window.detachEvent("onmessage", cb)
-        document.body.removeChild(iframe)
-        callback?(tokenObj) if callback?
+        if event.origin == SizeMe.contextAddress
+          tokenObj = JSON.parse(event.data)
+          removeMessageListener(cb)
+          document.body.removeChild(iframe)
+          callback?(tokenObj) if callback?
         return
-      window.attachEvent("onmessage", cb)
+      addMessageListener(cb)
       iframe.setAttribute("src", "#{SizeMe.contextAddress}/api/authToken.html")
       iframe.setAttribute("style", "display:none")
       document.body.appendChild(iframe)
@@ -257,16 +267,17 @@ class SizeMe
       the function to execute when user logs themselves in
   ###
   @loginFrame: (callback) ->
-    url = "#{SizeMe.contextAddress}/loginframe.html"
+    url = "#{SizeMe.contextAddress}/remote-login.html"
     options = "height=375,width=349,left=200,top=200,location=no,menubar=no,
                resizable=no,scrollbars=no,toolbar=no"
-    win = window.open(url, "", options)
-    timer = if win?
-      setInterval ->
-        if win.closed
-          clearInterval timer
-          callback() if win?
-      , 100
+
+    cb = (e) ->
+      if e.origin == SizeMe.contextAddress
+        removeMessageListener cb
+        callback() if e.data
+
+    addMessageListener cb
+    window.open(url, "loginframe", options)
     return
 
 ###
