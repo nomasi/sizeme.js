@@ -33,7 +33,7 @@
     ]
   },
   "opentip": {
-    "js": "bower_components/opentip/lib/opentip.js",
+    "js": ["bower_components/opentip/lib/opentip.js","bower_components/opentip/lib/adapter-jquery.js"],
     "css": "bower_components/opentip/css/opentip.css"
   }
 }
