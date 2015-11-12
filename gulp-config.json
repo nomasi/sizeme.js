@@ -9,7 +9,7 @@
   },
   "magento": {
     "js": [ "src/ui/js/sizeme-ui.js", "src/ui/js/magento/sizeme-magento.js" ],
-    "css": [ "src/ui/css/sizeme-ui.css", "src/ui/css/magento/sizeme-magento.css", "src/ui/css/style_override.css"]
+    "css": [ "src/ui/css/sizeme-ui.css", "src/ui/css/magento/sizeme-magento.css" ]
   },
   "jquery": {
     "js": "bower_components/jquery/jquery.js"
