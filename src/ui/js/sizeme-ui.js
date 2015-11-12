@@ -170,15 +170,14 @@
     }
 
     function getFit(fitValue) {
-        var returnFit;
-        for (var singleFit in FIT_RANGES) {
+        var returnFit, singleFit;
+        for (singleFit in FIT_RANGES) {
             if (FIT_RANGES.hasOwnProperty(singleFit)) {
                 if (fitValue < singleFit) {
                     if (returnFit) {
                         return returnFit;
-                    } else {
-                        return FIT_RANGES[singleFit];
                     }
+                    return FIT_RANGES[singleFit];
                 }
                 returnFit = FIT_RANGES[singleFit];
             }
@@ -188,11 +187,11 @@
 
     function addIds(parentElement) {
         // add ids to select for easy handling
-        $(parentElement+" option").each(function() {
+        $(parentElement + " option").each(function () {
             var myVal = $(this).val();
             var myText = $(this).text();
-            $(this).addClass("sm-selectable element_for_"+myVal);
-            this.id = (myVal ? "input_"+myVal : "choose");
+            $(this).addClass("sm-selectable element_for_" + myVal);
+            this.id = (myVal ? "input_" + myVal : "choose");
             if (myVal) {
                 if (product.item.measurements[myVal]) {
                     sizeKeys.push({key: myVal, sizeLabel: myText});
@@ -1210,7 +1209,7 @@
 
     function updateDetailedTable(matchMap, inputKey, missingMeasurements) {
         var $table = $("#detailed_table").find("tbody"),
-            $row, $i, $cell, $tip, $txt;
+            $row, $i, $cell, $tip, $txt, $tipClassName;
         $table.empty();
         if (matchMap) {
             // *** Detailed View ***
@@ -1381,7 +1380,14 @@
                     $row.append($cell);
                 }
                 if ($cell) {
-                    $tip = new Opentip($cell, $tip_txts[measurement]);
+                    $tipClassName = "";
+                    if (isPinched(measurement)) {
+                        $tipClassName = "isPinched";
+                    }
+                    if (measurement === "sleeve") {
+                        $tipClassName = "sleeve";
+                    }
+                    $tip = new Opentip($cell, $tip_txts[measurement], { className: $tipClassName } );
                 }
             });
             $table.append($row);
@@ -1600,7 +1606,7 @@
         return deferred.promise();
     }
 
-    function sizeMeInit() {
+    function sizeMeInit(callback) {
         var deferred = $.Deferred();
         getAuthToken().then(
             function(authToken) {
@@ -1610,7 +1616,10 @@
             }
         );
 
-        return deferred.promise();
+        sizeMe = deferred.promise();
+        if (callback !== null) {
+            sizeMe.then(callback);
+        }
     }
 
     // Load on ready for all pages
@@ -1723,23 +1732,22 @@
             // end of function 	getMatchResponseHandler
         };
 
-        var doProfileChange = function(newValue) {
-            selectedProfile = newValue;
-            linkToSelectedProfile = SizeMe.contextAddress + "/account/profiles.html";
-            $(".profileSelect").attr("value", selectedProfile);
-            createCookie("sizeme_profileId", selectedProfile, cookieLifetime);
-            $('#logged_in_link').attr("href", linkToSelectedProfile);
+        var loggedInCb = function(sizeMeObj) {
 
-            if (typeof product !== 'undefined') {
-                var prodId = null;
-                sizeMe.then(function(sizeMeObj){
+            var doProfileChange = function(newValue) {
+                selectedProfile = newValue;
+                linkToSelectedProfile = SizeMe.contextAddress + "/account/profiles.html";
+                $(".profileSelect").attr("value", selectedProfile);
+                createCookie("sizeme_profileId", selectedProfile, cookieLifetime);
+                $('#logged_in_link').attr("href", linkToSelectedProfile);
+
+                if (typeof product !== 'undefined') {
+                    var prodId = null;
                     sizeMeObj.match(new SizeMe.FitRequest(selectedProfile, product.item), getMatchResponseHandler(prodId, product));
-                });
-            }
-            // end of function  doProfileChange
-        };
+                }
+                // end of function  doProfileChange
+            };
 
-        var loggedInCb = function() {
             eraseCookie("sizeme_no_thanks");
 
             // remove existing (if exists)
@@ -1766,46 +1774,43 @@
             }
 
             // *** SizeMe Magic
-            sizeMe.then(function (sizeMeObj) {
-                sizeMeObj.fetchProfilesForAccount(function(profileList) {
-                    var cookieProfile = readCookie("sizeme_profileId");
-                    //	var selectedProfile = null;
-                    var activeProfile = null;
-                    $.each(profileList, function() {
-                        activeProfile = this.id;
-                        if (activeProfile === cookieProfile) {
-                            selectedProfile = activeProfile;
-                            return false;
-                        }
-                    });
-                    if (!selectedProfile) {
+            sizeMeObj.fetchProfilesForAccount(function(profileList) {
+                var cookieProfile = readCookie("sizeme_profileId");
+                //	var selectedProfile = null;
+                var activeProfile = null;
+                $.each(profileList, function() {
+                    activeProfile = this.id;
+                    if (activeProfile === cookieProfile) {
                         selectedProfile = activeProfile;
+                        return false;
                     }
-
-                    var $i = 0;
-                    $(".shopping_for").empty().
-                        html("<span class='shopping_for_text'>Shopping for: </span>").
-                        append(function() {
-                            var select = document.createElement("select");
-                            select.className = "profileSelect";
-                            select.id = "id_profileSelect_" + (++$i);
-                            return select;
-                        });
-                    $.each(profileList, function() {
-                        $("<option>").appendTo(".profileSelect")
-                            .attr("value", this.id)
-                            .text(this.profileName);
-                    });
-                    $('#logged_in').html("<a id='logged_in_link' href='#' target='_blank'>My Profiles</a>");
-                    $('.profileSelect')
-                        .attr("value", selectedProfile)
-                        .change(function() {
-                            doProfileChange(this.value);
-                        });
-
-                    // Yell change
-                    doProfileChange(selectedProfile);
                 });
+                if (!selectedProfile) {
+                    selectedProfile = activeProfile;
+                }
+
+                var $i = 0;
+                $(".shopping_for").empty().
+                html("<span class='shopping_for_text'>Shopping for: </span>").append(function() {
+                    var select = document.createElement("select");
+                    select.className = "profileSelect";
+                    select.id = "id_profileSelect_" + (++$i);
+                    return select;
+                });
+                $.each(profileList, function() {
+                    $("<option>").appendTo(".profileSelect")
+                        .attr("value", this.id)
+                        .text(this.profileName);
+                });
+                $('#logged_in').html("<a id='logged_in_link' href='#' target='_blank'>My Profiles</a>");
+                $('.profileSelect')
+                    .attr("value", selectedProfile)
+                    .change(function() {
+                        doProfileChange(this.value);
+                    });
+
+                // Yell change
+                doProfileChange(selectedProfile);
             });
 
             $("#logout").click(loggedOutCb);
@@ -1847,13 +1852,13 @@
                 // Add splash content somewhere
                 if (sizeme_options.banner_location === "in_content") {
                     splashContent = getSplashDetailed();
-                    if (readCookie("sizeme_no_thanks") === 1) {
+                    if (readCookie("sizeme_no_thanks") === "true") {
                         splashContent = $(splashContent).hide();
                     }
                     $("#sizeme_detailed_view_content").append(splashContent);
                 } else {
                     splashContent = getSplashHeader();
-                    if (readCookie("sizeme_no_thanks") === 1) {
+                    if (readCookie("sizeme_no_thanks") === "true") {
                         splashContent = $(splashContent).hide();
                     }
                     $(sizeme_UI_options.prependTopHeaderTo).prepend(splashContent);
@@ -1862,15 +1867,14 @@
                 // login button
                 $("#sizeme_btn_login").on("click", function() {
                     SizeMe.loginFrame(function() {
-                        sizeMe = sizeMeInit();
-                        sizeMe.then(loggedInCb);
+                        sizeMeInit(loggedInCb);
                     });
                     return false;
                 });
 
                 // no thanks button
                 $("#sizeme_btn_no_thanks").on("click", function() {
-                    createCookie("sizeme_no_thanks", 1, cookieLifetime);
+                    createCookie("sizeme_no_thanks", "true", cookieLifetime);
                     $(".splash").hide();
                     if (sizeme_options.banner_location !== "in_content") {
                         $("#sizeme_header").slideToggle('slow', function() {
@@ -1884,8 +1888,9 @@
             // end of function 	loggedOutCb
         };
 
-        sizeMe = sizeMeInit();
-        sizeMe.then(loggedInCb);
+        if (readCookie("sizeme_no_thanks") !== "true") {
+            sizeMeInit(loggedInCb);
+        }
         // *** End
     });
 
@@ -1908,15 +1913,11 @@
     }
 
     function readCookie(name) {
-        var nameEQ = name + "=";
-        var ca = document.cookie.split(';');
-        for(var i=0;i < ca.length;i++) {
-            var c = ca[i];
-            while (c.charAt(0)===' ') {
-                c = c.substring(1,c.length);
-            }
-            if (c.indexOf(nameEQ) === 0) {
-                return c.substring(nameEQ.length,c.length);
+        var ca = document.cookie.split(';'), c;
+        for (var i=0;i<ca.length;i++) {
+            c = ca[i].trim().split('=');
+            if (c[0] === name) {
+                return c[1];
             }
         }
         return null;
