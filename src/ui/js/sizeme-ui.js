@@ -1564,32 +1564,35 @@
     }
 
     function getAuthToken() {
-        var deferred = jQuery.Deferred();
+        var deferred = $.Deferred();
 
         Storage.withStorage(function(storage) {
-            var storedToken = storage.getItem('authToken');
-            if (storedToken.token !== null) {
-                storedToken = JSON.parse(storedToken);
-                storedToken.expires = Date.parse(storedToken.expires);
-                // Has token expired?
-                if (storedToken.expires > new Date().getTime()) {
-                    deferred.resolve(storedToken);
+            var storedTokenObj = storage.getItem('authToken'),
+                storedToken;
+            if (storedTokenObj !== null) {
+                storedToken = JSON.parse(storedTokenObj);
+                if (storedToken.token !== null && storedToken.expires !== null) {
+                    storedToken.expires = Date.parse(storedToken.expires);
+                    // Has token expired?
+                    if (storedToken.expires > new Date().getTime()) {
+                        deferred.resolve(storedToken.token);
+                    }
                 }
             }
         });
 
-        if (!deferred.isResolved()) {
-            SizeMe.getAuthToken(function (authToken) {
-                if (authToken === null) {
+        if (deferred.state() === "pending") {
+            SizeMe.getAuthToken(function (authTokenObj) {
+                if (authTokenObj === null || authTokenObj.token === null) {
                     Storage.withStorage(function(storage) {
                         storage.removeItem('authToken');
                     });
                     deferred.reject(null);
                 } else {
                     Storage.withStorage(function(storage) {
-                        storage.setItem('authToken', JSON.stringify(authToken));
+                        storage.setItem('authToken', JSON.stringify(authTokenObj));
                     });
-                    deferred.resolve(authToken);
+                    deferred.resolve(authTokenObj.token);
                 }
             });
         }
@@ -1598,7 +1601,7 @@
     }
 
     function sizeMeInit() {
-        var deferred = jQuery.Deferred();
+        var deferred = $.Deferred();
         getAuthToken().then(
             function(authToken) {
                 deferred.resolve(new SizeMe(authToken));
@@ -1611,7 +1614,7 @@
     }
 
     // Load on ready for all pages
-    $(document).ready(function() {
+    $(function() {
 
         var systemsGo = true;
         var firstRecommendation = true;
@@ -1769,7 +1772,7 @@
                     //	var selectedProfile = null;
                     var activeProfile = null;
                     $.each(profileList, function() {
-                        activeProfile = this.profileId;
+                        activeProfile = this.id;
                         if (activeProfile === cookieProfile) {
                             selectedProfile = activeProfile;
                             return false;
@@ -1790,7 +1793,7 @@
                         });
                     $.each(profileList, function() {
                         $("<option>").appendTo(".profileSelect")
-                            .attr("value", this.profileId)
+                            .attr("value", this.id)
                             .text(this.profileName);
                     });
                     $('#logged_in').html("<a id='logged_in_link' href='#' target='_blank'>My Profiles</a>");
@@ -1882,11 +1885,12 @@
         };
 
         sizeMe = sizeMeInit();
+        sizeMe.then(loggedInCb);
         // *** End
     });
 
     function isLoggedIn() {
-        return sizeMe !== null && sizeMe.isResolved();
+        return sizeMe !== null && sizeMe.state() === "resolved";
     }
 
     // Cookie functions
