@@ -47,7 +47,8 @@ gulp.task 'magento.js', ['clean.js', 'magento.lint'], ->
   .pipe gulp.dest config.dest.js
 
 gulp.task 'magento-with-deps', ['magento.js'], ->
-  series gulp.src(config.jquery_ui.js)
+  series gulp.src(config.jquery.js)
+  , gulp.src(config.jquery_ui.js)
   , gulp.src(config.opentip.js)
   , gulp.src(config.dest.js + "/sizeme-magento.js")
     .pipe concat("sizeme-magento-with-deps.js")
