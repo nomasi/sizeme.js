@@ -1210,7 +1210,7 @@
 
     function updateDetailedTable(matchMap, inputKey, missingMeasurements) {
         var $table = $("#detailed_table").find("tbody"),
-            $row, $i, $cell, $tip, $txt;
+            $row, $i, $tip, $txt;
         $table.empty();
         if (matchMap) {
             // *** Detailed View ***
@@ -1345,13 +1345,14 @@
 
             $row = $(document.createElement("tr")).addClass("data_row fit_label_row");
             product.item.measurements[inputKey].each(function(measurement, value) {
+                var $cell;
                 if (matchMap[measurement]) {
                     if (matchMap[measurement].componentFit > 0) {
                         $txt = LOCALIZED_STR[getFit(matchMap[measurement].componentFit).text];
                         if (isLongFit(measurement)) {
                             $txt = LOCALIZED_STR_longs[getFit(matchMap[measurement].componentFit).text];
                         }
-                        var $cell = $(document.createElement("td"))
+                        $cell = $(document.createElement("td"))
                             .html('<div>'+$txt+'</div>')
                             .addClass("run_highlight")
                             .data("measurement", measurement);
@@ -1361,7 +1362,7 @@
                         $row.append(colorCell($cell, matchMap[measurement], measurement_arrows[measurement]));
                     } else if (product.item.measurements[inputKey][measurement] > 0) {
                         $txt = "";
-                        var $cell = $(document.createElement("td"))
+                        $cell = $(document.createElement("td"))
                             .html($txt)
                             .addClass("info run_highlight cell_"+measurement)
                             .data("measurement", measurement);
@@ -1376,7 +1377,7 @@
                             $class = " add";
                         }
                     }
-                    var $cell = $(document.createElement("td"))
+                    $cell = $(document.createElement("td"))
                         .html($txt)
                         .addClass("info run_highlight cell_"+measurement+$class)
                         .data("measurement", measurement);
@@ -1408,7 +1409,7 @@
             $table.append($row);
 
             for ($i=0;$i<sizeKeys.length;$i++) {
-                var key = sizeKeys[$i].key;
+                var key = sizeKeys[$i].key, $cell;
 
                 var $class = "data_row";
                 if (key === inputKey) {

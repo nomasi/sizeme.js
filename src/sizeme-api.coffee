@@ -363,7 +363,7 @@ class SizeMe.Item
     @param [Number] itemStretch optional stretch value of the Item
   ###
   constructor: (@itemType, @itemLayer = 0,
-                @itemThickness = 0, @itemStretch = 0) ->
+  @itemThickness = 0, @itemStretch = 0) ->
     @measurements = new SizeMe.Map()
 
   ###
