@@ -1022,6 +1022,10 @@
         return ( (itemTypeStr[0] === '3') || (itemTypeStr[0] === '4') );
     }
 
+    function noThanks() {
+        return readCookie("sizeme_no_thanks") === "true";
+    }
+
     function writeDetailedWindow(isSizeGuide) {
         // create detailed dialog window
         itemName = product.name;
@@ -1141,12 +1145,15 @@
 
             if (sizeme_options.service_status === "on") {
                 $("<div class='sizeme_advertisement'></div>")
-                    .append("<p>This size guide is brought to you by <span id='sizeme_ad_link' class='logo' target='_blank'></span></p>")
+                    .append("<p>This size guide is brought to you by " +
+                        "<a id='sizeme_ad_link' href='" + SizeMe.contextAddress + "' class='logo' target='_blank'></a></p>")
                     .appendTo("#sizeme_detailed_view_content");
                 $("#sizeme_ad_link").on("click", function() {
-                    eraseCookie("sizeme_no_thanks");
-                    $(".splash").fadeIn();
-                    return false;
+                    if (noThanks()) {
+                        eraseCookie("sizeme_no_thanks");
+                        $(".splash").fadeIn();
+                        return false;
+                    }
                 });
             }
         }
@@ -1857,13 +1864,13 @@
                 // Add splash content somewhere
                 if (sizeme_options.banner_location === "in_content") {
                     splashContent = getSplashDetailed();
-                    if (readCookie("sizeme_no_thanks") === "true") {
+                    if (noThanks()) {
                         splashContent = $(splashContent).hide();
                     }
                     $("#sizeme_detailed_view_content").append(splashContent);
                 } else {
                     splashContent = getSplashHeader();
-                    if (readCookie("sizeme_no_thanks") === "true") {
+                    if (noThanks()) {
                         splashContent = $(splashContent).hide();
                     }
                     $(sizeme_UI_options.prependTopHeaderTo).prepend(splashContent);
@@ -1893,7 +1900,7 @@
             // end of function 	loggedOutCb
         };
 
-        if (readCookie("sizeme_no_thanks") === "true") {
+        if (noThanks()) {
             loggedOutCb();
         } else {
             sizeMeInit(loggedInCb, loggedOutCb);
