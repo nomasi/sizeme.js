@@ -280,6 +280,12 @@ class SizeMe
     window.open(url, "loginframe", options)
     return
 
+  ###
+    Logout from SizeMe
+
+    @param callback [Function]
+      callback to execute after logout
+  ###
   @logout: (callback) ->
     iframe = document.createElement("iframe")
     cb = (event) ->
