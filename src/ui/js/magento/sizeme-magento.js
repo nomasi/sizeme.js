@@ -11,7 +11,7 @@ var sizeme_UI_options = {
     afterRemorseBoxTo: ".footer address",
     appendDetailedView: ".slider_text_below",
     insertMessages: ".slider_text_more_below",
-    appendSizeGuide: "#detail"
+    appendSizeGuide: ".product-options-bottom"
 };
 
 jQuery.noConflict(true);
