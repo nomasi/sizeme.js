@@ -1230,6 +1230,8 @@
             $table.append($row);
 
             var $tip_txts = [];
+            var $tip_classes = [];
+			
             if (sizeme_local_options.writeOverlaps) {
                 $row = $(document.createElement("tr")).addClass("data_row");
                 product.item.measurements[inputKey].each(function(measurement) {
@@ -1328,14 +1330,14 @@
                             .addClass("run_highlight cell_"+measurement)
                             .data("measurement", measurement);
                         $row.append(colorCell($cell, matchMap[measurement], measurement_arrows[measurement]));
-                        var $tipClassName = "";
+                        $tip_classes[measurement] = "";
                         if (isPinched(measurement)) {
-                            $tipClassName = "isPinched";
+                            $tip_classes[measurement] = "isPinched";
                         }
                         if (measurement === "sleeve") {
-                            $tipClassName = "sleeve";
+                            $tip_classes[measurement] = "sleeve";
                         }
-                        $tip = new Opentip($cell, $tip_txts[measurement], { className: $tipClassName } );
+                        $tip = new Opentip($cell, $tip_txts[measurement], { className: $tip_classes[measurement] } );
                     }
                 });
                 $table.append($row);
@@ -1349,7 +1351,7 @@
                         if (isLongFit(measurement)) {
                             $txt = LOCALIZED_STR_longs[getFit(matchMap[measurement].componentFit).text];
                         }
-                        $cell = $(document.createElement("td"))
+                        var $cell = $(document.createElement("td"))
                             .html('<div>'+$txt+'</div>')
                             .addClass("run_highlight")
                             .data("measurement", measurement);
@@ -1359,7 +1361,7 @@
                         $row.append(colorCell($cell, matchMap[measurement], measurement_arrows[measurement]));
                     } else if (product.item.measurements[inputKey][measurement] > 0) {
                         $txt = "";
-                        $cell = $(document.createElement("td"))
+                        var $cell = $(document.createElement("td"))
                             .html($txt)
                             .addClass("info run_highlight cell_"+measurement)
                             .data("measurement", measurement);
@@ -1374,14 +1376,14 @@
                             $class = " add";
                         }
                     }
-                    $cell = $(document.createElement("td"))
+                    var $cell = $(document.createElement("td"))
                         .html($txt)
                         .addClass("info run_highlight cell_"+measurement+$class)
                         .data("measurement", measurement);
                     $row.append($cell);
                 }
                 if ($cell) {
-                    $tip = new Opentip($cell, $tip_txts[measurement]);
+                    $tip = new Opentip($cell, $tip_txts[measurement], { className: $tip_classes[measurement] } );
                 }
             });
             $table.append($row);
