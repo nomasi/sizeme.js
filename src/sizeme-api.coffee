@@ -18,7 +18,7 @@ class SizeMe
   @version = "2.0"
 
   _authToken = undefined
-  _facepalm = -> not ("withCredentials" of XMLHttpRequest.prototype)
+  _facepalm = not ("withCredentials" of new XMLHttpRequest())
 
   ###
     Creates a new instance of SizeMe
@@ -42,7 +42,7 @@ class SizeMe
     xhr = undefined
     url = "#{SizeMe.contextAddress}#{service}"
 
-    if not _facepalm()
+    if not _facepalm
       xhr = new XMLHttpRequest()
       xhr.onreadystatechange = ->
         if xhr.readyState is 4
@@ -83,7 +83,7 @@ class SizeMe
     @param [Function] errorCallback function to execute if there was an error
   ###
   @getAuthToken = (callback, errorCallback = defaultErrorCallback) ->
-    if _facepalm()
+    if _facepalm
       iframe = document.createElement("iframe")
       cb = (event) ->
         if event.origin == SizeMe.contextAddress
