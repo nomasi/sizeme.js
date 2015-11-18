@@ -13,7 +13,9 @@ class SizeMe
   @contextAddress = "https://www.sizeme.com"
   @gaTrackingID = "UA-40735596-1"
 
-  sizemeTrackerInit = false
+  gaEnabled = false
+  ga ->
+    gaEnabled = SizeMe.gaTrackingID?
 
   ###
     Version of the API
@@ -57,10 +59,14 @@ class SizeMe
       xhr.setRequestHeader(
         "Authorization", "Bearer #{_authToken}"
       ) if _authToken?
+      xhr.setRequestHeader(
+        "X-Analytics-Disabled", "true"
+      ) if not gaEnabled
     else if XDomainRequest?
       xhr = new XDomainRequest()
       url = "#{url}?_tm=#{new Date().getTime()}"
       url = "#{url}&authToken=#{_authToken}" if _authToken?
+      url = "#{url}&analyticsDisabled=true" if not gaEnabled
       xhr.onload = -> callback(xhr)
       xhr.onerror = -> errorCallback(xhr)
       xhr.open(method, url, true)
@@ -72,15 +78,16 @@ class SizeMe
     console.log("Error: #{statusText} (#{status})") \
       if window.console and console.log
 
-  @trackEvent = (event) ->
-    if not sizemeTrackerInit
-      if window.ga?
-        ga "create", SizeMe.gaTrackingID, "auto", name: "sizemeTracker"
-        @trackEvent = (e) ->
-          e.hitType = "event"
-          ga "sizemeTracker.send", e
-        sizemeTrackerInit = true
-        @trackEvent(event)
+  @trackEvent = (action, label) ->
+    if gaEnabled
+      ga "create", SizeMe.gaTrackingID, "auto", name: "sizemeTracker"
+      @trackEvent = (a, l) ->
+        ga "sizemeTracker.send",
+          hitType: "event"
+          eventCategory: window.location.hostname
+          eventAction: a
+          eventLabel: l
+      @trackEvent(action, label)
 
 
   ###
@@ -104,6 +111,7 @@ class SizeMe
           tokenObj = event.data
           removeMessageListener(cb)
           document.body.removeChild(iframe)
+          SizeMe.trackEvent("authToken", "API: getAuthToken")
           callback?(tokenObj) if callback?
         return
       addMessageListener(cb)
@@ -113,7 +121,9 @@ class SizeMe
 
     else
       xhr = createCORSRequest("GET", "/api/authToken",
-        (xhr) -> callback(JSON.parse(xhr.responseText))
+        (xhr) ->
+          SizeMe.trackEvent("authToken", "API: getAuthToken")
+          callback(JSON.parse(xhr.responseText))
       ,
         (xhr) -> errorCallback(xhr, xhr.status, xhr.statusText)
       )
@@ -158,7 +168,9 @@ class SizeMe
   ###
   fetchProfilesForAccount: (callback, errorCallback = defaultErrorCallback) ->
     createCORSRequest("GET", "/api/profiles",
-      (xhr) -> callback(JSON.parse(xhr.responseText))
+      (xhr) ->
+        SizeMe.trackEvent("fetchProfiles", "API: fetchProfiles")
+        callback(JSON.parse(xhr.responseText))
     ,
       (xhr) -> errorCallback(xhr, xhr.status, xhr.statusText)
     ).send()
@@ -248,7 +260,9 @@ class SizeMe
   match: (fitRequest, successCallback, errorCallback = defaultErrorCallback) ->
     data = JSON.stringify(fitRequest)
     xhr = createCORSRequest("POST", "/api/compareSizes",
-      (xhr) -> successCallback(createFitResponse(xhr))
+      (xhr) ->
+        SizeMe.trackEvent("match", "API: match")
+        successCallback(createFitResponse(xhr))
     ,
       (xhr) -> errorCallback(xhr, xhr.status, xhr.statusText)
     )
@@ -268,7 +282,9 @@ class SizeMe
   ###
   getItemTypes: (callback, errorCallback = defaultErrorCallback) ->
     createCORSRequest("GET", "/api/itemTypes",
-      (xhr) -> callback(JSON.parse(xhr.responseText))
+      (xhr) ->
+        SizeMe.trackEvent("getItemTypes", "API: getItemTypes")
+        callback(JSON.parse(xhr.responseText))
     ,
       (xhr) -> errorCallback(xhr, xhr.status, xhr.statusText)
     ).send()
@@ -288,10 +304,13 @@ class SizeMe
     cb = (e) ->
       if e.origin == SizeMe.contextAddress
         removeMessageListener cb
-        callback() if e.data
+        if e.data
+          SizeMe.trackEvent("apiLogin", "API: login")
+          callback()
 
     addMessageListener cb
     window.open(url, "loginframe", options)
+    SizeMe.trackEvent("loginFrame", "API: loginFrame")
     return
 
   ###
@@ -306,6 +325,7 @@ class SizeMe
       if event.origin == SizeMe.contextAddress and event.data == "logout"
         removeMessageListener(cb)
         document.body.removeChild(iframe)
+        SizeMe.trackEvent("apiLogout", "API: logout")
         callback() if callback?
       return
     addMessageListener(cb)
