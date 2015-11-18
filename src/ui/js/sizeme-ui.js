@@ -1755,7 +1755,7 @@
             var doProfileChange = function(newValue) {
                 selectedProfile = newValue;
                 linkToSelectedProfile = SizeMe.contextAddress + "/account/profiles.html";
-                $(".profileSelect").attr("value", selectedProfile);
+                $(".profileSelect").val(selectedProfile);
                 createCookie("sizeme_profileId", selectedProfile, cookieLifetime);
                 $('#logged_in_link').attr("href", linkToSelectedProfile);
 
@@ -1825,7 +1825,7 @@
                     });
                     $('#logged_in').html("<a id='logged_in_link' href='#' target='_blank'>My Profiles</a>");
                     $('.profileSelect')
-                        .attr("value", selectedProfile)
+                        .val(selectedProfile)
                         .change(function () {
                             doProfileChange(this.value);
                         });
