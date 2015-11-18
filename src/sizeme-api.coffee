@@ -17,6 +17,9 @@ class SizeMe
   ga ->
     gaEnabled = SizeMe.gaTrackingID?
 
+  if SizeMe.gaTrackingID?
+    ga "create", SizeMe.gaTrackingID, "auto", name: "sizemeTracker"
+
   ###
     Version of the API
   ###
@@ -60,13 +63,13 @@ class SizeMe
         "Authorization", "Bearer #{_authToken}"
       ) if _authToken?
       xhr.setRequestHeader(
-        "X-Analytics-Disabled", "true"
-      ) if not gaEnabled
+        "X-Analytics-Enabled", "true"
+      ) if gaEnabled
     else if XDomainRequest?
       xhr = new XDomainRequest()
       url = "#{url}?_tm=#{new Date().getTime()}"
       url = "#{url}&authToken=#{_authToken}" if _authToken?
-      url = "#{url}&analyticsDisabled=true" if not gaEnabled
+      url = "#{url}&analyticsEnabled=true" if gaEnabled
       xhr.onload = -> callback(xhr)
       xhr.onerror = -> errorCallback(xhr)
       xhr.open(method, url, true)
@@ -79,15 +82,11 @@ class SizeMe
       if window.console and console.log
 
   @trackEvent = (action, label) ->
-    if gaEnabled
-      ga "create", SizeMe.gaTrackingID, "auto", name: "sizemeTracker"
-      @trackEvent = (a, l) ->
-        ga "sizemeTracker.send",
-          hitType: "event"
-          eventCategory: window.location.hostname
-          eventAction: a
-          eventLabel: l
-      @trackEvent(action, label)
+    ga "sizemeTracker.send",
+      hitType: "event"
+      eventCategory: window.location.hostname
+      eventAction: action
+      eventLabel: label
 
 
   ###
