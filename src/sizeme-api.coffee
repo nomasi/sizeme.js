@@ -11,6 +11,9 @@ class SizeMe
     Address for the SizeMe API service
   ###
   @contextAddress = "https://www.sizeme.com"
+  @gaTrackingID = "UA-40735596-1"
+
+  sizemeTrackerInit = false
 
   ###
     Version of the API
@@ -68,6 +71,17 @@ class SizeMe
   defaultErrorCallback = (xhr, status, statusText) ->
     console.log("Error: #{statusText} (#{status})") \
       if window.console and console.log
+
+  @trackEvent = (event) ->
+    if not sizemeTrackerInit
+      if window.ga?
+        ga "create", SizeMe.gaTrackingID, "auto", name: "sizemeTracker"
+        @trackEvent = (e) ->
+          e.hitType = "event"
+          ga "sizemeTracker.send", e
+        sizemeTrackerInit = true
+        @trackEvent(event)
+
 
   ###
     Tries to fetch a new auth token from the SizeMe service. User needs to be

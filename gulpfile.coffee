@@ -10,6 +10,7 @@ concatCss   = require 'gulp-concat-css'
 series      = require 'stream-series'
 del         = require 'del'
 codo        = require 'gulp-codo'
+merge       = require 'gulp-merge'
 config      = require './gulp-config.json'
 
 gulp.task 'api.lint', ->
@@ -18,8 +19,11 @@ gulp.task 'api.lint', ->
     .pipe coffeelint.reporter()
 
 gulp.task 'api.js', ['clean.js', 'api.lint'], ->
-  gulp.src config.api.src
-    .pipe coffee()
+  merge(
+    gulp.src(config.ga.src),
+    gulp.src(config.api.src).pipe(coffee())
+  )
+    .pipe concat('sizeme-api.js')
     .pipe gulp.dest config.dest.js
     .pipe uglify()
     .pipe rename extname: '.min.js'
