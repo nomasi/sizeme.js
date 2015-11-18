@@ -4,6 +4,9 @@
     "css": "lib/css",
     "doc": "lib/doc"
   },
+  "ga": {
+    "src": "src/ga.js"
+  },
   "api": {
     "src": "src/sizeme-api.coffee"
   },
