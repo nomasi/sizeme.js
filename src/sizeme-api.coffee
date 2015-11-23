@@ -17,9 +17,6 @@ class SizeMe
   ga ->
     gaEnabled = SizeMe.gaTrackingID?
 
-  if SizeMe.gaTrackingID?
-    ga "create", SizeMe.gaTrackingID, "auto", name: "sizemeTracker"
-
   ###
     Version of the API
   ###
@@ -82,11 +79,15 @@ class SizeMe
       if window.console and console.log
 
   @trackEvent = (action, label) ->
-    ga "sizemeTracker.send",
-      hitType: "event"
-      eventCategory: window.location.hostname
-      eventAction: action
-      eventLabel: label
+    if SizeMe.gaTrackingID?
+      ga "create", SizeMe.gaTrackingID, "auto", name: "sizemeTracker"
+      @trackEvent = (a, l) ->
+        ga "sizemeTracker.send",
+          hitType: "event"
+          eventCategory: window.location.hostname
+          eventAction: a
+          eventLabel: l
+      @trackEvent(action, label)
 
 
   ###
