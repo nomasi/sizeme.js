@@ -58,10 +58,10 @@
         1: {text: "too_small", arrowColor: "#999999"},
         940: {text: "too_small", arrowColor: "#BB5555"},
         1000: {text: "slim", arrowColor: "#457A4C"},
-        1050: {text: "regular", arrowColor: "#42AE49"},
+        1055: {text: "regular", arrowColor: "#42AE49"},
         1110: {text: "loose", arrowColor: "#87B98E"},
-        1170: {text: "too_big", arrowColor: "#BB5555"},
-        1230: {text: "too_big", arrowColor: "#BB5555"}
+        1165: {text: "too_big", arrowColor: "#BB5555"},
+        1225: {text: "too_big", arrowColor: "#BB5555"}
     };
 
     var FIT_ORDER = [
@@ -552,8 +552,9 @@
                 if (FIT_RANGES.hasOwnProperty(singleFit)) {
                     if (singleFit > 1) {
                         if (basePosX !== 0) {
+							var pixel_width = Math.round((singleFit - basePosX) * sliderScale);
                             sliderHtml += "<td class='" + cellTitle + "'";
-                            sliderHtml += " style='width: " + Math.round((singleFit - basePosX) * sliderScale) + "px;'>";
+                            sliderHtml += " style='width: " + pixel_width + "px; min-width: " + pixel_width + "px;'>";
                             sliderHtml += LOCALIZED_STR[cellTitle];
                             sliderHtml += "</td>";
                         }
