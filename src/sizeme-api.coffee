@@ -111,7 +111,6 @@ class SizeMe
           tokenObj = event.data
           removeMessageListener(cb)
           document.body.removeChild(iframe)
-          SizeMe.trackEvent("authToken", "API: getAuthToken")
           callback?(tokenObj) if callback?
         return
       addMessageListener(cb)
@@ -122,7 +121,6 @@ class SizeMe
     else
       xhr = createCORSRequest("GET", "/api/authToken",
         (xhr) ->
-          SizeMe.trackEvent("authToken", "API: getAuthToken")
           callback(JSON.parse(xhr.responseText))
       ,
         (xhr) -> errorCallback(xhr, xhr.status, xhr.statusText)
