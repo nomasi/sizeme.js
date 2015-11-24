@@ -1386,7 +1386,7 @@
                     var $class = "";
                     if (missingMeasurements) {
                         if (inMissingMeasurements(missingMeasurements, measurement)) {
-                            $txt = "<a target='_blank' href='"+linkToSelectedProfile+"&measurement="+measurement+"'>Add to profile</a>";
+                            $txt = "<a target='_blank' href='"+linkToSelectedProfile+"?measurement="+measurement+"'>Add to profile</a>";
                             $class = " add";
                         }
                     }
