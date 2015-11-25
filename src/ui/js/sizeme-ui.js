@@ -1925,17 +1925,19 @@
             // end of function 	loggedOutCb
         };
 
-        if (noThanks()) {
-            SizeMe.trackEvent("productPageNoSM", "Store: Product page load, no SizeMe");
-            loggedOutCb();
-        } else {
-            sizeMeInit(function (smObj) {
-                SizeMe.trackEvent("productPageLoggedIn", "Store: Product page load, logged in");
-                loggedInCb(smObj);
-            }, function () {
-                SizeMe.trackEvent("productPageLoggedOut", "Store: Product page load, logged out");
+        if (systemsGo) {
+            if (noThanks()) {
+                SizeMe.trackEvent("productPageNoSM", "Store: Product page load, no SizeMe");
                 loggedOutCb();
-            });
+            } else {
+                sizeMeInit(function (smObj) {
+                    SizeMe.trackEvent("productPageLoggedIn", "Store: Product page load, logged in");
+                    loggedInCb(smObj);
+                }, function () {
+                    SizeMe.trackEvent("productPageLoggedOut", "Store: Product page load, logged out");
+                    loggedOutCb();
+                });
+            }
         }
         // *** End
     });
