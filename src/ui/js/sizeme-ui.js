@@ -1187,13 +1187,13 @@
         return $cell;
     }
 
-    function inMissingMeasurements(missingMeasurements, measurement) {
+    function getMissingMeasurement(missingMeasurements, measurement) {
         for(var $i = 0; $i < missingMeasurements.length; $i++) {
             if (missingMeasurements[$i][0] === measurement) {
-                return true;
+                return missingMeasurements[$i][1];
             }
         }
-        return false;
+        return null;
     }
 
     function isPinched(measurement) { return (PINCHED_FITS.indexOf(measurement) >= 0); }
@@ -1332,7 +1332,7 @@
                             $txt = (product.item.measurements[inputKey][measurement]/10).toFixed(1)+" cm";
                             $tip_txts[measurement] += "is "+$txt+".  ";
                             if (missingMeasurements) {
-                                if (inMissingMeasurements(missingMeasurements, measurement)) {
+                                if (getMissingMeasurement(missingMeasurements, measurement) !== null) {
                                     $tip_txts[measurement] += "Add this measurement to your profile to include it in the fit calculation.";
                                 }
                             }
@@ -1384,10 +1384,11 @@
                     }
                 } else if (product.item.measurements[inputKey][measurement] > 0) {
                     $txt = "";
-                    var $class = "";
+                    var $class = "",
+                        missing;
                     if (missingMeasurements) {
-                        if (inMissingMeasurements(missingMeasurements, measurement)) {
-                            $txt = "<a target='_blank' href='"+linkToSelectedProfile+"&measurement="+measurement+"'>Add to profile</a>";
+                        if ((missing = getMissingMeasurement(missingMeasurements, measurement)) !== null) {
+                            $txt = "<a target='_blank' href='"+linkToSelectedProfile+"#"+missing+"'>Add to profile</a>";
                             $class = " add";
                         }
                     }
@@ -1765,7 +1766,7 @@
 
             var doProfileChange = function(newValue) {
                 selectedProfile = newValue;
-                linkToSelectedProfile = SizeMe.contextAddress + "/account/profiles.html";
+                linkToSelectedProfile = SizeMe.contextAddress + "/account/profiles/" + selectedProfile + "/profile.html";
                 $(".profileSelect").val(selectedProfile);
                 createCookie("sizeme_profileId", selectedProfile, cookieLifetime);
                 $('#logged_in_link').attr("href", linkToSelectedProfile);
