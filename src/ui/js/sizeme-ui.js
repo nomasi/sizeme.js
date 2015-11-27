@@ -671,32 +671,38 @@
 
         $(sizeme_UI_options.insertMessages).empty();
 
-        var smallestFit = 9999;
-        var largestFit = 0;
 
-        for(var measurement in matchMap) {
-            if (matchMap.hasOwnProperty(measurement)) {
-                if (matchMap[measurement].componentFit > 0) {
-                    if (matchMap[measurement].componentFit < smallestFit) {
-                        smallestFit = matchMap[measurement].componentFit;
-                    }
-                    if (matchMap[measurement].componentFit > largestFit) {
-                        largestFit = matchMap[measurement].componentFit;
+        if (!selectedProfile) {
+            $message_type = "noMeasurements";
+            $message = "Add profiles to your account for a size recommendation.";
+        } else {
+            var smallestFit = 9999;
+            var largestFit = 0;
+
+            for (var measurement in matchMap) {
+                if (matchMap.hasOwnProperty(measurement)) {
+                    if (matchMap[measurement].componentFit > 0) {
+                        if (matchMap[measurement].componentFit < smallestFit) {
+                            smallestFit = matchMap[measurement].componentFit;
+                        }
+                        if (matchMap[measurement].componentFit > largestFit) {
+                            largestFit = matchMap[measurement].componentFit;
+                        }
                     }
                 }
             }
-        }
 
-        if (missingMeasurements[0]) {
-            if (missingMeasurements[0].length > 0) {
-                $message_type = "missingMeasurements";
-                $message = "Add more measurements to your profile for increased accuracy";
+            if (missingMeasurements[0]) {
+                if (missingMeasurements[0].length > 0) {
+                    $message_type = "missingMeasurements";
+                    $message = "Add more measurements to your profile for increased accuracy";
+                }
             }
-        }
 
-        if (accuracy < accuracyThreshold) {
-            $message_type = "noMeasurements";
-            $message = "Add measurements to your profile for a size recommendation.";
+            if (accuracy < accuracyThreshold) {
+                $message_type = "noMeasurements";
+                $message = "Add measurements to your profile for a size recommendation.";
+            }
         }
 
         if ($message_type) {
@@ -1764,18 +1770,32 @@
 
         var loggedInCb = function(sizeMeObj) {
 
+            function setProfileLink() {
+                if (selectedProfile === null) {
+                    linkToSelectedProfile = SizeMe.contextAddress + "/account/profiles.html";
+                } else {
+                    linkToSelectedProfile = SizeMe.contextAddress + "/account/profiles/" + selectedProfile + "/profile.html";
+                }
+            }
+
             var doProfileChange = function(newValue) {
                 selectedProfile = newValue;
-                linkToSelectedProfile = SizeMe.contextAddress + "/account/profiles/" + selectedProfile + "/profile.html";
-                $(".profileSelect").val(selectedProfile);
-                createCookie("sizeme_profileId", selectedProfile, cookieLifetime);
-                $('#logged_in_link').attr("href", linkToSelectedProfile);
+                setProfileLink();
 
-                if (typeof product !== 'undefined') {
-                    var prodId = null;
-                    sizeMeObj.match(new SizeMe.FitRequest(selectedProfile, product.item), getMatchResponseHandler(prodId, product));
+                if (selectedProfile === null) {
+                    eraseCookie("sizeme_profileId");
+                    goWriteMessages();
+                } else {
+                    $(".profileSelect").val(selectedProfile);
+                    createCookie("sizeme_profileId", selectedProfile, cookieLifetime);
+
+                    if (typeof product !== 'undefined') {
+                        var prodId = null;
+                        sizeMeObj.match(new SizeMe.FitRequest(selectedProfile, product.item), getMatchResponseHandler(prodId, product));
+                    }
+                    SizeMe.trackEvent("activeProfileChanged", "Store: Active profile changed");
                 }
-                SizeMe.trackEvent("activeProfileChanged", "Store: Active profile changed");
+                $('#logged_in_link').attr("href", linkToSelectedProfile);
                 // end of function  doProfileChange
             };
 
@@ -1786,61 +1806,68 @@
             $("#popup_opener").remove();
             $("#sizeme_detailed_view_content").dialog("destroy").remove();
 
-            $(sizeme_UI_options.appendSliderTo).append(getSliderHtml(systemsGo));
-
-            if (systemsGo) {
-                writeDetailedWindow(false);
-                moveSlider(OPTIMAL_FIT, false);
-            }
-
-            // Prepend header to body
-            if (sizeme_options.banner_location === "in_content") {
-                var $new = "<div id='sizeme_header_container'>"+getStandardHeader()+"</div>";
-                $(sizeme_UI_options.appendInContentToggler).append($new);
-                $("#sizeme_header.in_content").find("#logo").on("click", function() {
-                    $("#sizeme_header.in_content").toggleClass("opened");
-                });
-            } else {
-                $(sizeme_UI_options.prependTopHeaderTo).prepend(getStandardHeader());
-            }
-
             // *** SizeMe Magic
             if (sizeMeObj !== null) {
                 sizeMeObj.fetchProfilesForAccount(function (profileList) {
                     var cookieProfile = readCookie("sizeme_profileId");
-                    //	var selectedProfile = null;
-                    var activeProfile = null;
-                    $.each(profileList, function () {
-                        activeProfile = this.id;
-                        if (activeProfile === cookieProfile) {
-                            selectedProfile = activeProfile;
-                            return false;
-                        }
+                    var $i = 0;
+                    var $new = "<div id='sizeme_header_container'>"+getStandardHeader()+"</div>";
+
+                    // Prepend header to body
+                    $(sizeme_UI_options.appendSliderTo).append(getSliderHtml(systemsGo));
+                    $(sizeme_UI_options.appendInContentToggler).append($new);
+                    $("#sizeme_header.in_content").find("#logo").on("click", function() {
+                        $("#sizeme_header.in_content").toggleClass("opened");
                     });
-                    if (!selectedProfile) {
-                        selectedProfile = activeProfile;
+
+                    if (profileList.length > 0) {
+                        selectedProfile = profileList[0].id;
+                        $.each(profileList, function () {
+                            if (this.id === cookieProfile) {
+                                selectedProfile = this.id;
+                                return false;
+                            }
+                        });
+
+                        writeDetailedWindow(false);
+                        moveSlider(OPTIMAL_FIT, false);
+
+                        $(".shopping_for").empty().html("<span class='shopping_for_text'>Shopping for: </span>")
+                            .append(function () {
+                                var select = document.createElement("select");
+                                select.className = "profileSelect";
+                                select.id = "id_profileSelect_" + (++$i);
+                                return select;
+                            });
+                        $.each(profileList, function () {
+                            $("<option>").appendTo(".profileSelect")
+                                .attr("value", this.id)
+                                .text(this.profileName);
+                        });
+                        $('.profileSelect')
+                            .val(selectedProfile)
+                            .change(function () {
+                                doProfileChange(this.value);
+                            });
+                    } else {
+                        selectedProfile = null;
+                        setProfileLink();
+                        writeDetailedWindow(false);
+                        updateDetailedTable();
+                        $('.slider_bar, .slider_area').hide();
+                        $(".shopping_for").empty();
+                        $(".sizeme_header_content .shopping_for")
+                            .html("<span class='shopping_for_text no-profile'>You have no profiles on your account.</span>");
+                        $(".sizeme_detailed_section .shopping_for")
+                            .append(
+                                $("<span>").addClass("shopping_for_text no-profile")
+                                    .html("You have no profiles on your account. Go to " +
+                                        "<a id='logged_in_link' href='" + linkToSelectedProfile + "' target='_blank'>" +
+                                        "My Profiles</a> and create one.")
+                            );
                     }
 
-                    var $i = 0;
-                    $(".shopping_for").empty()
-                        .html("<span class='shopping_for_text'>Shopping for: </span>")
-                        .append(function () {
-                            var select = document.createElement("select");
-                            select.className = "profileSelect";
-                            select.id = "id_profileSelect_" + (++$i);
-                            return select;
-                        });
-                    $.each(profileList, function () {
-                        $("<option>").appendTo(".profileSelect")
-                            .attr("value", this.id)
-                            .text(this.profileName);
-                    });
                     $('#logged_in').html("<a id='logged_in_link' href='#' target='_blank'>My Profiles</a>");
-                    $('.profileSelect')
-                        .val(selectedProfile)
-                        .change(function () {
-                            doProfileChange(this.value);
-                        });
 
                     // Yell change
                     doProfileChange(selectedProfile);
@@ -1861,22 +1888,18 @@
             $("#sizeme_detailed_view_content").dialog("destroy").remove();
             $(".sizeme_slider").remove();
 
-            if (systemsGo) {
-                loadArrows(true);
-            }
+            loadArrows(true);
 
             // Size Guide for non-loving users
-            if (systemsGo) {
-                writeDetailedWindow(true);
-                updateDetailedTable();
-                // bind change to select
-                $(sizeme_UI_options.sizeSelectionContainer+" select").change(function() {
-                    var thisVal = $(this).val();
-                    // relay change to cloned and vice versa
-                    $(sizeme_UI_options.sizeSelectionContainer+" select").val(thisVal);
-                    updateDetailedTable("", thisVal);
-                });
-            }
+            writeDetailedWindow(true);
+            updateDetailedTable();
+            // bind change to select
+            $(sizeme_UI_options.sizeSelectionContainer+" select").change(function() {
+                var thisVal = $(this).val();
+                // relay change to cloned and vice versa
+                $(sizeme_UI_options.sizeSelectionContainer+" select").val(thisVal);
+                updateDetailedTable("", thisVal);
+            });
 
             if (sizeme_options.service_status === "on") {
                 var splashContent;
