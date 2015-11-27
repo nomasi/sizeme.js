@@ -58,10 +58,10 @@
         1: {text: "too_small", arrowColor: "#999999"},
         940: {text: "too_small", arrowColor: "#BB5555"},
         1000: {text: "slim", arrowColor: "#457A4C"},
-        1050: {text: "regular", arrowColor: "#42AE49"},
+        1055: {text: "regular", arrowColor: "#42AE49"},
         1110: {text: "loose", arrowColor: "#87B98E"},
-        1170: {text: "too_big", arrowColor: "#BB5555"},
-        1230: {text: "too_big", arrowColor: "#BB5555"}
+        1165: {text: "too_big", arrowColor: "#BB5555"},
+        1225: {text: "too_big", arrowColor: "#BB5555"}
     };
 
     var FIT_ORDER = [
@@ -170,15 +170,14 @@
     }
 
     function getFit(fitValue) {
-        var returnFit;
-        for (var singleFit in FIT_RANGES) {
+        var returnFit, singleFit;
+        for (singleFit in FIT_RANGES) {
             if (FIT_RANGES.hasOwnProperty(singleFit)) {
                 if (fitValue < singleFit) {
                     if (returnFit) {
                         return returnFit;
-                    } else {
-                        return FIT_RANGES[singleFit];
                     }
+                    return FIT_RANGES[singleFit];
                 }
                 returnFit = FIT_RANGES[singleFit];
             }
@@ -188,11 +187,11 @@
 
     function addIds(parentElement) {
         // add ids to select for easy handling
-        $(parentElement+" option").each(function() {
+        $(parentElement + " option").each(function () {
             var myVal = $(this).val();
             var myText = $(this).text();
-            $(this).addClass("sm-selectable element_for_"+myVal);
-            this.id = (myVal ? "input_"+myVal : "choose");
+            $(this).addClass("sm-selectable element_for_" + myVal);
+            this.id = (myVal ? "input_" + myVal : "choose");
             if (myVal) {
                 if (product.item.measurements[myVal]) {
                     sizeKeys.push({key: myVal, sizeLabel: myText});
@@ -553,8 +552,9 @@
                 if (FIT_RANGES.hasOwnProperty(singleFit)) {
                     if (singleFit > 1) {
                         if (basePosX !== 0) {
+							var pixel_width = Math.round((singleFit - basePosX) * sliderScale);
                             sliderHtml += "<td class='" + cellTitle + "'";
-                            sliderHtml += " style='width: " + Math.round((singleFit - basePosX) * sliderScale) + "px;'>";
+                            sliderHtml += " style='width: " + pixel_width + "px; min-width: " + pixel_width + "px;'>";
                             sliderHtml += LOCALIZED_STR[cellTitle];
                             sliderHtml += "</td>";
                         }
@@ -671,32 +671,38 @@
 
         $(sizeme_UI_options.insertMessages).empty();
 
-        var smallestFit = 9999;
-        var largestFit = 0;
 
-        for(var measurement in matchMap) {
-            if (matchMap.hasOwnProperty(measurement)) {
-                if (matchMap[measurement].componentFit > 0) {
-                    if (matchMap[measurement].componentFit < smallestFit) {
-                        smallestFit = matchMap[measurement].componentFit;
-                    }
-                    if (matchMap[measurement].componentFit > largestFit) {
-                        largestFit = matchMap[measurement].componentFit;
+        if (!selectedProfile) {
+            $message_type = "noMeasurements";
+            $message = "Add profiles to your account for a size recommendation.";
+        } else {
+            var smallestFit = 9999;
+            var largestFit = 0;
+
+            for (var measurement in matchMap) {
+                if (matchMap.hasOwnProperty(measurement)) {
+                    if (matchMap[measurement].componentFit > 0) {
+                        if (matchMap[measurement].componentFit < smallestFit) {
+                            smallestFit = matchMap[measurement].componentFit;
+                        }
+                        if (matchMap[measurement].componentFit > largestFit) {
+                            largestFit = matchMap[measurement].componentFit;
+                        }
                     }
                 }
             }
-        }
 
-        if (missingMeasurements[0]) {
-            if (missingMeasurements[0].length > 0) {
-                $message_type = "missingMeasurements";
-                $message = "Add more measurements to your profile for increased accuracy";
+            if (missingMeasurements[0]) {
+                if (missingMeasurements[0].length > 0) {
+                    $message_type = "missingMeasurements";
+                    $message = "Add more measurements to your profile for increased accuracy";
+                }
             }
-        }
 
-        if (accuracy < accuracyThreshold) {
-            $message_type = "noMeasurements";
-            $message = "Add measurements to your profile for a size recommendation.";
+            if (accuracy < accuracyThreshold) {
+                $message_type = "noMeasurements";
+                $message = "Add measurements to your profile for a size recommendation.";
+            }
         }
 
         if ($message_type) {
@@ -727,6 +733,7 @@
                     $(".element_for_"+thisVal).addClass("sm-state-active");
                     $(sizeme_UI_options.sizeSelectionContainer+" select").val(thisVal);
                     $(sizeme_UI_options.sizeSelectionContainer+" select").change();	// yell change
+                    SizeMe.trackEvent("sizeChanged", "Store: Product size changed");
                 });
             $content.append($div);
         });
@@ -1023,6 +1030,10 @@
         return ( (itemTypeStr[0] === '3') || (itemTypeStr[0] === '4') );
     }
 
+    function noThanks() {
+        return readCookie("sizeme_no_thanks") === "true";
+    }
+
     function writeDetailedWindow(isSizeGuide) {
         // create detailed dialog window
         itemName = product.name;
@@ -1049,6 +1060,11 @@
         // add toggle link to main page
         $("<a class='a_button sm_detailed_view"+(isSizeGuide ? " size_guide" : "")+"' id='popup_opener' href='#'>"+txts[1]+"</a>")
             .click(function() {
+                if (isSizeGuide) {
+                    SizeMe.trackEvent("sizeGuideOpened", "Store: Size guide opened");
+                } else {
+                    SizeMe.trackEvent("detailedViewOpened", "Store: Detailed view opened");
+                }
                 $dialog.dialog('open');
                 return false;
             })
@@ -1142,12 +1158,16 @@
 
             if (sizeme_options.service_status === "on") {
                 $("<div class='sizeme_advertisement'></div>")
-                    .append("<p>This size guide is brought to you by <span id='sizeme_ad_link' class='logo' target='_blank'></span></p>")
+                    .append("<p>This size guide is brought to you by " +
+                        "<a id='sizeme_ad_link' href='" + SizeMe.contextAddress + "' class='logo' target='_blank'></a></p>")
                     .appendTo("#sizeme_detailed_view_content");
                 $("#sizeme_ad_link").on("click", function() {
-                    eraseCookie("sizeme_no_thanks");
-                    $(".splash").fadeIn();
-                    return false;
+                    clearAuthToken();
+                    if (noThanks()) {
+                        eraseCookie("sizeme_no_thanks");
+                        $(".splash").fadeIn();
+                        return false;
+                    }
                 });
             }
         }
@@ -1173,13 +1193,13 @@
         return $cell;
     }
 
-    function inMissingMeasurements(missingMeasurements, measurement) {
+    function getMissingMeasurement(missingMeasurements, measurement) {
         for(var $i = 0; $i < missingMeasurements.length; $i++) {
             if (missingMeasurements[$i][0] === measurement) {
-                return true;
+                return missingMeasurements[$i][1];
             }
         }
-        return false;
+        return null;
     }
 
     function isPinched(measurement) { return (PINCHED_FITS.indexOf(measurement) >= 0); }
@@ -1210,7 +1230,7 @@
 
     function updateDetailedTable(matchMap, inputKey, missingMeasurements) {
         var $table = $("#detailed_table").find("tbody"),
-            $row, $i, $cell, $tip, $txt;
+            $row, $i, $tip, $txt;
         $table.empty();
         if (matchMap) {
             // *** Detailed View ***
@@ -1230,6 +1250,8 @@
             $table.append($row);
 
             var $tip_txts = [];
+            var $tip_classes = [];
+
             if (sizeme_local_options.writeOverlaps) {
                 $row = $(document.createElement("tr")).addClass("data_row");
                 product.item.measurements[inputKey].each(function(measurement) {
@@ -1316,7 +1338,7 @@
                             $txt = (product.item.measurements[inputKey][measurement]/10).toFixed(1)+" cm";
                             $tip_txts[measurement] += "is "+$txt+".  ";
                             if (missingMeasurements) {
-                                if (inMissingMeasurements(missingMeasurements, measurement)) {
+                                if (getMissingMeasurement(missingMeasurements, measurement) !== null) {
                                     $tip_txts[measurement] += "Add this measurement to your profile to include it in the fit calculation.";
                                 }
                             }
@@ -1328,14 +1350,14 @@
                             .addClass("run_highlight cell_"+measurement)
                             .data("measurement", measurement);
                         $row.append(colorCell($cell, matchMap[measurement], measurement_arrows[measurement]));
-                        var $tipClassName = "";
+                        $tip_classes[measurement] = "";
                         if (isPinched(measurement)) {
-                            $tipClassName = "isPinched";
+                            $tip_classes[measurement] = "isPinched";
                         }
                         if (measurement === "sleeve") {
-                            $tipClassName = "sleeve";
+                            $tip_classes[measurement] = "sleeve";
                         }
-                        $tip = new Opentip($cell, $tip_txts[measurement], { className: $tipClassName } );
+                        $tip = new Opentip($cell, $tip_txts[measurement], { className: $tip_classes[measurement] } );
                     }
                 });
                 $table.append($row);
@@ -1343,6 +1365,7 @@
 
             $row = $(document.createElement("tr")).addClass("data_row fit_label_row");
             product.item.measurements[inputKey].each(function(measurement, value) {
+                var $cell;
                 if (matchMap[measurement]) {
                     if (matchMap[measurement].componentFit > 0) {
                         $txt = LOCALIZED_STR[getFit(matchMap[measurement].componentFit).text];
@@ -1367,10 +1390,11 @@
                     }
                 } else if (product.item.measurements[inputKey][measurement] > 0) {
                     $txt = "";
-                    var $class = "";
+                    var $class = "",
+                        missing;
                     if (missingMeasurements) {
-                        if (inMissingMeasurements(missingMeasurements, measurement)) {
-                            $txt = "<a target='_blank' href='"+linkToSelectedProfile+"&measurement="+measurement+"'>Add to profile</a>";
+                        if ((missing = getMissingMeasurement(missingMeasurements, measurement)) !== null) {
+                            $txt = "<a target='_blank' href='"+linkToSelectedProfile+"#"+missing+"'>Add to profile</a>";
                             $class = " add";
                         }
                     }
@@ -1381,7 +1405,7 @@
                     $row.append($cell);
                 }
                 if ($cell) {
-                    $tip = new Opentip($cell, $tip_txts[measurement]);
+                    $tip = new Opentip($cell, $tip_txts[measurement], { className: $tip_classes[measurement] } );
                 }
             });
             $table.append($row);
@@ -1406,7 +1430,7 @@
             $table.append($row);
 
             for ($i=0;$i<sizeKeys.length;$i++) {
-                var key = sizeKeys[$i].key;
+                var key = sizeKeys[$i].key, $cell;
 
                 var $class = "data_row";
                 if (key === inputKey) {
@@ -1557,7 +1581,10 @@
 
     function sizeMeLogout() {
         sizeMe = null;
+        clearAuthToken();
+    }
 
+    function clearAuthToken() {
         Storage.withStorage(function(storage) {
             storage.removeItem('authToken');
         });
@@ -1571,11 +1598,15 @@
                 storedToken;
             if (storedTokenObj !== null) {
                 storedToken = JSON.parse(storedTokenObj);
-                if (storedToken.token !== null && storedToken.expires !== null) {
+                if (storedToken.expires !== undefined) {
                     storedToken.expires = Date.parse(storedToken.expires);
                     // Has token expired?
                     if (storedToken.expires > new Date().getTime()) {
-                        deferred.resolve(storedToken.token);
+                        if (storedToken.token !== undefined) {
+                            deferred.resolve(storedToken.token);
+                        } else {
+                            deferred.reject(null);
+                        }
                     }
                 }
             }
@@ -1585,7 +1616,9 @@
             SizeMe.getAuthToken(function (authTokenObj) {
                 if (authTokenObj === null || authTokenObj.token === null) {
                     Storage.withStorage(function(storage) {
-                        storage.removeItem('authToken');
+                        storage.setItem('authToken', JSON.stringify({
+                            expires: new Date(Date.now() + 60000).toISOString()
+                        }));
                     });
                     deferred.reject(null);
                 } else {
@@ -1600,7 +1633,7 @@
         return deferred.promise();
     }
 
-    function sizeMeInit() {
+    function sizeMeInit(authorizedCb, unauthorizedCb) {
         var deferred = $.Deferred();
         getAuthToken().then(
             function(authToken) {
@@ -1610,7 +1643,19 @@
             }
         );
 
-        return deferred.promise();
+        sizeMe = deferred.promise();
+        sizeMe.then(
+            function (smObj) {
+                if (authorizedCb !== null) {
+                    authorizedCb(smObj);
+                }
+            },
+            function () {
+                if (unauthorizedCb !== null) {
+                    unauthorizedCb();
+                }
+            }
+        );
     }
 
     // Load on ready for all pages
@@ -1723,23 +1768,37 @@
             // end of function 	getMatchResponseHandler
         };
 
-        var doProfileChange = function(newValue) {
-            selectedProfile = newValue;
-            linkToSelectedProfile = SizeMe.contextAddress + "/account/profiles.html";
-            $(".profileSelect").attr("value", selectedProfile);
-            createCookie("sizeme_profileId", selectedProfile, cookieLifetime);
-            $('#logged_in_link').attr("href", linkToSelectedProfile);
+        var loggedInCb = function(sizeMeObj) {
 
-            if (typeof product !== 'undefined') {
-                var prodId = null;
-                sizeMe.then(function(sizeMeObj){
-                    sizeMeObj.match(new SizeMe.FitRequest(selectedProfile, product.item), getMatchResponseHandler(prodId, product));
-                });
+            function setProfileLink() {
+                if (selectedProfile === null) {
+                    linkToSelectedProfile = SizeMe.contextAddress + "/account/profiles.html";
+                } else {
+                    linkToSelectedProfile = SizeMe.contextAddress + "/account/profiles/" + selectedProfile + "/profile.html";
+                }
             }
-            // end of function  doProfileChange
-        };
 
-        var loggedInCb = function() {
+            var doProfileChange = function(newValue) {
+                selectedProfile = newValue;
+                setProfileLink();
+
+                if (selectedProfile === null) {
+                    eraseCookie("sizeme_profileId");
+                    goWriteMessages();
+                } else {
+                    $(".profileSelect").val(selectedProfile);
+                    createCookie("sizeme_profileId", selectedProfile, cookieLifetime);
+
+                    if (typeof product !== 'undefined') {
+                        var prodId = null;
+                        sizeMeObj.match(new SizeMe.FitRequest(selectedProfile, product.item), getMatchResponseHandler(prodId, product));
+                    }
+                    SizeMe.trackEvent("activeProfileChanged", "Store: Active profile changed");
+                }
+                $('#logged_in_link').attr("href", linkToSelectedProfile);
+                // end of function  doProfileChange
+            };
+
             eraseCookie("sizeme_no_thanks");
 
             // remove existing (if exists)
@@ -1747,66 +1806,73 @@
             $("#popup_opener").remove();
             $("#sizeme_detailed_view_content").dialog("destroy").remove();
 
-            $(sizeme_UI_options.appendSliderTo).append(getSliderHtml(systemsGo));
-
-            if (systemsGo) {
-                writeDetailedWindow(false);
-                moveSlider(OPTIMAL_FIT, false);
-            }
-
-            // Prepend header to body
-            if (sizeme_options.banner_location === "in_content") {
-                var $new = "<div id='sizeme_header_container'>"+getStandardHeader()+"</div>";
-                $(sizeme_UI_options.appendInContentToggler).append($new);
-                $("#sizeme_header.in_content").find("#logo").on("click", function() {
-                    $("#sizeme_header.in_content").toggleClass("opened");
-                });
-            } else {
-                $(sizeme_UI_options.prependTopHeaderTo).prepend(getStandardHeader());
-            }
-
             // *** SizeMe Magic
-            sizeMe.then(function (sizeMeObj) {
-                sizeMeObj.fetchProfilesForAccount(function(profileList) {
+            if (sizeMeObj !== null) {
+                sizeMeObj.fetchProfilesForAccount(function (profileList) {
                     var cookieProfile = readCookie("sizeme_profileId");
-                    //	var selectedProfile = null;
-                    var activeProfile = null;
-                    $.each(profileList, function() {
-                        activeProfile = this.id;
-                        if (activeProfile === cookieProfile) {
-                            selectedProfile = activeProfile;
-                            return false;
-                        }
+                    var $i = 0;
+                    var $new = "<div id='sizeme_header_container'>"+getStandardHeader()+"</div>";
+
+                    // Prepend header to body
+                    $(sizeme_UI_options.appendSliderTo).append(getSliderHtml(systemsGo));
+                    $(sizeme_UI_options.appendInContentToggler).append($new);
+                    $("#sizeme_header.in_content").find("#logo").on("click", function() {
+                        $("#sizeme_header.in_content").toggleClass("opened");
                     });
-                    if (!selectedProfile) {
-                        selectedProfile = activeProfile;
+
+                    if (profileList.length > 0) {
+                        selectedProfile = profileList[0].id;
+                        $.each(profileList, function () {
+                            if (this.id === cookieProfile) {
+                                selectedProfile = this.id;
+                                return false;
+                            }
+                        });
+
+                        writeDetailedWindow(false);
+                        moveSlider(OPTIMAL_FIT, false);
+
+                        $(".shopping_for").empty().html("<span class='shopping_for_text'>Shopping for: </span>")
+                            .append(function () {
+                                var select = document.createElement("select");
+                                select.className = "profileSelect";
+                                select.id = "id_profileSelect_" + (++$i);
+                                return select;
+                            });
+                        $.each(profileList, function () {
+                            $("<option>").appendTo(".profileSelect")
+                                .attr("value", this.id)
+                                .text(this.profileName);
+                        });
+                        $('.profileSelect')
+                            .val(selectedProfile)
+                            .change(function () {
+                                doProfileChange(this.value);
+                            });
+                    } else {
+                        selectedProfile = null;
+                        setProfileLink();
+                        writeDetailedWindow(false);
+                        updateDetailedTable();
+                        $('.slider_bar, .slider_area').hide();
+                        $(".shopping_for").empty();
+                        $(".sizeme_header_content .shopping_for")
+                            .html("<span class='shopping_for_text no-profile'>You have no profiles on your account.</span>");
+                        $(".sizeme_detailed_section .shopping_for")
+                            .append(
+                                $("<span>").addClass("shopping_for_text no-profile")
+                                    .html("You have no profiles on your account. Go to " +
+                                        "<a id='logged_in_link' href='" + linkToSelectedProfile + "' target='_blank'>" +
+                                        "My Profiles</a> and create one.")
+                            );
                     }
 
-                    var $i = 0;
-                    $(".shopping_for").empty().
-                        html("<span class='shopping_for_text'>Shopping for: </span>").
-                        append(function() {
-                            var select = document.createElement("select");
-                            select.className = "profileSelect";
-                            select.id = "id_profileSelect_" + (++$i);
-                            return select;
-                        });
-                    $.each(profileList, function() {
-                        $("<option>").appendTo(".profileSelect")
-                            .attr("value", this.id)
-                            .text(this.profileName);
-                    });
                     $('#logged_in').html("<a id='logged_in_link' href='#' target='_blank'>My Profiles</a>");
-                    $('.profileSelect')
-                        .attr("value", selectedProfile)
-                        .change(function() {
-                            doProfileChange(this.value);
-                        });
 
                     // Yell change
                     doProfileChange(selectedProfile);
                 });
-            });
+            }
 
             $("#logout").click(loggedOutCb);
 
@@ -1814,9 +1880,6 @@
         };
 
         var loggedOutCb = function() {
-            // clear sizeMe instance and related storage
-            sizeMeLogout();
-            // show splash introduction banner
             // remove sizeme functionality from store (if exists)
             $("#sizeme_header").remove();
             $(sizeme_UI_options.sizeSelectionContainer).children(sizeme_UI_options.visualSelectionElement).removeClass('sm_too_small sm_slim sm_regular sm_loose sm_very_loose sm_huge sm_too_big sm_recommended');
@@ -1825,52 +1888,54 @@
             $("#sizeme_detailed_view_content").dialog("destroy").remove();
             $(".sizeme_slider").remove();
 
-            if (systemsGo) {
-                loadArrows(true);
-            }
+            loadArrows(true);
 
             // Size Guide for non-loving users
-            if (systemsGo) {
-                writeDetailedWindow(true);
-                updateDetailedTable();
-                // bind change to select
-                $(sizeme_UI_options.sizeSelectionContainer+" select").change(function() {
-                    var thisVal = $(this).val();
-                    // relay change to cloned and vice versa
-                    $(sizeme_UI_options.sizeSelectionContainer+" select").val(thisVal);
-                    updateDetailedTable("", thisVal);
-                });
-            }
+            writeDetailedWindow(true);
+            updateDetailedTable();
+            // bind change to select
+            $(sizeme_UI_options.sizeSelectionContainer+" select").change(function() {
+                var thisVal = $(this).val();
+                // relay change to cloned and vice versa
+                $(sizeme_UI_options.sizeSelectionContainer+" select").val(thisVal);
+                updateDetailedTable("", thisVal);
+            });
 
             if (sizeme_options.service_status === "on") {
                 var splashContent;
                 // Add splash content somewhere
                 if (sizeme_options.banner_location === "in_content") {
                     splashContent = getSplashDetailed();
-                    if (readCookie("sizeme_no_thanks") === 1) {
+                    if (noThanks()) {
                         splashContent = $(splashContent).hide();
                     }
                     $("#sizeme_detailed_view_content").append(splashContent);
                 } else {
                     splashContent = getSplashHeader();
-                    if (readCookie("sizeme_no_thanks") === 1) {
+                    if (noThanks()) {
                         splashContent = $(splashContent).hide();
                     }
                     $(sizeme_UI_options.prependTopHeaderTo).prepend(splashContent);
                 }
 
                 // login button
-                $("#sizeme_btn_login").on("click", function() {
+                $("#sizeme_btn_login").click(function() {
+                    clearAuthToken();
                     SizeMe.loginFrame(function() {
-                        sizeMe = sizeMeInit();
-                        sizeMe.then(loggedInCb);
+                        sizeMeInit(loggedInCb);
                     });
                     return false;
                 });
 
+                $("#sizeme_btn_sign_up").click(function () {
+                    clearAuthToken();
+                    return true;
+                });
+
                 // no thanks button
                 $("#sizeme_btn_no_thanks").on("click", function() {
-                    createCookie("sizeme_no_thanks", 1, cookieLifetime);
+                    SizeMe.trackEvent("noThanks", "Store: SizeMe, no thanks");
+                    createCookie("sizeme_no_thanks", "true", cookieLifetime);
                     $(".splash").hide();
                     if (sizeme_options.banner_location !== "in_content") {
                         $("#sizeme_header").slideToggle('slow', function() {
@@ -1884,8 +1949,20 @@
             // end of function 	loggedOutCb
         };
 
-        sizeMe = sizeMeInit();
-        sizeMe.then(loggedInCb);
+        if (systemsGo) {
+            if (noThanks()) {
+                SizeMe.trackEvent("productPageNoSM", "Store: Product page load, no SizeMe");
+                loggedOutCb();
+            } else {
+                sizeMeInit(function (smObj) {
+                    SizeMe.trackEvent("productPageLoggedIn", "Store: Product page load, logged in");
+                    loggedInCb(smObj);
+                }, function () {
+                    SizeMe.trackEvent("productPageLoggedOut", "Store: Product page load, logged out");
+                    loggedOutCb();
+                });
+            }
+        }
         // *** End
     });
 
@@ -1908,15 +1985,11 @@
     }
 
     function readCookie(name) {
-        var nameEQ = name + "=";
-        var ca = document.cookie.split(';');
-        for(var i=0;i < ca.length;i++) {
-            var c = ca[i];
-            while (c.charAt(0)===' ') {
-                c = c.substring(1,c.length);
-            }
-            if (c.indexOf(nameEQ) === 0) {
-                return c.substring(nameEQ.length,c.length);
+        var ca = document.cookie.split(';'), c;
+        for (var i=0;i<ca.length;i++) {
+            c = ca[i].trim().split('=');
+            if (c[0] === name) {
+                return c[1];
             }
         }
         return null;

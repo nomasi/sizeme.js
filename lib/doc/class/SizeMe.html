@@ -55,6 +55,14 @@
 <div class='tags'>
 </div>
   </dd>
+  <dt id='gaTrackingID-variable'>
+    gaTrackingID
+    =
+  </dt>
+  <dd>
+    <pre><code class='coffeescript'>&quot;UA-40735596-1&quot;</code></pre>
+    
+  </dd>
   <dt id='version-variable'>
     version
     =
@@ -70,6 +78,17 @@
 </dl>
       <h2>Class Method Summary</h2>
       <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#trackEvent-static'>
+        .
+(void)
+<b>trackEvent</b><span>(action, label)</span>
+      </a>
+    </span>
+    <span class='desc'>
+    </span>
+  </li>
   <li>
     <span class='signature'>
       <a href='#getAuthToken-static'>
@@ -92,6 +111,18 @@
     </span>
     <span class='desc'>
       Open the login frame and set the callback function for logging in 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#logout-static'>
+        .
+(void)
+<b>logout</b><span>(callback)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Logout from SizeMe 
     </span>
   </li>
 </ul>
@@ -137,6 +168,15 @@
 </ul>
       <h2>Class Method Details</h2>
       <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='trackEvent-static'>
+      .
+(void)
+<b>trackEvent</b><span>(action, label)</span>
+      <br>
+    </p>
+    
+  </div>
   <div class='method_details'>
     <p class='signature' id='getAuthToken-static'>
       .
@@ -197,6 +237,32 @@ user is not logged in, the returned token is null.</p><p>This function is execut
       </span>
       &mdash;
       <span class='desc'>the function to execute when user logs themselves in </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='logout-static'>
+      .
+(void)
+<b>logout</b><span>(callback)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Logout from SizeMe</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (
+          <tt>Function</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>callback to execute after logout </span>
     </li>
   </ul>
 </div>
@@ -444,7 +510,7 @@ of the item type as an array (&quot;properties&quot;)</p>
 </div>
     </div>
     <div id='footer'>
-  September 09, 15 01:00:30 by
+  November 27, 15 18:59:33 by
   <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
     Codo
   </a>

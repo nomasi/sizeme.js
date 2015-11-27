@@ -11,6 +11,11 @@ class SizeMe
     Address for the SizeMe API service
   ###
   @contextAddress = "https://www.sizeme.com"
+  @gaTrackingID = "UA-40735596-1"
+
+  gaEnabled = false
+  ga ->
+    gaEnabled = SizeMe.gaTrackingID?
 
   ###
     Version of the API
@@ -18,7 +23,7 @@ class SizeMe
   @version = "2.0"
 
   _authToken = undefined
-  _facepalm = -> not ("withCredentials" of XMLHttpRequest.prototype)
+  _facepalm = not ("withCredentials" of new XMLHttpRequest())
 
   ###
     Creates a new instance of SizeMe
@@ -42,7 +47,7 @@ class SizeMe
     xhr = undefined
     url = "#{SizeMe.contextAddress}#{service}"
 
-    if not _facepalm()
+    if not _facepalm
       xhr = new XMLHttpRequest()
       xhr.onreadystatechange = ->
         if xhr.readyState is 4
@@ -54,10 +59,14 @@ class SizeMe
       xhr.setRequestHeader(
         "Authorization", "Bearer #{_authToken}"
       ) if _authToken?
+      xhr.setRequestHeader(
+        "X-Analytics-Enabled", "true"
+      ) if gaEnabled
     else if XDomainRequest?
       xhr = new XDomainRequest()
       url = "#{url}?_tm=#{new Date().getTime()}"
       url = "#{url}&authToken=#{_authToken}" if _authToken?
+      url = "#{url}&analyticsEnabled=true" if gaEnabled
       xhr.onload = -> callback(xhr)
       xhr.onerror = -> errorCallback(xhr)
       xhr.open(method, url, true)
@@ -68,6 +77,18 @@ class SizeMe
   defaultErrorCallback = (xhr, status, statusText) ->
     console.log("Error: #{statusText} (#{status})") \
       if window.console and console.log
+
+  @trackEvent = (action, label) ->
+    if SizeMe.gaTrackingID?
+      ga "create", SizeMe.gaTrackingID, "auto", name: "sizemeTracker"
+      @trackEvent = (a, l) ->
+        ga "sizemeTracker.send",
+          hitType: "event"
+          eventCategory: window.location.hostname
+          eventAction: a
+          eventLabel: l
+      @trackEvent(action, label)
+
 
   ###
     Tries to fetch a new auth token from the SizeMe service. User needs to be
@@ -83,11 +104,11 @@ class SizeMe
     @param [Function] errorCallback function to execute if there was an error
   ###
   @getAuthToken = (callback, errorCallback = defaultErrorCallback) ->
-    if _facepalm()
+    if _facepalm
       iframe = document.createElement("iframe")
       cb = (event) ->
         if event.origin == SizeMe.contextAddress
-          tokenObj = JSON.parse(event.data)
+          tokenObj = event.data
           removeMessageListener(cb)
           document.body.removeChild(iframe)
           callback?(tokenObj) if callback?
@@ -99,7 +120,8 @@ class SizeMe
 
     else
       xhr = createCORSRequest("GET", "/api/authToken",
-        (xhr) -> callback(JSON.parse(xhr.responseText))
+        (xhr) ->
+          callback(JSON.parse(xhr.responseText))
       ,
         (xhr) -> errorCallback(xhr, xhr.status, xhr.statusText)
       )
@@ -144,7 +166,9 @@ class SizeMe
   ###
   fetchProfilesForAccount: (callback, errorCallback = defaultErrorCallback) ->
     createCORSRequest("GET", "/api/profiles",
-      (xhr) -> callback(JSON.parse(xhr.responseText))
+      (xhr) ->
+        SizeMe.trackEvent("fetchProfiles", "API: fetchProfiles")
+        callback(JSON.parse(xhr.responseText))
     ,
       (xhr) -> errorCallback(xhr, xhr.status, xhr.statusText)
     ).send()
@@ -234,7 +258,9 @@ class SizeMe
   match: (fitRequest, successCallback, errorCallback = defaultErrorCallback) ->
     data = JSON.stringify(fitRequest)
     xhr = createCORSRequest("POST", "/api/compareSizes",
-      (xhr) -> successCallback(createFitResponse(xhr))
+      (xhr) ->
+        SizeMe.trackEvent("match", "API: match")
+        successCallback(createFitResponse(xhr))
     ,
       (xhr) -> errorCallback(xhr, xhr.status, xhr.statusText)
     )
@@ -254,7 +280,9 @@ class SizeMe
   ###
   getItemTypes: (callback, errorCallback = defaultErrorCallback) ->
     createCORSRequest("GET", "/api/itemTypes",
-      (xhr) -> callback(JSON.parse(xhr.responseText))
+      (xhr) ->
+        SizeMe.trackEvent("getItemTypes", "API: getItemTypes")
+        callback(JSON.parse(xhr.responseText))
     ,
       (xhr) -> errorCallback(xhr, xhr.status, xhr.statusText)
     ).send()
@@ -274,11 +302,34 @@ class SizeMe
     cb = (e) ->
       if e.origin == SizeMe.contextAddress
         removeMessageListener cb
-        callback() if e.data
+        if e.data
+          SizeMe.trackEvent("apiLogin", "API: login")
+          callback()
 
     addMessageListener cb
     window.open(url, "loginframe", options)
+    SizeMe.trackEvent("loginFrame", "API: loginFrame")
     return
+
+  ###
+    Logout from SizeMe
+
+    @param callback [Function]
+      callback to execute after logout
+  ###
+  @logout: (callback) ->
+    iframe = document.createElement("iframe")
+    cb = (event) ->
+      if event.origin == SizeMe.contextAddress and event.data == "logout"
+        removeMessageListener(cb)
+        document.body.removeChild(iframe)
+        SizeMe.trackEvent("apiLogout", "API: logout")
+        callback() if callback?
+      return
+    addMessageListener(cb)
+    iframe.setAttribute("src", "#{SizeMe.contextAddress}/remote-logout")
+    iframe.setAttribute("style", "display:none")
+    document.body.appendChild(iframe)
 
 ###
   A simple map implementation to help pass the item properties to server
@@ -363,7 +414,7 @@ class SizeMe.Item
     @param [Number] itemStretch optional stretch value of the Item
   ###
   constructor: (@itemType, @itemLayer = 0,
-                @itemThickness = 0, @itemStretch = 0) ->
+  @itemThickness = 0, @itemStretch = 0) ->
     @measurements = new SizeMe.Map()
 
   ###
