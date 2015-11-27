@@ -1,6 +1,6 @@
 {
   "name": "sizeme.js",
-  "version": "2.0.0",
+  "version": "2.0.1-SNAPSHOT",
   "description": "Javascript utils for accessing the SizeMe API",
   "homepage": "https://github.com/BA-Group/sizeme.js",
   "bugs": "https://github.com/BA-Group/sizeme.js/issues",
