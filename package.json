@@ -1,6 +1,6 @@
 {
   "name": "sizeme.js",
-  "version": "2.0.0",
+  "version": "2.0.1-SNAPSHOT",
   "description": "Javascript utils for accessing the SizeMe API",
   "homepage": "https://github.com/BA-Group/sizeme.js",
   "bugs": "https://github.com/BA-Group/sizeme.js/issues",
@@ -18,6 +18,7 @@
     "gulp-coffeelint": "^0.5.0",
     "gulp-concat": "^2.6.0",
     "gulp-concat-css": "^2.2.0",
+    "gulp-jsclosure": "0.0.1",
     "gulp-jshint": "^1.11.2",
     "gulp-merge": "^0.1.1",
     "gulp-minify-css": "^1.2.1",

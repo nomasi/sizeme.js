@@ -11,6 +11,7 @@ series      = require 'stream-series'
 del         = require 'del'
 codo        = require 'gulp-codo'
 merge       = require 'gulp-merge'
+closure     = require 'gulp-jsclosure'
 config      = require './gulp-config.json'
 
 gulp.task 'api.lint', ->
@@ -53,7 +54,7 @@ gulp.task 'magento.js', ['clean.js', 'magento.lint'], ->
 gulp.task 'magento-with-deps', ['magento.js'], ->
   series gulp.src(config.jquery.js)
   , gulp.src(config.jquery_ui.js)
-  , gulp.src(config.opentip.js)
+  , gulp.src(config.opentip.js).pipe(closure())
   , gulp.src(config.dest.js + "/sizeme-magento.js")
     .pipe concat("sizeme-magento-with-deps.js")
     .pipe gulp.dest config.dest.js
