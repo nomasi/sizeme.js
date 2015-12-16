@@ -1678,6 +1678,13 @@
             $(sizeme_UI_options.sizeSelectionContainer+" #button_choose").remove();
         }
 
+		// add add to cart event
+		if (sizeme_UI_options.addToCartEvent) {
+			$(sizeme_UI_options.addToCartElement).on(sizeme_UI_options.addToCartEvent, function() {
+				SizeMe.trackEvent("addToCart", "Store: Product added to cart");
+			});
+		}
+
         var getMatchResponseHandler = function(prodId, product) {
             if (!systemsGo) {
                 return function() {};
