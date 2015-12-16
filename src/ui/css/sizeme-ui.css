@@ -288,6 +288,42 @@ a#sizeme_btn_re-activator {
  color: #999;
 }
 
+/* Product Splash */
+#sizeme_product_splash {
+	margin: 10px 0px 0px 0px;
+}
+
+#sizeme_product_splash p {
+	margin: 0px;
+	display: inline-block;
+	vertical-align: middle;
+	width: 54%;
+	margin-right: 1%;
+}
+
+#sizeme_product_splash a {
+	vertical-align: middle;
+	display: inline-block;
+	cursor: pointer;
+	background-position: center center;
+	background-repeat: no-repeat;
+	height: 32px;
+	padding: 0px;	
+	margin: 0px;
+}
+
+#sizeme_product_splash a#sizeme_product_page_link {
+	background-image: url("images/sizeme_logo_plain_h32.png");
+	width: 121px;
+}
+
+#sizeme_product_splash a#sizeme_btn_no_thanks_product_splash {
+	background-image: url("images/close_small.png");
+	background-position: right center;
+	background-repeat: no-repeat;
+	width: 17px;
+}
+
 /* When Buttonized */
 
 .sm-buttonset { margin: 16px 0px 0px 0px; }
