@@ -726,76 +726,6 @@ button.ui-button::-moz-focus-inner {
 
 /* SizeMe Header */
 
-/* Top version */
-
-#sizeme_header.top {
-  width: 100%;
-  height: 40px;
-  background: #666;
-  background-image: linear-gradient(bottom, rgb(68,68,68) 0%, rgb(136,136,136) 100%);
-  background-image: -o-linear-gradient(bottom, rgb(68,68,68) 0%, rgb(136,136,136) 100%);
-  background-image: -moz-linear-gradient(bottom, rgb(68,68,68) 0%, rgb(136,136,136) 100%);
-  background-image: -webkit-linear-gradient(bottom, rgb(68,68,68) 0%, rgb(136,136,136) 100%);
-  background-image: -ms-linear-gradient(bottom, rgb(68,68,68) 0%, rgb(136,136,136) 100%);
-  background-image: -webkit-gradient(
-	linear,
-	left bottom,
-	left top,
-	color-stop(0, rgb(68,68,68)),
-	color-stop(1, rgb(136,136,136))
- );
-  border-bottom: 1px solid #000;
-  font-size: 14px;
-  font-family: arial, sans serif;
-  line-height: 18px;
-  text-align: left;
-  color: #fff;
-}
-
-#sizeme_header.top #logo {
-  background-image: url(images/sizeme_logo_h20.png);
-  background-position: 10px 10px;
-  background-repeat: no-repeat;
-  width: 77px;
-  height: 20px;
-  padding: 10px 0px 0px 10px;
-  float: left;
-}
-
-#sizeme_header.top #logo .in_text {
-  display: none;
-}
-
-#sizeme_header.top .shopping_for {
-  float: left;
-  margin-left: 150px;
-  padding-top: 6px;
-}
-
-#sizeme_header.top .shopping_for select {
-  width: 200px;
-  border: 1px solid transparent;
-  font-size: 1.2em;
-}
-
-#sizeme_header.top .shopping_for select:hover {
-  border: 1px solid #ccc;
-}
-
-#sizeme_header.top .top_right {
-  float: right;
-  padding-top: 10px;
-  padding-right: 12px;
-}
-
-#sizeme_header.top .top_right > div {
-  float: left;
-}
-
-#sizeme_header.top a {
-  color: #ccc;
-}
-
 /* In content version */
 
 #sizeme_header_container {
@@ -883,37 +813,7 @@ button.ui-button::-moz-focus-inner {
   color: #666;
 }
 
-/* special Splash header for first time offendors */
-
-#sizeme_header.splash {
-  height: 150px;
-}
-
-#sizeme_header.splash #logo {
-  background-image: url(images/sizeme_logo_h37.png);
-  background-position: 30px 30px;
-  width: 200px;
-  height: 60px;
-}
-
-#sizeme_header.splash .splash_text {
-  width: 35%;
-  position: absolute;
-  top: 30px;
-  left: 20%;
-}
-
-#sizeme_header.splash .splash_choices {
-  width: 35%;
-  position: absolute;
-  top: 30px;
-  right: 5%;
-}
-
-#sizeme_header.splash .splash_choices p {
-  padding: 4px 0px;
-  margin-bottom: 0;
-}
+/* Splash in Detailed View */
 
 #sizeme_detailed_view_content .splash {
   padding: 5px 0px;

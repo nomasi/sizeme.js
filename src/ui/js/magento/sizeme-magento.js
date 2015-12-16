@@ -1,7 +1,6 @@
 /* globals jQuery: false */
 
 var sizeme_UI_options = {
-    prependTopHeaderTo: "body",
     appendInContentToggler: ".slider_text_below",
     actualSelectionElement: "option",
     visualSelectionElement: "div.sm-button",
