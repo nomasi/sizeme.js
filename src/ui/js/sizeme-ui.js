@@ -1126,7 +1126,7 @@
         $("#detailed_table").on("mouseenter", ".run_highlight", function () {
             var highlight = $(this).data("measurement");
             $(this).find("td.cell_"+highlight).addClass("highlighted");
-            var $matchMap = $(this).find("tbody").data("matchMap");
+            var $matchMap = $("#detailed_table").find("tbody").data("matchMap");
             writeItemCanvas('sizeme_item_view', $matchMap, highlight);
             if (sizeme_local_options.fitAreaSlider && $matchMap) {
                 if ($matchMap[highlight]) {
@@ -1138,7 +1138,7 @@
         }).on("mouseleave", ".run_highlight", function () {
             var highlight = $(this).data("measurement");
             $(this).find("td.cell_"+highlight).removeClass("highlighted");
-            writeItemCanvas('sizeme_item_view', $(this).find("tbody").data("matchMap"), "");
+            writeItemCanvas('sizeme_item_view', $("#detailed_table").find("tbody").data("matchMap"), "");
             if (sizeme_local_options.fitAreaSlider) {
                 killExtraSlider();
             }

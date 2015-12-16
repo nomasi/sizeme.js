@@ -1769,6 +1769,10 @@ table#detailed_table {
 .opentip-container .sleeve.negative_overlap .sleeve_overlap {
   background-image: url(images/sizeme_sleeve_overlap_no_arrow.png);
 }
+
+.sizeme_detailed_view_window {
+  z-index: 10000 !important;
+}
 /*!
  * SizeMe input styles specific for Magento
  */
