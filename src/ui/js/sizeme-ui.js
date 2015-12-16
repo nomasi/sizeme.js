@@ -108,7 +108,8 @@
         "inseam",
         "outseam",
         "sleeve",
-        "front_height"
+        "front_height",
+		"shoe_inside_length"
     ];
 
     var OPTIMAL_FIT = 1070;
