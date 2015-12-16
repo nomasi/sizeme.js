@@ -1031,11 +1031,11 @@
         return ( (itemTypeStr[0] === '3') || (itemTypeStr[0] === '4') );
     }
 
-    function noThanks() { 
+    function noThanks() {
         return readCookie("sizeme_no_thanks") === "true";
     }
 
-    function noProductSplash() { 
+    function noProductSplash() {
         return readCookie("sizeme_no_product_splash") === "true";
     }
 
@@ -1519,7 +1519,7 @@
         headerHtml += "</ul></div>";
         return headerHtml;
     }
-	
+
     function getProductSplash() {
         // *** SizeMe Splash in Product page
         var splashHtml = "<div id='sizeme_product_splash'>";
@@ -1528,8 +1528,8 @@
 		splashHtml += "<a href='#' id='sizeme_btn_no_thanks_product_splash' title='Close'></a>";
         splashHtml += "</div>";
         return splashHtml;
-    }	
-	
+    }
+
     function findMaxMeasurement() {
         var maxVal = 0;
         product.item.measurements.each(function(key, measurement_set) {
@@ -1906,6 +1906,7 @@
 
                 // login button
                 $("#sizeme_btn_login").click(function() {
+					SizeMe.trackEvent("clickLogin", "Store: Login clicked");
                     clearAuthToken();
                     SizeMe.loginFrame(function() {
                         sizeMeInit(loggedInCb);
@@ -1914,6 +1915,7 @@
                 });
 
                 $("#sizeme_btn_sign_up").click(function () {
+					SizeMe.trackEvent("clickSignUp", "Store: Sign up clicked");
                     clearAuthToken();
                     return true;
                 });
@@ -1925,7 +1927,7 @@
                     $(".splash").hide();
                     return false;
                 });
-				
+
 				// Product page splash
 				if (!noProductSplash()) {
 					$(sizeme_UI_options.sizeSelectionContainer).append(getProductSplash());
@@ -1934,7 +1936,12 @@
 						createCookie("sizeme_no_product_splash", "true", cookieLifetime);
 						$("#sizeme_product_splash").slideUp();
 						return false;
-					});					
+					});
+
+					$("#sizeme_product_page_link").on("click", function() {
+						SizeMe.trackEvent("clickProductSplash", "Store: Product splash clicked");
+					});
+
 				}
             }
 
@@ -1943,7 +1950,7 @@
 
         if (systemsGo) {
             if (noThanks()) {
-                SizeMe.trackEvent("productPageNoSM", "Store: Product page load, SizeMe refused earlier");
+                SizeMe.trackEvent("productPageNoSM", "Store: Product page load, SizeMe refused");
                 loggedOutCb();
             } else {
                 sizeMeInit(function (smObj) {
