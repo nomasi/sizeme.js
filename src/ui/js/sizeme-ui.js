@@ -1932,6 +1932,7 @@
                     SizeMe.trackEvent("noThanks", "Store: SizeMe, no thanks");
                     createCookie("sizeme_no_thanks", "true", cookieLifetime);
                     $(".splash").hide();
+					$("#sizeme_btn_no_thanks_product_splash").trigger("click");		// also close possible product splasher
                     return false;
                 });
 
