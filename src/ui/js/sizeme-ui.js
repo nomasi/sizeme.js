@@ -1681,7 +1681,12 @@
 		// add add to cart event
 		if (sizeme_UI_options.addToCartEvent) {
 			$(sizeme_UI_options.addToCartElement).on(sizeme_UI_options.addToCartEvent, function() {
-				SizeMe.trackEvent("addToCart", "Store: Product added to cart");
+				if (isLoggedIn()) {
+					SizeMe.trackEvent("addToCartSM", "Store: Product added to cart by SizeMe user");
+				} else {
+					SizeMe.trackEvent("addToCart", "Store: Product added to cart");
+				}
+				
 			});
 		}
 
@@ -1932,6 +1937,7 @@
                     SizeMe.trackEvent("noThanks", "Store: SizeMe, no thanks");
                     createCookie("sizeme_no_thanks", "true", cookieLifetime);
                     $(".splash").hide();
+					$("#sizeme_btn_no_thanks_product_splash").trigger("click");		// also close possible product splasher
                     return false;
                 });
 
