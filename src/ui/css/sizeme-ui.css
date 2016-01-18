@@ -14,12 +14,12 @@
  padding: 5px 5px 4px 6px;
  background-image: url(images/arrow_down.png); 
  background-repeat: no-repeat;
- background-position: 95% 11px;
+ background-position: 95% 14px;
  border: 0;
  color: #666;
  display: block;
  width: 130px;
- height: 18px;
+ height: 20px;
  overflow: hidden; 
 }
 
@@ -46,8 +46,8 @@
 }
 
 #sizeme_header.in_content #logo {
- background-image: url(images/sizeme_logo_plain_h16.png);
- background-position: 56px 0px;
+ background-image: url(images/sizeme_logo_plain_h22.png);
+ background-position: 38px 0px;
  background-repeat: no-repeat;
  width: 100%;
  height: 25px;
@@ -61,7 +61,7 @@
 }
 
 #sizeme_header.in_content .shopping_for, #sizeme_header.in_content .top_right {
- font-size: 11px;
+ font-size: 12px;
  font-weight: bold;
 }
 
@@ -69,6 +69,9 @@
  width: 100%;
  max-width: 100%;
  border: 1px solid #ccc;
+ font-size: 0.8rem; 
+ padding: 0.2rem !important;
+ margin-bottom: 0px;
 }
 
 #sizeme_header.in_content .shopping_for select:hover { border: 1px solid #999; }
@@ -311,31 +314,34 @@ a#sizeme_btn_re-activator {
  margin: 9px 0px 0px 0px;
  border-collapse: collapse; 
  table-layout: fixed; 
+ border: 0;
+ width: 100%;
 }
 
 .sizeme_slider table.slider_table td { 
  height: 24px;
  vertical-align: middle;
- font-size: 11px;
- line-height: 14px;
+ font-size: 1rem;
+ line-height: 1rem;
  color: white;
  border: 0;
+ padding: 0;
  background-color: #b55;
  text-align: center;
 }
 
 .sizeme_slider .slider_bar { 
- position: absolute; top: 5px; left: -4px; 
+ position: absolute; top: 5px; left: 6px; 
  background-image: url(images/slider_img1_black.png); 
  background-repeat: no-repeat;
  background-position: right top;
  height: 33px;
- width: 150px;
+ width: 20%;
  z-index: 100;
 }
 
 .sizeme_slider .slider_area { 
- position: absolute; top: 5px; left: -4px; 
+ position: absolute; top: 5px; left: 0px; 
  height: 32px;
  width: 0px;
  border-left: 1px solid transparent;
@@ -393,6 +399,7 @@ a.sm_detailed_view, #detailed_view_link a {
  -webkit-border-radius: 4px;
  -moz-border-radius: 4px;
  background-color: #fff;
+ width: 50% !important; 
 	background-image: url(images/arrow_right.png), -ms-linear-gradient(top, #ffffff 0%, #dddddd 100%);
 	background-image: url(images/arrow_right.png), -moz-linear-gradient(top, #ffffff 0%, #dddddd 100%);
 	background-image: url(images/arrow_right.png), -o-linear-gradient(top, #ffffff 0%, #dddddd 100%);
@@ -533,7 +540,7 @@ canvas#sizeme_item_view {
 }
 
 #sizeme_detailed_view_content .slider_bar#slider_secondary { 
- top: 4px; left: -3px; 
+ top: 4px; left: 6px; 
  background-image: url(images/slider_img1_highlight.png); 
  height: 35px;
  z-index: 110;
@@ -580,6 +587,7 @@ table#detailed_table {
  padding: 0px;
  width: 14px;
  height: 14px;
+ font-size: 12px;
  display: block;
  margin: 0px auto 3px;
  line-height: 1.2em;
@@ -753,7 +761,7 @@ table#detailed_table {
 .opentip-container .pinched div.meas {
 	position: absolute; top: 7px; left: 32px;
 	color: #000;
-	font-size: 11px;
+	font-size: 12px;
 }
 
 .opentip-container .sleeve {
@@ -773,7 +781,7 @@ table#detailed_table {
 .opentip-container .sleeve div.meas {
 	position: absolute; top: 7px; left: 0px;
 	color: #000;
-	font-size: 11px;
+	font-size: 12px;
 }
 
 .opentip-container .sleeve .sleeve_overlap {
@@ -790,4 +798,18 @@ table#detailed_table {
 
 .sizeme_detailed_view_window {
 	z-index: 10000 !important;
+}
+
+@media only screen and (max-width: 40.063em) {
+	#sizeme_detailed_view_content {
+		text-align: center;
+	}	
+	#sizeme_detailed_view_content .dialog_col { 
+		float: none;
+		width: 100% !important;
+		height: auto;
+	}
+	#sizeme_detailed_view_content #detailed_table { 
+		margin-bottom: 2rem;
+	}
 }
