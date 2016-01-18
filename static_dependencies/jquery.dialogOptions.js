@@ -29,6 +29,8 @@
  *	patch for: http://bugs.jqueryui.com/ticket/4671
  *	recenter dialog - ajax loaded content
  */
+ 
+ (function($) {
 
 // add new options with default values
 $.ui.dialog.prototype.options.clickOut = true;
@@ -189,3 +191,4 @@ $.ui.dialog.prototype.close = function () {
     }
 };
 //end close
+})(jQuery);

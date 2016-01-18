@@ -575,7 +575,7 @@
     }
 
     function sliderPos(fitValue, offset) {
-        var returnPos = Math.round((Math.min(fitValue, sliderPosXMax) - sliderPosXMin) * sliderScale);
+        var returnPos = (Math.min(fitValue, sliderPosXMax) - sliderPosXMin) * sliderScale;
         returnPos = Math.max(0, returnPos);
         returnPos += offset;   // with +offset for graphics
 
@@ -616,11 +616,11 @@
     }
 
     function moveSlider(fitValue, shouldAnimate) {
-        var newWidth = sliderPos(fitValue, 0);
+        var newWidth = sliderPos(fitValue, 0)+'%';
         if (shouldAnimate) {
-            $('.slider_bar').stop().animate({width: newWidth+'%'});
+            $('.slider_bar').stop().animate({width: newWidth});
         } else {
-            $('.slider_bar').width(newWidth+'%');
+            $('.slider_bar').width(newWidth);
         }
     }
 
@@ -654,9 +654,9 @@
         }
 
         if (shouldAnimate) {
-            $('.slider_area').stop().animate({width: newWidth, marginLeft: newMarginLeft});
+            $('.slider_area').stop().animate({width: newWidth+'%', marginLeft: newMarginLeft+'%'});
         } else {
-            $('.slider_area').width(newWidth).css('marginLeft', newMarginLeft);
+            $('.slider_area').width(newWidth+'%').css('marginLeft', newMarginLeft+'%');
         }
     }
 

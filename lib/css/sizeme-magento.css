@@ -747,8 +747,8 @@ button.ui-button::-moz-focus-inner {
   border: 0;
   color: #666;
   display: block;
-  width: 144px;
-  height: 28px;
+  width: 130px;
+  height: 20px;
   overflow: hidden;
 }
 
@@ -1112,6 +1112,7 @@ a#sizeme_btn_re-activator {
   border-collapse: collapse;
   table-layout: fixed;
   border: 0;
+  width: 100%;
 }
 
 .sizeme_slider table.slider_table td {
@@ -1129,19 +1130,19 @@ a#sizeme_btn_re-activator {
 .sizeme_slider .slider_bar {
   position: absolute;
   top: 5px;
-  left: -4px;
+  left: 6px;
   background-image: url(images/slider_img1_black.png);
   background-repeat: no-repeat;
   background-position: right top;
   height: 33px;
-  width: 150px;
+  width: 20%;
   z-index: 100;
 }
 
 .sizeme_slider .slider_area {
   position: absolute;
   top: 5px;
-  left: -4px;
+  left: 0px;
   height: 32px;
   width: 0px;
   border-left: 1px solid transparent;
@@ -1403,7 +1404,7 @@ canvas#sizeme_item_view {
 
 #sizeme_detailed_view_content .slider_bar#slider_secondary {
   top: 4px;
-  left: -3px;
+  left: 6px;
   background-image: url(images/slider_img1_highlight.png);
   height: 35px;
   z-index: 110;
@@ -1718,7 +1719,7 @@ table#detailed_table {
   z-index: 10000 !important;
 }
 
-@media only screen and (min-width: 40.063em) {
+@media only screen and (max-width: 40.063em) {
   #sizeme_detailed_view_content {
     text-align: center;
   }
