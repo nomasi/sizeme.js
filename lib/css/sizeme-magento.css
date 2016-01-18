@@ -1113,10 +1113,11 @@ a#sizeme_btn_re-activator {
 .sizeme_slider table.slider_table td {
   height: 24px;
   vertical-align: middle;
-  font-size: 11px;
-  line-height: 14px;
+  font-size: 1rem;
+  line-height: 1rem;
   color: white;
   border: 0;
+  padding: 0;
   background-color: #b55;
   text-align: center;
 }
