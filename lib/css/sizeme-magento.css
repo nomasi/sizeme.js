@@ -743,12 +743,12 @@ button.ui-button::-moz-focus-inner {
   padding: 5px 5px 4px 6px;
   background-image: url(images/arrow_down.png);
   background-repeat: no-repeat;
-  background-position: 95% 11px;
+  background-position: 95% 14px;
   border: 0;
   color: #666;
   display: block;
-  width: 130px;
-  height: 18px;
+  width: 144px;
+  height: 28px;
   overflow: hidden;
 }
 
@@ -775,8 +775,8 @@ button.ui-button::-moz-focus-inner {
 }
 
 #sizeme_header.in_content #logo {
-  background-image: url(images/sizeme_logo_plain_h16.png);
-  background-position: 56px 0px;
+  background-image: url(images/sizeme_logo_plain_h22.png);
+  background-position: 38px 0px;
   background-repeat: no-repeat;
   width: 100%;
   height: 25px;
@@ -791,7 +791,7 @@ button.ui-button::-moz-focus-inner {
 
 #sizeme_header.in_content .shopping_for,
 #sizeme_header.in_content .top_right {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
 }
 
@@ -799,6 +799,9 @@ button.ui-button::-moz-focus-inner {
   width: 100%;
   max-width: 100%;
   border: 1px solid #ccc;
+  font-size: 0.8rem;
+  padding: 0.2rem !important;
+  margin-bottom: 0px;
 }
 
 #sizeme_header.in_content .shopping_for select:hover {
@@ -1108,6 +1111,7 @@ a#sizeme_btn_re-activator {
   margin: 9px 0px 0px 0px;
   border-collapse: collapse;
   table-layout: fixed;
+  border: 0;
 }
 
 .sizeme_slider table.slider_table td {
@@ -1224,6 +1228,7 @@ a.sm_detailed_view,
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   background-color: #fff;
+  width: 50% !important;
   background-image: url(images/arrow_right.png), -ms-linear-gradient(top, #ffffff 0%, #dddddd 100%);
   background-image: url(images/arrow_right.png), -moz-linear-gradient(top, #ffffff 0%, #dddddd 100%);
   background-image: url(images/arrow_right.png), -o-linear-gradient(top, #ffffff 0%, #dddddd 100%);
@@ -1447,6 +1452,7 @@ table#detailed_table {
   padding: 0px;
   width: 14px;
   height: 14px;
+  font-size: 12px;
   display: block;
   margin: 0px auto 3px;
   line-height: 1.2em;
@@ -1665,7 +1671,7 @@ table#detailed_table {
   top: 7px;
   left: 32px;
   color: #000;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .opentip-container .sleeve {
@@ -1691,7 +1697,7 @@ table#detailed_table {
   top: 7px;
   left: 0px;
   color: #000;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .opentip-container .sleeve .sleeve_overlap {
@@ -1710,6 +1716,22 @@ table#detailed_table {
 
 .sizeme_detailed_view_window {
   z-index: 10000 !important;
+}
+
+@media only screen and (min-width: 40.063em) {
+  #sizeme_detailed_view_content {
+    text-align: center;
+  }
+
+  #sizeme_detailed_view_content .dialog_col {
+    float: none;
+    width: 100% !important;
+    height: auto;
+  }
+
+  #sizeme_detailed_view_content #detailed_table {
+    margin-bottom: 2rem;
+  }
 }
 /*!
  * SizeMe input styles specific for Magento
