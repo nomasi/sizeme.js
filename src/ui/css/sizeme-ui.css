@@ -21,6 +21,7 @@
  min-width: 170px;
  height: 22px;
  overflow: hidden; 
+ box-sizing: border-box; 
 }
 
 #sizeme_header.in_content .sizeme_header_content {
