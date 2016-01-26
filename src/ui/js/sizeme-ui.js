@@ -64,9 +64,9 @@
         1165: {text: "too_big", arrowColor: "#BB5555"},
         1225: {text: "too_big", arrowColor: "#BB5555"}
     };
-	
+
     var sliderPosXMin = 940;
-    var sliderPosXMax = 1225;	
+    var sliderPosXMax = 1225;
 	var sliderScale = 100 / (sliderPosXMax - sliderPosXMin);
 
     var FIT_ORDER = [
@@ -217,10 +217,6 @@
             arcStyle = "line"; // size guide shows flat measurements (except neck opening)
         }
 
-        measurement_arrows.sleeve = { mirror: false, coords: [{X: 329,Y: 44},{X: 569,Y: 975}], style: "line", lift: true, color: arrowColor };
-        measurement_arrows.sleeve_top_width = { mirror: false, coords: [{X: 250,Y: 399},{X: 410,Y: 348}], style: arcStyle, lift: false, color: arrowColor };
-        measurement_arrows.wrist_width = { mirror: false, coords: [{X: 571,Y: 978},{X: 454,Y: 1009}], style: arcStyle, lift: false, color: arrowColor };
-
         measurement_arrows.chest = { mirror: false, coords: [{X: -250,Y: 399},{X: 250,Y: 399}], style: arcStyle, lift: false, color: arrowColor };
         measurement_arrows.waist = { mirror: false, coords: [{X: -250,Y: 635},{X: 250,Y: 635}], style: arcStyle, lift: false, color: arrowColor };
         measurement_arrows.front_height = { mirror: false, coords: [{X: -174,Y: 0},{X: -174,Y: 978}], style: "line", lift: false, color: arrowColor };
@@ -265,25 +261,6 @@
             case '1':	// shirts/coats
                 LOCALIZED_STR.hips = "Hem";
                 LOCALIZED_STR.pant_waist = "Hem";
-
-                switch (itemTypeStr[2]) { // shoulder
-                    case '3':	// dropped
-                        if (itemTypeStr[1] !== '0') {
-                            item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 369,Y: 196}]});
-                        }
-                        measurement_arrows.sleeve = { mirror: false, coords: [{X: 174,Y: -16}, {X: 329,Y: 27},{X: 569,Y: 975}], style: "line", lift: true, midCircle: {X: 437, Y: 444}, color: arrowColor };
-                        break;
-                    case '2':	// raglan line
-                        if (itemTypeStr[1] !== '0') {
-                            item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 185,Y: 6, cp1X: 220, cp1Y: 320, cp2X: 185, cp2Y: 6}]});
-                        }
-                        measurement_arrows.sleeve = { mirror: false, coords: [{X: 174,Y: -16}, {X: 329,Y: 27},{X: 569,Y: 975}], style: "line", lift: true, midCircle: {X: 437, Y: 444}, color: arrowColor };
-                        break;
-                    case '1':	// normal shoulder line
-                        if (itemTypeStr[3] !== '0') {
-                            item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 329,Y: 44, cp1X: 250, cp1Y: 250, cp2X: 300, cp2Y: 70}]});
-                        } break;
-                }
 
                 switch (itemTypeStr[1]) { // collar
                     case '2':	// tight (turnover)
@@ -353,28 +330,44 @@
                 }
 
                 switch (itemTypeStr[3]) { // sleeve length
-                    case '0':	// vest or poncho
+                    case '0':	// tank top, string top or poncho
+                    case '1':	// very short (vest)
                         item_drawing.coords.push({X: 289,Y: 34});
                         item_drawing.coords.push({X: 250,Y: 399, cp1X: 285, cp1Y: 44, cp2X: 220, cp2Y: 389});
                         measurement_arrows.shoulder_width = { mirror: false, coords: [{X: -299,Y: 32},{X: -164,Y: -7}], style: "line", lift: true, color: arrowColor };
 						measurement_arrows.sleeve_top_width = { mirror: false, coords: [{X: 250,Y: 399},{X: 289,Y: 34}], style: arcStyle, lift: false, color: arrowColor };
 
                         if (itemTypeStr[4] !== '0') {
+							// is it you, poncho?
                             item_drawing.coords.push({X: 250,Y: 399, cp1X: 328, cp1Y: 44, cp2X: 250, cp2Y: 260});
                             FIT_ORDER.splice(13, 1);  // remove sleeve top
                             measurement_arrows.sleeve_top_width = false;
                         }
                         break;
-                    case '1':  // very short
                     case '2':  // short
-                    case '3':  // short-medium
+                    case '3':  // short-medium (normal t-shirt)
                         item_drawing.coords.push({X: 329,Y: 44});
                         item_drawing.coords.push({X: 482,Y: 460},{X: 324,Y: 529});
                         item_drawing.coords.push({X: 250,Y: 399});
-                        measurement_arrows.sleeve = { mirror: false, coords: [{X: 329,Y: 44},{X: 482,Y: 460}], style: "line", lift: true, color: arrowColor };
+
                         measurement_arrows.sleeve_top_width = { mirror: false, coords: [{X: 250,Y: 399},{X: 430,Y: 322}], style: arcStyle, lift: false, color: arrowColor };
                         measurement_arrows.wrist_width = { mirror: false, coords: [{X: 324,Y: 529},{X: 482,Y: 460}], style: arcStyle, lift: false, color: arrowColor };
                         LOCALIZED_STR.wrist_width = "Sleeve opening";
+
+						switch (itemTypeStr[2]) { // shoulder types
+							case '3':	// dropped
+								item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 381,Y: 184}]});
+								measurement_arrows.sleeve = { mirror: false, coords: [{X: 174,Y: -16}, {X: 329,Y: 27},{X: 482,Y: 460}], style: "line", lift: true, midCircle: {X: 406, Y: 243}, color: arrowColor };
+								break;
+							case '2':	// raglan line
+								item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 185,Y: 6, cp1X: 220, cp1Y: 320, cp2X: 185, cp2Y: 6}]});
+								measurement_arrows.sleeve = { mirror: false, coords: [{X: 174,Y: -16}, {X: 329,Y: 27},{X: 482,Y: 460}], style: "line", lift: true, midCircle: {X: 406, Y: 243}, color: arrowColor };
+								break;
+							case '1':	// normal shoulder line
+								measurement_arrows.sleeve = { mirror: false, coords: [{X: 329,Y: 44},{X: 482,Y: 460}], style: "line", lift: true, color: arrowColor };
+								item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 329,Y: 44, cp1X: 250, cp1Y: 250, cp2X: 300, cp2Y: 70}]});
+								break;
+						}
                         break;
                     case '4':  // medium
                     case '5':  // semi-long
@@ -382,15 +375,31 @@
                         item_drawing.coords.push({X: 527,Y: 719},{X: 389,Y: 769});
                         item_drawing.coords.push({X: 250,Y: 399});
 						
-                        measurement_arrows.sleeve = { mirror: false, coords: [{X: 329,Y: 44},{X: 527,Y: 719}], style: "line", lift: true, color: arrowColor };
-                        measurement_arrows.sleeve_top_width = { mirror: false, coords: [{X: 250,Y: 399},{X: 430,Y: 322}], style: arcStyle, lift: false, color: arrowColor };
+                        measurement_arrows.sleeve_top_width = { mirror: false, coords: [{X: 250,Y: 399},{X: 419,Y: 340}], style: arcStyle, lift: false, color: arrowColor };
                         measurement_arrows.wrist_width = { mirror: false, coords: [{X: 389,Y: 769},{X: 527,Y: 719}], style: arcStyle, lift: false, color: arrowColor };
                         LOCALIZED_STR.wrist_width = "Sleeve opening";
+						
+						switch (itemTypeStr[2]) { // shoulder types
+							case '3':	// dropped
+								item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 369,Y: 196}]});
+								measurement_arrows.sleeve = { mirror: false, coords: [{X: 174,Y: -16}, {X: 329,Y: 27},{X: 527,Y: 719}], style: "line", lift: true, midCircle: {X: 450, Y: 444}, color: arrowColor };
+								break;
+							case '2':	// raglan line
+								item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 185,Y: 6, cp1X: 220, cp1Y: 320, cp2X: 185, cp2Y: 6}]});
+								measurement_arrows.sleeve = { mirror: false, coords: [{X: 174,Y: -16}, {X: 329,Y: 27},{X: 527,Y: 719}], style: "line", lift: true, midCircle: {X: 450, Y: 444}, color: arrowColor };
+								break;
+							case '1':	// normal shoulder line
+								measurement_arrows.sleeve = { mirror: false, coords: [{X: 329,Y: 44},{X: 527,Y: 719}], style: "line", lift: true, color: arrowColor };
+								item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 329,Y: 44, cp1X: 250, cp1Y: 250, cp2X: 300, cp2Y: 70}]});
+								break;
+						}						
 						break;
                     case '6':  // long
                     case '7':  // very long
                     case '8':  // extra long
                         item_drawing.coords.push({X: 329,Y: 44});
+						measurement_arrows.sleeve_top_width = { mirror: false, coords: [{X: 250,Y: 399},{X: 410,Y: 348}], style: arcStyle, lift: false, color: arrowColor };
+						
                         if (itemTypeStr[4] === '1') {	// elastic
                             item_drawing.coords.push({X: 556,Y: 902},{X: 547,Y: 930}, {X: 557,Y: 978},{X: 463,Y: 998},{X: 449,Y: 951},{X: 430,Y: 934});
                             item_drawing.accents.push({type: "line", coords: [{X: 465,Y: 944}, {X: 476,Y: 996}]},
@@ -405,7 +414,23 @@
                         } else {
                             item_drawing.coords.push({X: 571,Y: 978},{X: 454,Y: 1009});
                             item_drawing.coords.push({X: 250,Y: 399});
+							measurement_arrows.wrist_width = { mirror: false, coords: [{X: 571,Y: 978},{X: 454,Y: 1009}], style: arcStyle, lift: false, color: arrowColor };
                         }
+						
+						switch (itemTypeStr[2]) { // shoulder types
+							case '3':	// dropped
+								item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 369,Y: 196}]});
+								measurement_arrows.sleeve = { mirror: false, coords: [{X: 174,Y: -16}, {X: 329,Y: 27},{X: 571,Y: 978}], style: "line", lift: true, midCircle: {X: 437, Y: 444}, color: arrowColor };
+								break;
+							case '2':	// raglan line
+								item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 185,Y: 6, cp1X: 220, cp1Y: 320, cp2X: 185, cp2Y: 6}]});
+								measurement_arrows.sleeve = { mirror: false, coords: [{X: 174,Y: -16}, {X: 329,Y: 27},{X: 571,Y: 978}], style: "line", lift: true, midCircle: {X: 437, Y: 444}, color: arrowColor };
+								break;
+							case '1':	// normal shoulder line
+								measurement_arrows.sleeve = { mirror: false, coords: [{X: 329,Y: 44},{X: 569,Y: 975}], style: "line", lift: true, color: arrowColor };
+								item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 329,Y: 44, cp1X: 250, cp1Y: 250, cp2X: 300, cp2Y: 70}]});
+								break;
+						}						
                         break;
                 }
 
@@ -464,6 +489,8 @@
                     case '1':	// very short
                     case '2':	// short
                     case '3':	// short-medium
+                        item_drawing.coords.push({X: 278,Y: 449},{X: 38, Y: 474});
+                        break;					
                     case '4':	// medium
                         item_drawing.coords.push({X: 291,Y: 626},{X: 71, Y: 651});
                         break;
@@ -479,6 +506,10 @@
                     case '1':	// very short
                     case '2':	// short
                     case '3':	// short-medium
+                        item_drawing.coords.push({X: -38, Y: 474}, {X: -278,Y: 449});
+                        measurement_arrows.outseam = { mirror: false, coords: [{X: 222,Y: 0},{X: 263,Y: 171},{X: 278,Y: 449}], style: "line", lift: true, color: arrowColor };
+                        measurement_arrows.knee_width = { mirror: false, coords: [{X: -278,Y: 449},{X: -38,Y: 474}], style: arcStyle, lift: false, color: arrowColor };						
+                        break;							
                     case '4':	// medium
                         item_drawing.coords.push({X: -71,Y: 651},{X: -291,Y: 626});
                         measurement_arrows.outseam = { mirror: false, coords: [{X: 222,Y: 0},{X: 263,Y: 171},{X: 291,Y: 626}], style: "line", lift: true, color: arrowColor };
@@ -1693,7 +1724,7 @@
 				} else {
 					SizeMe.trackEvent("addToCart", "Store: Product added to cart");
 				}
-				
+
 			});
 		}
 

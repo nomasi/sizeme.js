@@ -21,6 +21,7 @@
  min-width: 170px;
  height: 22px;
  overflow: hidden; 
+ box-sizing: border-box; 
 }
 
 #sizeme_header.in_content .sizeme_header_content {
@@ -337,6 +338,8 @@ a#sizeme_btn_re-activator {
  height: 33px;
  width: 20%;
  z-index: 100;
+ min-width: 8px !important;
+ max-width: 99% !important;
 }
 
 .sizeme_slider .slider_area { 
@@ -550,6 +553,7 @@ canvas#sizeme_item_view {
 table#detailed_table {
  border-collapse: collapse;
  width: 100%;
+ border: 0;
 }
 
 #detailed_table td {
