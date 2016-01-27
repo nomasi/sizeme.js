@@ -1138,7 +1138,6 @@ a#sizeme_btn_re-activator {
   width: 20%;
   z-index: 100;
   min-width: 8px !important;
-  max-width: 99% !important;
 }
 
 .sizeme_slider .slider_area {
