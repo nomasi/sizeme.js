@@ -374,11 +374,11 @@
                         item_drawing.coords.push({X: 329,Y: 44});
                         item_drawing.coords.push({X: 527,Y: 719},{X: 389,Y: 769});
                         item_drawing.coords.push({X: 250,Y: 399});
-						
+
                         measurement_arrows.sleeve_top_width = { mirror: false, coords: [{X: 250,Y: 399},{X: 419,Y: 340}], style: arcStyle, lift: false, color: arrowColor };
                         measurement_arrows.wrist_width = { mirror: false, coords: [{X: 389,Y: 769},{X: 527,Y: 719}], style: arcStyle, lift: false, color: arrowColor };
                         LOCALIZED_STR.wrist_width = "Sleeve opening";
-						
+
 						switch (itemTypeStr[2]) { // shoulder types
 							case '3':	// dropped
 								item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 369,Y: 196}]});
@@ -392,14 +392,14 @@
 								measurement_arrows.sleeve = { mirror: false, coords: [{X: 329,Y: 44},{X: 527,Y: 719}], style: "line", lift: true, color: arrowColor };
 								item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 329,Y: 44, cp1X: 250, cp1Y: 250, cp2X: 300, cp2Y: 70}]});
 								break;
-						}						
+						}
 						break;
                     case '6':  // long
                     case '7':  // very long
                     case '8':  // extra long
                         item_drawing.coords.push({X: 329,Y: 44});
 						measurement_arrows.sleeve_top_width = { mirror: false, coords: [{X: 250,Y: 399},{X: 410,Y: 348}], style: arcStyle, lift: false, color: arrowColor };
-						
+
                         if (itemTypeStr[4] === '1') {	// elastic
                             item_drawing.coords.push({X: 556,Y: 902},{X: 547,Y: 930}, {X: 557,Y: 978},{X: 463,Y: 998},{X: 449,Y: 951},{X: 430,Y: 934});
                             item_drawing.accents.push({type: "line", coords: [{X: 465,Y: 944}, {X: 476,Y: 996}]},
@@ -416,7 +416,7 @@
                             item_drawing.coords.push({X: 250,Y: 399});
 							measurement_arrows.wrist_width = { mirror: false, coords: [{X: 571,Y: 978},{X: 454,Y: 1009}], style: arcStyle, lift: false, color: arrowColor };
                         }
-						
+
 						switch (itemTypeStr[2]) { // shoulder types
 							case '3':	// dropped
 								item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 369,Y: 196}]});
@@ -430,7 +430,7 @@
 								measurement_arrows.sleeve = { mirror: false, coords: [{X: 329,Y: 44},{X: 569,Y: 975}], style: "line", lift: true, color: arrowColor };
 								item_drawing.accents.push({type: "line", coords: [{X: 250,Y: 399}, {X: 329,Y: 44, cp1X: 250, cp1Y: 250, cp2X: 300, cp2Y: 70}]});
 								break;
-						}						
+						}
                         break;
                 }
 
@@ -490,7 +490,7 @@
                     case '2':	// short
                     case '3':	// short-medium
                         item_drawing.coords.push({X: 278,Y: 449},{X: 38, Y: 474});
-                        break;					
+                        break;
                     case '4':	// medium
                         item_drawing.coords.push({X: 291,Y: 626},{X: 71, Y: 651});
                         break;
@@ -508,8 +508,8 @@
                     case '3':	// short-medium
                         item_drawing.coords.push({X: -38, Y: 474}, {X: -278,Y: 449});
                         measurement_arrows.outseam = { mirror: false, coords: [{X: 222,Y: 0},{X: 263,Y: 171},{X: 278,Y: 449}], style: "line", lift: true, color: arrowColor };
-                        measurement_arrows.knee_width = { mirror: false, coords: [{X: -278,Y: 449},{X: -38,Y: 474}], style: arcStyle, lift: false, color: arrowColor };						
-                        break;							
+                        measurement_arrows.knee_width = { mirror: false, coords: [{X: -278,Y: 449},{X: -38,Y: 474}], style: arcStyle, lift: false, color: arrowColor };
+                        break;
                     case '4':	// medium
                         item_drawing.coords.push({X: -71,Y: 651},{X: -291,Y: 626});
                         measurement_arrows.outseam = { mirror: false, coords: [{X: 222,Y: 0},{X: 263,Y: 171},{X: 291,Y: 626}], style: "line", lift: true, color: arrowColor };
@@ -708,7 +708,7 @@
         var $message = "";
         var $message_type = "";
 
-        $(sizeme_UI_options.insertMessages).empty();
+        $(".sizeme_slider .slider_text_more_below").empty();
 
 
         if (!selectedProfile) {
@@ -750,7 +750,7 @@
                 .text($message)
                 .attr("href", linkToSelectedProfile)
                 .attr("target", "_blank")
-                .appendTo(sizeme_UI_options.insertMessages);
+                .appendTo(".sizeme_slider .slider_text_more_below");
         }
     }
 
@@ -1081,13 +1081,13 @@
         // create detailed dialog window
         itemName = product.name;
         var txts = ["Detailed View for", "Detailed view of fit", "Detailed fit - overlaps"];
-        var linkTarget = sizeme_UI_options.appendDetailedView;
+        var linkTarget = ".sizeme_slider .slider_text_below";
 
         initOpentip();
 
         if (isSizeGuide) {
             txts = ["Size Guide for", "Size guide", "Actual item measurements"];
-            linkTarget = sizeme_UI_options.appendSizeGuide;
+            linkTarget = sizeme_UI_options.appendContentTo;
         }
 
         var $dialog = $('<div id="sizeme_detailed_view_content"></div>')
@@ -1149,7 +1149,7 @@
             // clone slider (without detailed view toggler and in content stuff)
             var $slider_clone = $(".sizeme_slider")
                 .clone(true, true)
-                .find(sizeme_UI_options.appendDetailedView).remove()
+                .find(".slider_text_below").remove()
                 .end();
 
             $("<div class='sizeme_detailed_section'></div>")
@@ -1858,8 +1858,8 @@
                     var $new = "<div id='sizeme_header_container'>"+getStandardHeader()+"</div>";
 
                     // Prepend header to body
-                    $(sizeme_UI_options.appendSliderTo).append(getSliderHtml(systemsGo));
-                    $(sizeme_UI_options.appendInContentToggler).append($new);
+                    $(sizeme_UI_options.appendContentTo).append(getSliderHtml(systemsGo));
+                    $(".sizeme_slider .slider_text_below").append($new);
                     $("#sizeme_header.in_content").find("#logo").on("click", function() {
                         $("#sizeme_header.in_content").toggleClass("opened");
                     });
@@ -1924,13 +1924,6 @@
         };
 
         var loggedOutCb = function() {
-            // remove sizeme functionality from store (if exists)
-            $("#sizeme_header").remove();
-            $(sizeme_UI_options.sizeSelectionContainer).children(sizeme_UI_options.visualSelectionElement).removeClass('sm_too_small sm_slim sm_regular sm_loose sm_very_loose sm_huge sm_too_big sm_recommended');
-            $(sizeme_UI_options.sizeSelectionContainer).children(sizeme_UI_options.actualSelectionElement).removeClass('sm_too_small sm_slim sm_regular sm_loose sm_very_loose sm_huge sm_too_big sm_recommended');
-            $("#popup_opener").remove();
-            $("#sizeme_detailed_view_content").dialog("destroy").remove();
-            $(".sizeme_slider").remove();
 
             loadArrows(true);
 
