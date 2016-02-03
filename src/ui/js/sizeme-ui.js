@@ -1974,7 +1974,7 @@
 
 				// Product page splash
 				if (!noProductSplash()) {
-					$(sizeme_UI_options.sizeSelectionContainer).append(getProductSplash());
+					$(sizeme_UI_options.appendSplashTo).append(getProductSplash());
 					$("#sizeme_btn_no_thanks_product_splash").on("click", function() {
 						SizeMe.trackEvent("noProductSplash", "Store: Product splash closed");
 						createCookie("sizeme_no_product_splash", "true", cookieLifetime);
