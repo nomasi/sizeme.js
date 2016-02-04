@@ -652,8 +652,6 @@
             $(this).toggleClass("activeFlag");
         }).click(function() {
             $(thisId).prop("checked", true);
-            $(sizeme_UI_options.sizeSelectionContainer+" label").removeClass('ui-state-active');
-            $(thisId).next("label").addClass('ui-state-active');
             moveSlider(fitValue, true);
             return false;
         });
@@ -768,7 +766,7 @@
                 .attr("id", "button_"+thisId)
                 .text(thisLabel)
                 .on("click", function() {
-                    $(sizeme_UI_options.sizeSelectionContainer+" .sm-selectable").removeClass("sm-state-active");
+                    $(".sm-buttonset").find(".sm-selectable").removeClass("sm-state-active");
                     $(".element_for_"+thisVal).addClass("sm-state-active");
                     $(sizeme_UI_options.sizeSelectionContainer+" select").val(thisVal);
                     $(sizeme_UI_options.sizeSelectionContainer+" select").change();	// yell change
@@ -1713,7 +1711,6 @@
         // buttonize
         if (sizeme_options.buttonize === "yes") {
             selectToButtons(sizeme_UI_options.sizeSelectionContainer);
-            $(sizeme_UI_options.sizeSelectionContainer+" #button_choose").remove();
         }
 
 		// add add to cart event
@@ -1735,7 +1732,6 @@
             return function(responseMap) {
                 var smallestOffset = 9999,  // for recommendation
                     thisVal, thisId, thisData, thisSize;
-                $(sizeme_UI_options.sizeSelectionContainer+" .sm-fit_label").remove();
 
                 responseMap.each(function(key, result) {
                     var classKey = ".element_for_" + key;
@@ -1781,14 +1777,14 @@
                 });
 
                 // remove existing recommendation
-                $(sizeme_UI_options.sizeSelectionContainer+" .sm-selectable").removeClass('sm-recommended');
+                $(".sm-buttonset").find(".sm-selectable").removeClass('sm-recommended');
 
                 // set selection to recommendation on first match
                 if (firstRecommendation) {
                     // select recommended
                     $(sizeme_UI_options.sizeSelectionContainer+" select").val(recommendedId);
                     // remove existing active
-                    $(sizeme_UI_options.sizeSelectionContainer+" .sm-selectable").removeClass('sm-state-active');
+                    $(".sm-buttonset").find(".sm-selectable").removeClass('sm-state-active');
                     // add class
                     $(".element_for_" + recommendedId).addClass('sm-recommended sm-state-active');
                     var recommendedInput = $("#input_" + recommendedId);
