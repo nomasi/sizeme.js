@@ -4,7 +4,7 @@
 // www.sizeme.com
 // License undecided
 /* jshint browser:true, jquery:true */
-/* globals product: false, sizeme_options: false, sizeme_UI_options: false, Opentip: false, SizeMe: false */
+/* globals sizeme_product: false, sizeme_options: false, sizeme_UI_options: false, Opentip: false, SizeMe: false */
 
 (function($) {
     "use strict";
@@ -197,7 +197,7 @@
             $(this).addClass("sm-selectable element_for_" + myVal);
             this.id = (myVal ? "input_" + myVal : "choose");
             if (myVal) {
-                if (product.item.measurements[myVal]) {
+                if (sizeme_product.item.measurements[myVal]) {
                     sizeKeys.push({key: myVal, sizeLabel: myText});
                 }
             }
@@ -205,7 +205,7 @@
     }
 
     function loadArrows(isSizeGuide) {
-        var itemTypeStr = product.item.itemType.toString(),
+        var itemTypeStr = sizeme_product.item.itemType.toString(),
             $i, $x;
 
         // arrows first
@@ -1015,8 +1015,8 @@
             // arrows
             if (matchMap) {
                 // Detailed
-                product.item.measurements[inputKey].each(function(measurement) {
-                    if (product.item.measurements[inputKey][measurement] > 0 && measurement_arrows[measurement]) {
+                sizeme_product.item.measurements[inputKey].each(function(measurement) {
+                    if (sizeme_product.item.measurements[inputKey][measurement] > 0 && measurement_arrows[measurement]) {
                         // var draw = (matchMap[measurement].componentFit > 0);
                         var draw = true;
                         if (draw) {
@@ -1029,11 +1029,11 @@
             } else {
                 // Size Guider
                 if (!inputKey) {
-                    inputKey = Object.keys(product.item.measurements)[0];
+                    inputKey = Object.keys(sizeme_product.item.measurements)[0];
                 }
                 if (inputKey) {
-                    product.item.measurements[inputKey].each(function(measurement) {
-                        if (product.item.measurements[inputKey][measurement] > 0 && measurement_arrows[measurement]) {
+                    sizeme_product.item.measurements[inputKey].each(function(measurement) {
+                        if (sizeme_product.item.measurements[inputKey][measurement] > 0 && measurement_arrows[measurement]) {
                             c.strokeStyle = measurement_arrows[measurement].color;
                             c.fillStyle = measurement_arrows[measurement].color;
                             plotItem(c, measurement_arrows[measurement], true, scale, offsetX, offsetY, (measurement === highlight && highlight !== null));
@@ -1057,13 +1057,13 @@
     function hasNeckOpening() {
         var inputKey = $(sizeme_UI_options.sizeSelectionContainer).find("select").val();
         if (!inputKey) {
-            inputKey = Object.keys(product.item.measurements)[0];
+            inputKey = Object.keys(sizeme_product.item.measurements)[0];
         }
-        return product.item.measurements[inputKey].neck_opening_width > 0;
+        return sizeme_product.item.measurements[inputKey].neck_opening_width > 0;
     }
 
     function isInside() {
-        var itemTypeStr = product.item.itemType.toString();
+        var itemTypeStr = sizeme_product.item.itemType.toString();
         return ( (itemTypeStr[0] === '3') || (itemTypeStr[0] === '4') );
     }
 
@@ -1077,7 +1077,7 @@
 
     function writeDetailedWindow(isSizeGuide) {
         // create detailed dialog window
-        itemName = product.name;
+        itemName = sizeme_product.name;
         var txts = ["Detailed View for", "Detailed view of fit", "Detailed fit - overlaps"];
         var linkTarget = ".sizeme_slider .slider_text_below";
 
@@ -1279,8 +1279,8 @@
 
             $row = $(document.createElement("tr")).addClass("header_row");
             $i = 0;
-            product.item.measurements[inputKey].each(function(measurement) {
-                if (product.item.measurements[inputKey][measurement] > 0) {
+            sizeme_product.item.measurements[inputKey].each(function(measurement) {
+                if (sizeme_product.item.measurements[inputKey][measurement] > 0) {
                     var $txt = '<span class="num">'+(++$i)+'</span>'+LOCALIZED_STR[measurement];
                     if (measurement_arrows[measurement]) {
                         measurement_arrows[measurement].num = $i;
@@ -1295,12 +1295,12 @@
 
             if (sizeme_local_options.writeOverlaps) {
                 $row = $(document.createElement("tr")).addClass("data_row");
-                product.item.measurements[inputKey].each(function(measurement) {
+                sizeme_product.item.measurements[inputKey].each(function(measurement) {
                     var drawReason = 0;
                     if (matchMap[measurement] && matchMap[measurement].componentFit > 0) {
                         drawReason = 1;
                     }
-                    if (product.item.measurements[inputKey][measurement] > 0) {
+                    if (sizeme_product.item.measurements[inputKey][measurement] > 0) {
                         drawReason = 2;
                     }
                     if (drawReason > 0) {
@@ -1375,8 +1375,8 @@
                                 $tip_txts[measurement] += "SizeMe considers this particular fit <b>"+$fitVerdict.toLowerCase()+"</b>.";
                             }
 
-                        } else if (product.item.measurements[inputKey][measurement] > 0) {
-                            $txt = (product.item.measurements[inputKey][measurement]/10).toFixed(1)+" cm";
+                        } else if (sizeme_product.item.measurements[inputKey][measurement] > 0) {
+                            $txt = (sizeme_product.item.measurements[inputKey][measurement]/10).toFixed(1)+" cm";
                             $tip_txts[measurement] += "is "+$txt+".  ";
                             if (missingMeasurements) {
                                 if (getMissingMeasurement(missingMeasurements, measurement) !== null) {
@@ -1405,7 +1405,7 @@
             }
 
             $row = $(document.createElement("tr")).addClass("data_row fit_label_row");
-            product.item.measurements[inputKey].each(function(measurement, value) {
+            sizeme_product.item.measurements[inputKey].each(function(measurement, value) {
                 var $cell;
                 if (matchMap[measurement]) {
                     if (matchMap[measurement].componentFit > 0) {
@@ -1421,7 +1421,7 @@
                             $cell.html("").addClass("info");
                         }
                         $row.append(colorCell($cell, matchMap[measurement], measurement_arrows[measurement]));
-                    } else if (product.item.measurements[inputKey][measurement] > 0) {
+                    } else if (sizeme_product.item.measurements[inputKey][measurement] > 0) {
                         $txt = "";
                         $cell = $(document.createElement("td"))
                             .html($txt)
@@ -1429,7 +1429,7 @@
                             .data("measurement", measurement);
                         $row.append($cell);
                     }
-                } else if (product.item.measurements[inputKey][measurement] > 0) {
+                } else if (sizeme_product.item.measurements[inputKey][measurement] > 0) {
                     $txt = "";
                     var $class = "",
                         missing;
@@ -1455,12 +1455,12 @@
             // *** Size Guide ***
             $row = $(document.createElement("tr")).addClass("header_row");
             $i = 0;
-            var $first = Object.keys(product.item.measurements)[0],
+            var $first = Object.keys(sizeme_product.item.measurements)[0],
                 $j, measurement;
             $row.append($(document.createElement("td")).html("Size").addClass("size_column"));
             for ($j = 0; $j < FIT_ORDER.length; $j++) {
                 measurement = FIT_ORDER[$j];
-                if (product.item.measurements[$first][measurement] > 0) {
+                if (sizeme_product.item.measurements[$first][measurement] > 0) {
                     $txt = '<span class="num">'+(++$i)+'</span>'+LOCALIZED_STR[measurement];
                     if (measurement_arrows[measurement]) {
                         measurement_arrows[measurement].num = $i;
@@ -1483,8 +1483,8 @@
                 $row.append($(document.createElement("td")).html(sizeText(sizeKeys[$i].sizeLabel)).addClass("size_column"));
                 for ($j = 0; $j < FIT_ORDER.length; $j++) {
                     measurement = FIT_ORDER[$j];
-                    if (product.item.measurements[key][measurement] > 0) {
-                        $txt = (product.item.measurements[key][measurement]/10).toFixed(1);
+                    if (sizeme_product.item.measurements[key][measurement] > 0) {
+                        $txt = (sizeme_product.item.measurements[key][measurement]/10).toFixed(1);
                         $cell = $(document.createElement("td")).text($txt+" cm").addClass("run_highlight cell_"+measurement).data("measurement", measurement);
                         $row.append(colorCell($cell, "", measurement_arrows[measurement]));
                     }
@@ -1568,8 +1568,8 @@
 
     function findMaxMeasurement() {
         var maxVal = 0;
-        product.item.measurements.each(function(key, measurement_set) {
-            product.item.measurements[key].each(function(key_2, value) { maxVal = Math.max(value, maxVal); });
+        sizeme_product.item.measurements.each(function(key, measurement_set) {
+            sizeme_product.item.measurements[key].each(function(key_2, value) { maxVal = Math.max(value, maxVal); });
         });
         return maxVal;
     }
@@ -1693,9 +1693,9 @@
         var firstRecommendation = true;
 
         // check data
-        if (typeof product === 'undefined') {
+        if (typeof sizeme_product === 'undefined') {
             systemsGo = false;
-        } else if (product.item.itemType === 0) {
+        } else if (sizeme_product.item.itemType === 0) {
             systemsGo = false;
         } else if (findMaxMeasurement() === 0) {
             systemsGo = false;
@@ -1829,7 +1829,7 @@
 
                     if (typeof product !== 'undefined') {
                         var prodId = null;
-                        sizeMeObj.match(new SizeMe.FitRequest(selectedProfile, product.item), getMatchResponseHandler(prodId, product));
+                        sizeMeObj.match(new SizeMe.FitRequest(selectedProfile, sizeme_product.item), getMatchResponseHandler(prodId, sizeme_product));
                     }
                     SizeMe.trackEvent("activeProfileChanged", "Store: Active profile changed");
                 }
