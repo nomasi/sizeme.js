@@ -163,7 +163,8 @@
     var sizeme_local_options = {
         fitAreaSlider: true,
         writeMessages: true,
-        writeOverlaps: true
+        writeOverlaps: true,
+		firstRecommendation: true
     };
 
     function sizeText(txt) {
@@ -1690,7 +1691,6 @@
     $(function() {
 
         var systemsGo = true;
-        var firstRecommendation = true;
 
         // check data
         if (typeof sizeme_product === 'undefined') {
@@ -1780,7 +1780,7 @@
                 $(".sm-buttonset").find(".sm-selectable").removeClass('sm-recommended');
 
                 // set selection to recommendation on first match
-                if (firstRecommendation) {
+                if (sizeme_local_options.firstRecommendation) {
                     // select recommended
                     $(sizeme_UI_options.sizeSelectionContainer).find("select").val(recommendedId);
                     // remove existing active
@@ -1793,7 +1793,7 @@
                         thisSize = recommendedInput.text();
                         updateSlider(thisSize, thisData, true, sizeme_UI_options.detailedViewContainer, true);
                     }
-                    firstRecommendation = false;
+                    sizeme_local_options.firstRecommendation = false;
                 } else {
                     thisId = '#input_'+$(sizeme_UI_options.sizeSelectionContainer).find("select").val();
                     if ($(thisId).data("fitData")) {
@@ -1805,6 +1805,18 @@
             };
             // end of function 	getMatchResponseHandler
         };
+		
+        var matchErrorHandler = function() {
+			// this is called when the match function returns an error.  This is most likely due to a wrong or unadded itemType.  
+			// if the itemType is 
+			$(".sizeme_slider").hide();
+			$(".sm_detailed_view").hide();
+			
+			console.error("SizeMe: error in match function.  Please contact your local SizeMe dealer.");
+			
+            // end of function 	matchErrorHandler
+        };
+			
 
         var loggedInCb = function(sizeMeObj) {
 
@@ -1829,7 +1841,7 @@
 
                     if (typeof sizeme_product !== 'undefined') {
                         var prodId = null;
-                        sizeMeObj.match(new SizeMe.FitRequest(selectedProfile, sizeme_product.item), getMatchResponseHandler(prodId, sizeme_product));
+                        sizeMeObj.match(new SizeMe.FitRequest(selectedProfile, sizeme_product.item), getMatchResponseHandler(prodId, sizeme_product), matchErrorHandler);
                     }
                     SizeMe.trackEvent("activeProfileChanged", "Store: Active profile changed");
                 }
