@@ -2,8 +2,8 @@
 
 var sizeme_UI_options = {
     appendContentTo: ".product-options-bottom",
-    appendSplashTo: ".product-box",
-    sizeSelectionContainer: ".product-box",
+    appendSplashTo: ".sizeme-selection-container",
+    sizeSelectionContainer: ".sizeme-selection-container",
 	addToCartElement: "form#product_addtocart_form a.liftup-button, form#product_addtocart_form button.btn-cart",
 	addToCartEvent: "click"
 };

@@ -768,8 +768,8 @@
                 .on("click", function() {
                     $(".sm-buttonset").find(".sm-selectable").removeClass("sm-state-active");
                     $(".element_for_"+thisVal).addClass("sm-state-active");
-                    $(sizeme_UI_options.sizeSelectionContainer+" select").val(thisVal);
-                    $(sizeme_UI_options.sizeSelectionContainer+" select").change();	// yell change
+                    $(sizeme_UI_options.sizeSelectionContainer).find("select").val(thisVal);
+                    $(sizeme_UI_options.sizeSelectionContainer).find("select").change();	// yell change
                     SizeMe.trackEvent("sizeChanged", "Store: Product size changed");
                 });
             $content.append($div);
@@ -1010,7 +1010,7 @@
 
             // item
             plotItem(c, item_drawing, false, scale, offsetX, offsetY, false);
-            var inputKey = $(sizeme_UI_options.sizeSelectionContainer+" select").val();
+            var inputKey = $(sizeme_UI_options.sizeSelectionContainer).find("select").val();
 
             // arrows
             if (matchMap) {
@@ -1055,7 +1055,7 @@
     }
 
     function hasNeckOpening() {
-        var inputKey = $(sizeme_UI_options.sizeSelectionContainer + " select").val();
+        var inputKey = $(sizeme_UI_options.sizeSelectionContainer).find("select").val();
         if (!inputKey) {
             inputKey = Object.keys(product.item.measurements)[0];
         }
@@ -1764,7 +1764,7 @@
                 });
 
                 // bind change to inputs
-                $(sizeme_UI_options.sizeSelectionContainer+" select").change(function() {
+                $(sizeme_UI_options.sizeSelectionContainer).find("select").change(function() {
                     thisVal = $(this).val();
                     thisId = '#input_'+thisVal;
                     thisData = $(thisId).data("fitData");
@@ -1773,7 +1773,7 @@
                         updateSlider(thisSize, thisData, (thisVal === recommendedId), sizeme_UI_options.detailedViewContainer, true);
                     }
                     // relay change to cloned and vice versa
-                    $(sizeme_UI_options.sizeSelectionContainer+" select").val(thisVal);
+                    $(sizeme_UI_options.sizeSelectionContainer).find("select").val(thisVal);
                 });
 
                 // remove existing recommendation
@@ -1782,7 +1782,7 @@
                 // set selection to recommendation on first match
                 if (firstRecommendation) {
                     // select recommended
-                    $(sizeme_UI_options.sizeSelectionContainer+" select").val(recommendedId);
+                    $(sizeme_UI_options.sizeSelectionContainer).find("select").val(recommendedId);
                     // remove existing active
                     $(".sm-buttonset").find(".sm-selectable").removeClass('sm-state-active');
                     // add class
@@ -1795,7 +1795,7 @@
                     }
                     firstRecommendation = false;
                 } else {
-                    thisId = '#input_'+$(sizeme_UI_options.sizeSelectionContainer+" select").val();
+                    thisId = '#input_'+$(sizeme_UI_options.sizeSelectionContainer).find("select").val();
                     if ($(thisId).data("fitData")) {
                         thisData = $(thisId).data("fitData");
                         thisSize = $(thisId).text();
@@ -1927,10 +1927,10 @@
             writeDetailedWindow(true);
             updateDetailedTable();
             // bind change to select
-            $(sizeme_UI_options.sizeSelectionContainer+" select").change(function() {
+            $(sizeme_UI_options.sizeSelectionContainer).find("select").change(function() {
                 var thisVal = $(this).val();
                 // relay change to cloned and vice versa
-                $(sizeme_UI_options.sizeSelectionContainer+" select").val(thisVal);
+                $(sizeme_UI_options.sizeSelectionContainer).find("select").val(thisVal);
                 updateDetailedTable("", thisVal);
             });
 
