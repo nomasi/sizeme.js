@@ -1725,7 +1725,7 @@
 			});
 		}
 
-        var getMatchResponseHandler = function(prodId, product) {
+        var getMatchResponseHandler = function(prodId, sizeme_product) {
             if (!systemsGo) {
                 return function() {};
             }
@@ -1827,7 +1827,7 @@
                     $(".profileSelect").val(selectedProfile);
                     createCookie("sizeme_profileId", selectedProfile, cookieLifetime);
 
-                    if (typeof product !== 'undefined') {
+                    if (typeof sizeme_product !== 'undefined') {
                         var prodId = null;
                         sizeMeObj.match(new SizeMe.FitRequest(selectedProfile, sizeme_product.item), getMatchResponseHandler(prodId, sizeme_product));
                     }
