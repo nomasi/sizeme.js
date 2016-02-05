@@ -2,3 +2,11 @@
  * SizeMe input styles specific for Magento
  */
 .magnifyarea { z-index: 500; }
+
+/*!
+ * SizeMe temporary style for Makia
+ */
+
+.sizeme p {
+  display: none;
+}
