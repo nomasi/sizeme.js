@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "jquery-ui": "1.9.2",
-    "opentip": "2.4.6"
+    "opentip": "2.4.6",
+    "jquery-ui.dialog-extended": "https://github.com/jasonday/jQuery-UI-Dialog-extended.git"
   },
   "ignore": [
     "**/.*",

@@ -10,9 +10,29 @@
   "api": {
     "src": "src/sizeme-api.coffee"
   },
+  "ui": {
+    "js": {
+      "src": "src/ui/js/sizeme-ui.js"
+    },
+    "css": {
+      "src": "src/ui/css/sizeme-ui.css"
+    }
+  },
   "magento": {
-    "js": [ "src/ui/js/sizeme-ui.js", "src/ui/js/magento/sizeme-magento.js" ],
-    "css": [ "src/ui/css/sizeme-ui.css", "src/ui/css/magento/sizeme-magento.css" ]
+    "js": "src/ui/js/magento/sizeme-magento.js",
+    "css": "src/ui/css/magento/sizeme-magento.css",
+    "dest": {
+      "js": "lib/js/magento",
+      "css": "lib/css/magento"
+    }
+  },
+  "woocommerce": {
+    "js": "src/ui/js/woocommerce/sizeme-woocommerce.js",
+    "css": "src/ui/css/woocommerce/sizeme-woocommerce.css",
+    "dest": {
+      "js": "lib/js/woocommerce",
+      "css": "lib/css/woocommerce"
+    }
   },
   "jquery": {
     "js": "bower_components/jquery/jquery.js"
@@ -27,7 +47,7 @@
       "bower_components/jquery-ui/ui/jquery.ui.resizable.js",
       "bower_components/jquery-ui/ui/jquery.ui.button.js",
       "bower_components/jquery-ui/ui/jquery.ui.dialog.js",
-      "static_dependencies/jquery.dialogOptions.js"
+      "bower_components/jquery-ui.dialog-extended/jquery.dialogOptions.js"
     ],
     "css": [
       "bower_components/jquery-ui/themes/base/jquery.ui.core.css",

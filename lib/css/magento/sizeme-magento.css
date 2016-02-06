@@ -748,7 +748,7 @@ button.ui-button::-moz-focus-inner {
   color: #666;
   display: block;
   min-width: 170px;
-  height: 22px;
+  height: 21px;
   overflow: hidden;
   box-sizing: border-box;
 }
@@ -1758,4 +1758,12 @@ table#detailed_table {
 
 .magnifyarea {
   z-index: 500;
+}
+
+/*!
+ * SizeMe temporary style for Makia
+ */
+
+.sizeme p {
+  display: none;
 }
