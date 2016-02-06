@@ -1,10 +1,10 @@
 /* globals jQuery: false */
 
 var sizeme_UI_options = {
-    appendContentTo: ".product-options-bottom",
+    appendContentTo: ".variations_form",
     appendSplashTo: ".sizeme-selection-container",
     sizeSelectionContainer: ".sizeme-selection-container",
-	addToCartElement: "form#product_addtocart_form a.liftup-button, form#product_addtocart_form button.btn-cart",
+	addToCartElement: ".single_add_to_cart_button",
 	addToCartEvent: "click"
 };
 
