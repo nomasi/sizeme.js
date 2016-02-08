@@ -1711,6 +1711,7 @@
         // buttonize
         if (sizeme_options.buttonize === "yes") {
             selectToButtons(sizeme_UI_options.sizeSelectionContainer);
+			$("#button_choose").remove();
         }
 
 		// add add to cart event
