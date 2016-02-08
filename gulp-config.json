@@ -20,19 +20,11 @@
   },
   "magento": {
     "js": "src/ui/js/magento/sizeme-magento.js",
-    "css": "src/ui/css/magento/sizeme-magento.css",
-    "dest": {
-      "js": "lib/js/magento",
-      "css": "lib/css/magento"
-    }
+    "css": "src/ui/css/magento/sizeme-magento.css"
   },
   "woocommerce": {
     "js": "src/ui/js/woocommerce/sizeme-woocommerce.js",
-    "css": "src/ui/css/woocommerce/sizeme-woocommerce.css",
-    "dest": {
-      "js": "lib/js/woocommerce",
-      "css": "lib/css/woocommerce"
-    }
+    "css": "src/ui/css/woocommerce/sizeme-woocommerce.css"
   },
   "jquery": {
     "js": "bower_components/jquery/jquery.js"

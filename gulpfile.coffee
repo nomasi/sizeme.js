@@ -71,21 +71,21 @@ gulp.task 'magento.lint', ->
 gulp.task 'magento.js', ['api.js', 'ui.js', 'magento.lint'], ->
   gulp.src [config.dest.js + "/sizeme-api.js", config.dest.js + "/sizeme-ui.js", config.magento.js]
   .pipe concat("sizeme-magento.js")
-  .pipe gulp.dest config.magento.dest.js
+  .pipe gulp.dest config.dest.js
   .pipe uglify()
   .pipe rename extname: '.min.js'
-  .pipe gulp.dest config.magento.dest.js
+  .pipe gulp.dest config.dest.js
 
 gulp.task 'magento-with-deps', ['magento.js'], ->
   series gulp.src(config.jquery.js)
   , gulp.src(config.jquery_ui.js)
   , gulp.src(config.opentip.js).pipe(closure())
-  , gulp.src(config.magento.dest.js + "/sizeme-magento.js")
+  , gulp.src(config.dest.js + "/sizeme-magento.js")
     .pipe concat("sizeme-magento-with-deps.js")
-    .pipe gulp.dest config.magento.dest.js
+    .pipe gulp.dest config.dest.js
     .pipe uglify()
     .pipe rename extname: '.min.js'
-    .pipe gulp.dest config.magento.dest.js
+    .pipe gulp.dest config.dest.js
 
 gulp.task 'magento.css', ['ui.css'], ->
   series gulp.src(config.jquery_ui.css)
@@ -93,10 +93,10 @@ gulp.task 'magento.css', ['ui.css'], ->
   , gulp.src(config.dest.css + "/sizeme-ui.css")
   , gulp.src(config.magento.css)
     .pipe concatCss "sizeme-magento.css", rebaseUrls: false
-    .pipe gulp.dest config.magento.dest.css
+    .pipe gulp.dest config.dest.css
     .pipe minifyCss keepSpecialComments: "*"
     .pipe rename extname: '.min.css'
-    .pipe gulp.dest config.magento.dest.css
+    .pipe gulp.dest config.dest.css
 
 ##### WOOCOMMERCE #####
 
@@ -108,21 +108,21 @@ gulp.task 'woocommerce.lint', ->
 gulp.task 'woocommerce.js', ['api.js', 'ui.js', 'woocommerce.lint'], ->
   gulp.src [config.dest.js + "/sizeme-api.js", config.dest.js + "/sizeme-ui.js", config.woocommerce.js]
   .pipe concat("sizeme-woocommerce.js")
-  .pipe gulp.dest config.woocommerce.dest.js
+  .pipe gulp.dest config.dest.js
   .pipe uglify()
   .pipe rename extname: '.min.js'
-  .pipe gulp.dest config.woocommerce.dest.js
+  .pipe gulp.dest config.dest.js
 
 gulp.task 'woocommerce-with-deps', ['woocommerce.js'], ->
   series gulp.src(config.jquery.js)
   , gulp.src(config.jquery_ui.js)
   , gulp.src(config.opentip.js).pipe(closure())
-  , gulp.src(config.woocommerce.dest.js + "/sizeme-woocommerce.js")
+  , gulp.src(config.dest.js + "/sizeme-woocommerce.js")
   .pipe concat("sizeme-woocommerce-with-deps.js")
-  .pipe gulp.dest config.woocommerce.dest.js
+  .pipe gulp.dest config.dest.js
   .pipe uglify()
   .pipe rename extname: '.min.js'
-  .pipe gulp.dest config.woocommerce.dest.js
+  .pipe gulp.dest config.dest.js
 
 gulp.task 'woocommerce.css', ['ui.css'], ->
   series gulp.src(config.jquery_ui.css)
@@ -130,10 +130,10 @@ gulp.task 'woocommerce.css', ['ui.css'], ->
   , gulp.src(config.dest.css + "/sizeme-ui.css")
   , gulp.src(config.woocommerce.css)
   .pipe concatCss "sizeme-woocommerce.css", rebaseUrls: false
-  .pipe gulp.dest config.woocommerce.dest.css
+  .pipe gulp.dest config.dest.css
   .pipe minifyCss keepSpecialComments: "*"
   .pipe rename extname: '.min.css'
-  .pipe gulp.dest config.woocommerce.dest.css
+  .pipe gulp.dest config.dest.css
 
 gulp.task 'clean.js', (cb) ->
   del [ config.dest.js ], cb
