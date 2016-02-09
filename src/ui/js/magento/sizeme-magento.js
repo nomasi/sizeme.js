@@ -8,4 +8,3 @@ var sizeme_UI_options = {
 	addToCartEvent: "click"
 };
 
-jQuery.noConflict(true);

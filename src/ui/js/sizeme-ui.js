@@ -6,6 +6,8 @@
 /* jshint browser:true, jquery:true */
 /* globals sizeme_product: false, sizeme_options: false, sizeme_UI_options: false, Opentip: false, SizeMe: false */
 
+var sizeme_jquery = jQuery.noConflict(true);
+
 (function($) {
     "use strict";
 
@@ -1711,7 +1713,7 @@
         // buttonize
         if (sizeme_options.buttonize === "yes") {
             selectToButtons(sizeme_UI_options.sizeSelectionContainer);
-			$("#button_choose").remove();
+			$("#button_choose").remove();	// is magento specific and should ultimately be moved
         }
 
 		// add add to cart event
@@ -2054,4 +2056,4 @@
         createCookie(name,"",-1);
     }
 
-})(jQuery);
+})(sizeme_jquery);

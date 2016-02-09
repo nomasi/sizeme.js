@@ -7,5 +7,3 @@ var sizeme_UI_options = {
 	addToCartElement: ".single_add_to_cart_button",
 	addToCartEvent: "click"
 };
-
-jQuery.noConflict(true);
