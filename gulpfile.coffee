@@ -79,8 +79,9 @@ gulp.task 'magento.js', ['api.js', 'ui.js', 'magento.lint'], ->
 gulp.task 'magento-with-deps', ['magento.js'], ->
   series gulp.src(config.jquery.js)
   , gulp.src(config.jquery_ui.js)
-  , gulp.src(config.jqueryDialogOptions.js).pipe(closure(jQuery:'$'))
-  , gulp.src(config.opentip.js).pipe(closure())
+  , gulp.src(config.jqueryDialogOptions.js).pipe(closure($:'jQuery'))
+  , gulp.src(config.opentip.core).pipe(closure())
+  , gulp.src(config.opentip.adapter)
   , gulp.src(config.dest.js + "/sizeme-magento.js")
     .pipe concat("sizeme-magento-with-deps.js")
     .pipe gulp.dest config.dest.js
@@ -117,8 +118,9 @@ gulp.task 'woocommerce.js', ['api.js', 'ui.js', 'woocommerce.lint'], ->
 gulp.task 'woocommerce-with-deps', ['woocommerce.js'], ->
   series gulp.src(config.jquery.js)
   , gulp.src(config.jquery_ui.js)
-  , gulp.src(config.jqueryDialogOptions.js).pipe(closure(jQuery:'$'))
-  , gulp.src(config.opentip.js).pipe(closure())
+  , gulp.src(config.jqueryDialogOptions.js).pipe(closure($:'jQuery'))
+  , gulp.src(config.opentip.core).pipe(closure())
+  , gulp.src(config.opentip.adapter)
   , gulp.src(config.dest.js + "/sizeme-woocommerce.js")
   .pipe concat("sizeme-woocommerce-with-deps.js")
   .pipe gulp.dest config.dest.js
