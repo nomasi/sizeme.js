@@ -51,7 +51,8 @@
     "js": "bower_components/jquery-ui.dialog-extended/jquery.dialogOptions.js"
   },
   "opentip": {
-    "js": ["bower_components/opentip/lib/opentip.js","bower_components/opentip/lib/adapter-jquery.js"],
+    "core": "bower_components/opentip/lib/opentip.js",
+    "adapter": "bower_components/opentip/lib/adapter-jquery.js",
     "css": "bower_components/opentip/css/opentip.css"
   }
 }
