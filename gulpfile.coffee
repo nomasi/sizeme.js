@@ -29,8 +29,10 @@ gulp.task 'api.js', ['clean.js', 'api.lint'], ->
   )
     .pipe concat('sizeme-api.js')
     .pipe gulp.dest config.dest.js
-    .pipe uglify()
-    .pipe rename extname: '.min.js'
+    .pipe sourcemaps.init()
+      .pipe uglify()
+      .pipe rename extname: '.min.js'
+    .pipe sourcemaps.write './maps'
     .pipe gulp.dest config.dest.js
 
 gulp.task 'api.doc', ['clean.doc'], ->
@@ -51,15 +53,19 @@ gulp.task 'ui.lint', ->
 gulp.task 'ui.js', ['clean.js', 'ui.lint'], ->
   gulp.src config.ui.js.src
   .pipe gulp.dest config.dest.js
-  .pipe uglify()
-  .pipe rename extname: '.min.js'
+  .pipe sourcemaps.init()
+    .pipe uglify()
+    .pipe rename extname: '.min.js'
+  .pipe sourcemaps.write './maps'
   .pipe gulp.dest config.dest.js
 
 gulp.task 'ui.css', ['clean.css'], ->
   gulp.src config.ui.css.src
   .pipe gulp.dest config.dest.css
-  .pipe minifyCss keepSpecialComments: "*"
-  .pipe rename extname: '.min.css'
+  .pipe sourcemaps.init()
+    .pipe minifyCss keepSpecialComments: "*"
+    .pipe rename extname: '.min.css'
+  .pipe sourcemaps.write './maps'
   .pipe gulp.dest config.dest.css
 
 ##### MAGENTO #####
@@ -89,7 +95,7 @@ gulp.task 'magento-with-deps', ['magento.js'], ->
     .pipe sourcemaps.init()
       .pipe uglify()
       .pipe rename extname: '.min.js'
-    .pipe sourcemaps.write '.'
+    .pipe sourcemaps.write './maps'
     .pipe gulp.dest config.dest.js
 
 gulp.task 'magento.css', ['ui.css'], ->
@@ -102,7 +108,7 @@ gulp.task 'magento.css', ['ui.css'], ->
     .pipe sourcemaps.init()
       .pipe minifyCss keepSpecialComments: "*"
       .pipe rename extname: '.min.css'
-    .pipe sourcemaps.write '.'
+    .pipe sourcemaps.write './maps'
     .pipe gulp.dest config.dest.css
 
 ##### WOOCOMMERCE #####
@@ -132,7 +138,7 @@ gulp.task 'woocommerce-with-deps', ['woocommerce.js'], ->
   .pipe sourcemaps.init()
     .pipe uglify()
     .pipe rename extname: '.min.js'
-  .pipe sourcemaps.write '.'
+  .pipe sourcemaps.write './maps'
   .pipe gulp.dest config.dest.js
 
 gulp.task 'woocommerce.css', ['ui.css'], ->
@@ -145,7 +151,7 @@ gulp.task 'woocommerce.css', ['ui.css'], ->
   .pipe sourcemaps.init()
     .pipe minifyCss keepSpecialComments: "*"
     .pipe rename extname: '.min.css'
-  .pipe sourcemaps.write '.'
+  .pipe sourcemaps.write './maps'
   .pipe gulp.dest config.dest.css
 
 gulp.task 'clean.js', (cb) ->
