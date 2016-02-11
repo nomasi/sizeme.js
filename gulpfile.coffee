@@ -13,6 +13,7 @@ codo        = require 'gulp-codo'
 merge       = require 'gulp-merge'
 closure     = require 'gulp-jsclosure'
 config      = require './gulp-config.json'
+sourcemaps  = require 'gulp-sourcemaps'
 
 ##### API #####
 
@@ -85,8 +86,10 @@ gulp.task 'magento-with-deps', ['magento.js'], ->
   , gulp.src(config.dest.js + "/sizeme-magento.js")
     .pipe concat("sizeme-magento-with-deps.js")
     .pipe gulp.dest config.dest.js
-    .pipe uglify()
-    .pipe rename extname: '.min.js'
+    .pipe sourcemaps.init()
+      .pipe uglify()
+      .pipe rename extname: '.min.js'
+    .pipe sourcemaps.write '.'
     .pipe gulp.dest config.dest.js
 
 gulp.task 'magento.css', ['ui.css'], ->
@@ -96,8 +99,10 @@ gulp.task 'magento.css', ['ui.css'], ->
   , gulp.src(config.magento.css)
     .pipe concatCss "sizeme-magento.css", rebaseUrls: false
     .pipe gulp.dest config.dest.css
-    .pipe minifyCss keepSpecialComments: "*"
-    .pipe rename extname: '.min.css'
+    .pipe sourcemaps.init()
+      .pipe minifyCss keepSpecialComments: "*"
+      .pipe rename extname: '.min.css'
+    .pipe sourcemaps.write '.'
     .pipe gulp.dest config.dest.css
 
 ##### WOOCOMMERCE #####
@@ -124,8 +129,10 @@ gulp.task 'woocommerce-with-deps', ['woocommerce.js'], ->
   , gulp.src(config.dest.js + "/sizeme-woocommerce.js")
   .pipe concat("sizeme-woocommerce-with-deps.js")
   .pipe gulp.dest config.dest.js
-  .pipe uglify()
-  .pipe rename extname: '.min.js'
+  .pipe sourcemaps.init()
+    .pipe uglify()
+    .pipe rename extname: '.min.js'
+  .pipe sourcemaps.write '.'
   .pipe gulp.dest config.dest.js
 
 gulp.task 'woocommerce.css', ['ui.css'], ->
@@ -135,8 +142,10 @@ gulp.task 'woocommerce.css', ['ui.css'], ->
   , gulp.src(config.woocommerce.css)
   .pipe concatCss "sizeme-woocommerce.css", rebaseUrls: false
   .pipe gulp.dest config.dest.css
-  .pipe minifyCss keepSpecialComments: "*"
-  .pipe rename extname: '.min.css'
+  .pipe sourcemaps.init()
+    .pipe minifyCss keepSpecialComments: "*"
+    .pipe rename extname: '.min.css'
+  .pipe sourcemaps.write '.'
   .pipe gulp.dest config.dest.css
 
 gulp.task 'clean.js', (cb) ->
