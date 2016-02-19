@@ -802,6 +802,10 @@ table#detailed_table {
 	z-index: 10000 !important;
 }
 
+.sizeme_detailed_view_window * {
+	box-sizing: content-box;
+}
+
 @media only screen and (max-width: 40.063em) {
 	#sizeme_detailed_view_content {
 		text-align: center;
