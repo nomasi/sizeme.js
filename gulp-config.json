@@ -26,6 +26,10 @@
     "js": "src/ui/js/woocommerce/sizeme-woocommerce.js",
     "css": "src/ui/css/woocommerce/sizeme-woocommerce.css"
   },
+  "pupeshop": {
+    "js": "src/ui/js/pupeshop/sizeme-pupeshop.js",
+    "css": "src/ui/css/pupeshop/sizeme-pupeshop.css"
+  },  
   "jquery": {
     "js": "bower_components/jquery/jquery.js"
   },
