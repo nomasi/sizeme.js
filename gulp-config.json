@@ -16,6 +16,9 @@
     },
     "css": {
       "src": "src/ui/css/sizeme-ui.css"
+    },
+    "lang": {
+      "src": ["src/ui/js/i18n.js", "src/ui/js/i18n/*.js"]
     }
   },
   "magento": {
