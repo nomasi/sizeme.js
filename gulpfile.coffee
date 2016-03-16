@@ -153,6 +153,51 @@ gulp.task 'woocommerce.css', ['ui.css'], ->
     .pipe rename extname: '.min.css'
   .pipe sourcemaps.write './maps'
   .pipe gulp.dest config.dest.css
+  
+##### PUPESHOP #####
+
+gulp.task 'pupeshop.lint', ->
+  gulp.src config.pupeshop.js
+  .pipe jshint()
+  .pipe jshint.reporter("default")
+
+gulp.task 'pupeshop.js', ['api.js', 'ui.js', 'pupeshop.lint'], ->
+  gulp.src [config.dest.js + "/sizeme-api.js", config.dest.js + "/sizeme-ui.js", config.pupeshop.js]
+  .pipe concat("sizeme-pupeshop.js")
+  .pipe gulp.dest config.dest.js
+  .pipe uglify()
+  .pipe rename extname: '.min.js'
+  .pipe gulp.dest config.dest.js
+
+gulp.task 'pupeshop-with-deps', ['pupeshop.js'], ->
+  series gulp.src(config.jquery.js)
+  , gulp.src(config.jquery_ui.js)
+  , gulp.src(config.jqueryDialogOptions.js).pipe(closure($:'jQuery'))
+  , gulp.src(config.opentip.core).pipe(closure())
+  , gulp.src(config.opentip.adapter)
+  , gulp.src(config.dest.js + "/sizeme-pupeshop.js")
+  .pipe concat("sizeme-pupeshop-with-deps.js")
+  .pipe gulp.dest config.dest.js
+  .pipe sourcemaps.init()
+    .pipe uglify()
+    .pipe rename extname: '.min.js'
+  .pipe sourcemaps.write './maps'
+  .pipe gulp.dest config.dest.js
+
+gulp.task 'pupeshop.css', ['ui.css'], ->
+  series gulp.src(config.jquery_ui.css)
+  , gulp.src(config.opentip.css)
+  , gulp.src(config.dest.css + "/sizeme-ui.css")
+  , gulp.src(config.pupeshop.css)
+  .pipe concatCss "sizeme-pupeshop.css", rebaseUrls: false
+  .pipe gulp.dest config.dest.css
+  .pipe sourcemaps.init()
+    .pipe minifyCss keepSpecialComments: "*"
+    .pipe rename extname: '.min.css'
+  .pipe sourcemaps.write './maps'
+  .pipe gulp.dest config.dest.css
+
+##### CLEAN AND RUN #####
 
 gulp.task 'clean.js', (cb) ->
   del [ config.dest.js ], cb
@@ -165,4 +210,4 @@ gulp.task 'clean.css', (cb) ->
 
 gulp.task 'clean', [ 'clean.js', 'clean.css', 'clean.doc' ]
 
-gulp.task 'default', ['api.js', 'magento-with-deps', 'magento.css', 'woocommerce-with-deps', 'woocommerce.css']
+gulp.task 'default', ['api.js', 'magento-with-deps', 'magento.css', 'woocommerce-with-deps', 'woocommerce.css', 'pupeshop-with-deps', 'pupeshop.css']
