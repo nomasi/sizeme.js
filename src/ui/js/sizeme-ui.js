@@ -1192,7 +1192,7 @@
         if (value) {
             var selectedFit = getFit(value.componentFit);
             if (isImportant(value.importance, value.componentFit)) {
-                $cell.addClass(selectedFit.text);
+                $cell.addClass(selectedFit.label);
                 if (arrow) {
                     arrow.color = selectedFit.arrowColor;
                 }
@@ -1335,9 +1335,9 @@
                             }
 
                             if ((matchMap[measurement].componentFit > 0) && (isImportant(matchMap[measurement].importance, matchMap[measurement].componentFit))) {
-                                var $fitVerdict = LOCALIZED_STR[getFit(matchMap[measurement].componentFit).text];
+                                var $fitVerdict = LOCALIZED_STR[getFit(matchMap[measurement].componentFit).label];
                                 if (isLongFit(measurement)) {
-                                    $fitVerdict = LOCALIZED_STR_longs[getFit(matchMap[measurement].componentFit).text];
+                                    $fitVerdict = LOCALIZED_STR_longs[getFit(matchMap[measurement].componentFit).label];
                                 }
                                 $tip_txts[measurement] += "SizeMe considers this particular fit <b>"+$fitVerdict.toLowerCase()+"</b>.";
                             }
@@ -1376,9 +1376,9 @@
                 var $cell;
                 if (matchMap[measurement]) {
                     if (matchMap[measurement].componentFit > 0) {
-                        $txt = LOCALIZED_STR[getFit(matchMap[measurement].componentFit).text];
+                        $txt = LOCALIZED_STR[getFit(matchMap[measurement].componentFit).label];
                         if (isLongFit(measurement)) {
-                            $txt = LOCALIZED_STR_longs[getFit(matchMap[measurement].componentFit).text];
+                            $txt = LOCALIZED_STR_longs[getFit(matchMap[measurement].componentFit).label];
                         }
                         $cell = $(document.createElement("td"))
                             .html('<div>'+$txt+'</div>')
@@ -1468,7 +1468,7 @@
         // tip for overall slider in detailed
         var $trigger = $("#sizeme_detailed_view_content").find(".slider_container");
         var $tip_txt = "The overall fit for <b>size "+sizeText(thisSize)+"</b>";
-        $tip_txt += " is <b>"+LOCALIZED_STR[getFit(thisFit).text].toLowerCase()+"</b>";
+        $tip_txt += " is <b>"+LOCALIZED_STR[getFit(thisFit).label].toLowerCase()+"</b>";
         var $tip = new Opentip($trigger, $tip_txt);
     }
 
