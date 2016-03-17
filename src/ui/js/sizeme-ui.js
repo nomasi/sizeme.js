@@ -9,8 +9,7 @@
 (function($) {
     "use strict";
 
-    var LOCALIZED_STR = {};
-    var LOCALIZED_STR_longs = {};
+	var i18n = {};
 
     var FIT_RANGES = {
         1: {label: "too_small", arrowColor: "#999999"},
@@ -106,7 +105,7 @@
     var sizeKeys = [];
 
     var recommendedId;
-    var recommendedLabel = "None";
+    var recommendedLabel = "none";
 
     var selectedProfile;
     var linkToSelectedProfile;
@@ -232,8 +231,8 @@
         switch (itemTypeArr[0]) {
 
             case 1:	// shirts/coats
-                LOCALIZED_STR.hips = "Hem";
-                LOCALIZED_STR.pant_waist = "Hem";
+                i18n.MEASUREMENT.hips = i18n.MEASUREMENT.hem;
+                i18n.MEASUREMENT.pant_waist = i18n.MEASUREMENT.hem;
 
                 switch (itemTypeArr[1]) { // collar
                     case 2:	// tight (turnover)
@@ -325,7 +324,8 @@
 
                         measurement_arrows.sleeve_top_width = { mirror: false, coords: [{X: 250,Y: 399},{X: 430,Y: 322}], style: arcStyle, lift: false, color: arrowColor };
                         measurement_arrows.wrist_width = { mirror: false, coords: [{X: 324,Y: 529},{X: 482,Y: 460}], style: arcStyle, lift: false, color: arrowColor };
-                        LOCALIZED_STR.wrist_width = "Sleeve opening";
+						
+                        i18n.MEASUREMENT.wrist_width = i18n.MEASUREMENT.sleeve_opening;
 
 						switch (itemTypeArr[2]) { // shoulder types
 							case 3:	// dropped
@@ -350,7 +350,8 @@
 
                         measurement_arrows.sleeve_top_width = { mirror: false, coords: [{X: 250,Y: 399},{X: 419,Y: 340}], style: arcStyle, lift: false, color: arrowColor };
                         measurement_arrows.wrist_width = { mirror: false, coords: [{X: 389,Y: 769},{X: 527,Y: 719}], style: arcStyle, lift: false, color: arrowColor };
-                        LOCALIZED_STR.wrist_width = "Sleeve opening";
+						
+                        i18n.MEASUREMENT.wrist_width = i18n.MEASUREMENT.sleeve_opening;
 
 						switch (itemTypeArr[2]) { // shoulder types
 							case 3:	// dropped
@@ -572,7 +573,7 @@
 							var perc_width = Math.round((singleFit - basePosX) * sliderScale);
                             sliderHtml += "<td class='" + cellTitle + "'";
                             sliderHtml += " style='width: " + perc_width + "%; min-width: " + perc_width + "%;'>";
-                            sliderHtml += LOCALIZED_STR[cellTitle];
+                            sliderHtml += i18n.FIT_VERDICT[cellTitle];
                             sliderHtml += "</td>";
                         }
                         basePosX = (+singleFit);
@@ -680,10 +681,9 @@
 
         $(".sizeme_slider .slider_text_more_below").empty();
 
-
         if (!selectedProfile) {
             $message_type = "noMeasurements";
-            $message = "Add profiles to your account for a size recommendation.";
+            $message = i18n.MESSAGE.add_profiles;
         } else {
             var smallestFit = 9999;
             var largestFit = 0;
@@ -704,13 +704,13 @@
             if (missingMeasurements[0]) {
                 if (missingMeasurements[0].length > 0) {
                     $message_type = "missingMeasurements";
-                    $message = "Add more measurements to your profile for increased accuracy";
+                    $message = i18n.MESSAGE.missing_measurements;
                 }
             }
 
             if (accuracy < accuracyThreshold) {
                 $message_type = "noMeasurements";
-                $message = "Add measurements to your profile for a size recommendation.";
+                $message = i18n.MESSAGE.no_measurements;
             }
         }
 
@@ -1045,13 +1045,13 @@
     function writeDetailedWindow(isSizeGuide) {
         // create detailed dialog window
         itemName = sizeme_product.name;
-        var txts = ["Detailed View for", "Detailed view of fit", "Detailed fit - overlaps"];
+        var txts = i18n.DETAILED;
         var linkTarget = ".sizeme_slider .slider_text_below";
 
         initOpentip();
 
         if (isSizeGuide) {
-            txts = ["Size Guide for", "Size guide", "Actual item measurements"];
+			txts = i18n.SIZE_GUIDE;
             linkTarget = sizeme_UI_options.appendContentTo;
         }
 
@@ -1062,11 +1062,12 @@
                 dialogClass: "sizeme_detailed_view_window",
                 minHeight: 620,
                 minWidth: 940,
-                title: txts[0]+' <span class="name">'+itemName+'</span>'
+				closeText: i18n.COMMON.close_text,
+                title: txts.window_title+' <span class="name">'+itemName+'</span>'
             });
 
         // add toggle link to main page
-        $("<a class='a_button sm_detailed_view"+(isSizeGuide ? " size_guide" : "")+"' id='popup_opener' href='#'>"+txts[1]+"</a>")
+        $("<a class='a_button sm_detailed_view"+(isSizeGuide ? " size_guide" : "")+"' id='popup_opener' href='#'>"+txts.button_text+"</a>")
             .click(function() {
                 if (isSizeGuide) {
                     SizeMe.trackEvent("sizeGuideOpened", "Store: Size guide opened");
@@ -1086,14 +1087,13 @@
 
         // write item image canvas to first column
         $("<div class='sizeme_detailed_section'></div>")
-            //.append("<h2>Fit overview</h2>")
             .append("<canvas id='sizeme_item_view'></canvas>")
             .appendTo("#col1");
 
         // add shopping for selection to second (no cloning)
         if (!isSizeGuide) {
             $("<div class='sizeme_detailed_section'></div>")
-                .append("<h2>Shopping for</h2>")
+                .append("<h2>"+i18n.COMMON.shopping_for+"</h2>")
                 .append("<div class='shopping_for'></div>")
                 .appendTo("#col2");
 
@@ -1107,7 +1107,7 @@
                 }
             });
             $("<div class='sizeme_detailed_section'></div>")
-                .append("<h2>Selected size</h2>")
+                .append("<h2>"+i18n.COMMON.selected_size+"</h2>")
                 .append($clone)
                 .appendTo("#col2");
 
@@ -1118,14 +1118,14 @@
                 .end();
 
             $("<div class='sizeme_detailed_section'></div>")
-                .append("<h2>Overall fit</h2>")
+                .append("<h2>"+i18n.FIT_INFO.overall_fit+"</h2>")
                 .append($slider_clone)
                 .appendTo("#col2");
         }
 
         // write detailed table to col 2
         $("<div class='sizeme_detailed_section'></div>")
-            .append("<h2>"+txts[2]+"</h2>")
+            .append("<h2>"+txts.table_title+"</h2>")
             .append("<table id='detailed_table'><tbody></tbody></table>")
             .appendTo("#col2");
 
@@ -1153,12 +1153,12 @@
 
         // disclaimers
         if (isSizeGuide) {
-            var $txt = "These measurements are measured <u>flat across the outside of the item</u>.";
+            var $txt = i18n.SIZE_GUIDE.measurement_disclaimer;
             if (hasNeckOpening()) {
-                $txt += "<br />Except for the collar measurement, which is measured around the inside of the collar.";
+                $txt += "<br />"+i18n.SIZE_GUIDE.measurement_disclaimer_collar;
             }
             if (isInside()) {
-                $txt = "These measurements are measured <u>inside the item</u>.";
+                $txt = i18n.SIZE_GUIDE.measurement_disclaimer_inside;
             }
             $("<div class='sizeme_explanation'></div>")
                 .append("<p>"+$txt+"</p>")
@@ -1166,7 +1166,7 @@
 
             if (sizeme_options.service_status === "on") {
                 $("<div class='sizeme_advertisement'></div>")
-                    .append("<p>This size guide is brought to you by " +
+                    .append("<p>"+i18n.SIZE_GUIDE.advertisement+" " +
                         "<a id='sizeme_ad_link' href='" + SizeMe.contextAddress + "' class='logo' target='_blank'></a></p>")
                     .appendTo("#sizeme_detailed_view_content");
                 $("#sizeme_ad_link").on("click", function() {
@@ -1215,7 +1215,7 @@
 
     function isPinchedTxt(measurement) {
         if (isPinched(measurement)) {
-            return " when pinched";
+            return " "+i18n.FIT_INFO.when_pinched;
         }
         return "";
     }
@@ -1223,13 +1223,13 @@
     function getStretchedTxt(stretch_value) {
         if (stretch_value > 0) {
             if (stretch_value < 25) {
-                return "The item is stretched a little.  ";
+                return i18n.FIT_INFO.stretched_little+"  ";
             } else if (stretch_value < 75) {
-                return "The item is stretched.  ";
+                return i18n.FIT_INFO.stretched_somewhat+"  ";
             } else if (stretch_value < 95) {
-                return "The item is stretched a lot.  ";
+                return i18n.FIT_INFO.stretched_much+"  ";
             } else {
-                return "The item is stretched to the max.  ";
+                return i18n.FIT_INFO.stretched_max+"  ";
             }
         }
         return "";
@@ -1248,7 +1248,7 @@
             $i = 0;
             sizeme_product.item.measurements[inputKey].each(function(measurement) {
                 if (sizeme_product.item.measurements[inputKey][measurement] > 0) {
-                    var $txt = '<span class="num">'+(++$i)+'</span>'+LOCALIZED_STR[measurement];
+                    var $txt = '<span class="num">'+(++$i)+'</span>'+i18n.MEASUREMENT[measurement];
                     if (measurement_arrows[measurement]) {
                         measurement_arrows[measurement].num = $i;
                     }
@@ -1272,7 +1272,7 @@
                     }
                     if (drawReason > 0) {
                         var $txt = "";
-                        $tip_txts[measurement] = "The item's "+LOCALIZED_STR[measurement].toLowerCase()+" measurement ";
+                        $tip_txts[measurement] = i18n.FIT_INFO.the_item+" "+i18n.MEASUREMENT[measurement].toLowerCase()+" "+i18n.FIT_INFO.the_measurement+" ";
 
                         if (matchMap[measurement]) {
                             $txt = (matchMap[measurement].overlap/10).toFixed(1)+" cm";
@@ -1314,7 +1314,7 @@
                             if (matchMap[measurement].overlap <= 0) {
                                 if (matchMap[measurement].componentFit >= 1000) {
                                     $txt = "0.0 cm";
-                                    $tip_txts[measurement] += "is directly on you with no overlap.  ";
+                                    $tip_txts[measurement] += i18n.FIT_INFO.no_overlap+"  ";
                                     $tip_txts[measurement] += getStretchedTxt(matchMap[measurement].componentStretch);
                                 } else {
                                     $tip_txts[measurement] += "is <u>smaller</u> than your matching measurement by ";
@@ -1327,27 +1327,27 @@
                                 }
 
                                 $txt = "+"+$txt;
-                                $tip_txts[measurement] += "overlaps you by <b>"+$txt+"</b>"+isPinchedTxt(measurement);
+                                $tip_txts[measurement] += i18n.FIT_INFO.overlaps_you+" <b>"+$txt+"</b>"+isPinchedTxt(measurement);
                                 if (measurement === "sleeve") {
-                                    $tip_txts[measurement] += " when your arm and the item's sleeve are <u>completely straight</u>";
+                                    $tip_txts[measurement] += " "+i18n.FIT_INFO.arm_sleeve_straight;
                                 }
                                 $tip_txts[measurement] += ".  ";
                             }
 
                             if ((matchMap[measurement].componentFit > 0) && (isImportant(matchMap[measurement].importance, matchMap[measurement].componentFit))) {
-                                var $fitVerdict = LOCALIZED_STR[getFit(matchMap[measurement].componentFit).label];
+                                var $fitVerdict = i18n.FIT_VERDICT[getFit(matchMap[measurement].componentFit).label];
                                 if (isLongFit(measurement)) {
-                                    $fitVerdict = LOCALIZED_STR_longs[getFit(matchMap[measurement].componentFit).label];
+                                    $fitVerdict = i18n.FIT_VERDICT_LONG[getFit(matchMap[measurement].componentFit).label];
                                 }
-                                $tip_txts[measurement] += "SizeMe considers this particular fit <b>"+$fitVerdict.toLowerCase()+"</b>.";
+                                $tip_txts[measurement] += i18n.FIT_INFO.sm_considers_fit+" <b>"+$fitVerdict.toLowerCase()+"</b>.";
                             }
 
                         } else if (sizeme_product.item.measurements[inputKey][measurement] > 0) {
                             $txt = (sizeme_product.item.measurements[inputKey][measurement]/10).toFixed(1)+" cm";
-                            $tip_txts[measurement] += "is "+$txt+".  ";
+                            $tip_txts[measurement] += i18n.COMMON.is+" "+$txt+".  ";
                             if (missingMeasurements) {
                                 if (getMissingMeasurement(missingMeasurements, measurement) !== null) {
-                                    $tip_txts[measurement] += "Add this measurement to your profile to include it in the fit calculation.";
+                                    $tip_txts[measurement] += i18n.MESSAGE.add_this_measurement;
                                 }
                             }
                         }
@@ -1376,9 +1376,9 @@
                 var $cell;
                 if (matchMap[measurement]) {
                     if (matchMap[measurement].componentFit > 0) {
-                        $txt = LOCALIZED_STR[getFit(matchMap[measurement].componentFit).label];
+                        $txt = i18n.FIT_VERDICT[getFit(matchMap[measurement].componentFit).label];
                         if (isLongFit(measurement)) {
-                            $txt = LOCALIZED_STR_longs[getFit(matchMap[measurement].componentFit).label];
+                            $txt = i18n.FIT_VERDICT_LONG[getFit(matchMap[measurement].componentFit).label];
                         }
                         $cell = $(document.createElement("td"))
                             .html('<div>'+$txt+'</div>')
@@ -1402,7 +1402,7 @@
                         missing;
                     if (missingMeasurements) {
                         if ((missing = getMissingMeasurement(missingMeasurements, measurement)) !== null) {
-                            $txt = "<a target='_blank' href='"+linkToSelectedProfile+"#"+missing+"'>Add to profile</a>";
+                            $txt = "<a target='_blank' href='"+linkToSelectedProfile+"#"+missing+"'>"+i18n.COMMON.add_to_profile+"</a>";
                             $class = " add";
                         }
                     }
@@ -1424,11 +1424,11 @@
             $i = 0;
             var $first = Object.keys(sizeme_product.item.measurements)[0],
                 $j, measurement;
-            $row.append($(document.createElement("td")).html("Size").addClass("size_column"));
+            $row.append($(document.createElement("td")).html(i18n.COMMON.size).addClass("size_column"));
             for ($j = 0; $j < FIT_ORDER.length; $j++) {
                 measurement = FIT_ORDER[$j];
                 if (sizeme_product.item.measurements[$first][measurement] > 0) {
-                    $txt = '<span class="num">'+(++$i)+'</span>'+LOCALIZED_STR[measurement];
+                    $txt = '<span class="num">'+(++$i)+'</span>'+i18n.MEASUREMENT[measurement];
                     if (measurement_arrows[measurement]) {
                         measurement_arrows[measurement].num = $i;
                     }
@@ -1467,8 +1467,8 @@
     function updateDetailedSliderTip(thisSize, thisFit) {
         // tip for overall slider in detailed
         var $trigger = $("#sizeme_detailed_view_content").find(".slider_container");
-        var $tip_txt = "The overall fit for <b>size "+sizeText(thisSize)+"</b>";
-        $tip_txt += " is <b>"+LOCALIZED_STR[getFit(thisFit).label].toLowerCase()+"</b>";
+        var $tip_txt = i18n.FIT_INFO.overall_fit_for_size+" "+sizeText(thisSize)+"</b>";
+        $tip_txt += " "+i18n.COMMON.is+" <b>"+i18n.FIT_VERDICT[getFit(thisFit).label].toLowerCase()+"</b>";
         var $tip = new Opentip($trigger, $tip_txt);
     }
 
@@ -1492,7 +1492,7 @@
         var headerHtml = "<div id='sizeme_header' class='in_content'>";
         headerHtml += "<div id='logo'></div>";
         headerHtml += "<div class='sizeme_header_content'>";
-        headerHtml += "<div class='shopping_for'>Fetching profiles...</div>";
+        headerHtml += "<div class='shopping_for'>"+i18n.COMMON.fetching_profiles+"</div>";
         headerHtml += "<div class='top_right'>";
         headerHtml += "<div id='log_info'><span id='logged_in'></span></div>";
         headerHtml += "</div>";
@@ -1511,14 +1511,15 @@
         // *** SizeMe Splash #2 injection (detailed)
         var headerHtml = "<div id='sizeme_detailed_splash' class='splash'>";
         headerHtml += "<p class='splash_text'>";
-        headerHtml += "Take a few <b>measurements of yourself</b> and get personalized info on how this item would <b>fit you</b>.  ";
-        //headerHtml += "It's called SizeMe and it's free and really easy to use.";
-        headerHtml += "Create your <b>SizeMe</b> profile and relax!";
+        headerHtml += i18n.SPLASH.detailed_text;
         headerHtml += "</p>";
         headerHtml += "<ul class='splash_choices'>";
-        headerHtml += "<li class='sign_in'><a href='" + SizeMe.contextAddress + "/?mode=signup' target='_blank' class='a_button' id='sizeme_btn_sign_up'>Sign up</a><p>Yes, I'd like to create a free account</p></li>";
-        headerHtml += "<li class='log_in'><a href='#' class='a_button' id='sizeme_btn_login'>Log in</a><p>I already have an account</p></li>";
-        headerHtml += "<li class='no_thanks'><td><a href='#' class='a_button' id='sizeme_btn_no_thanks'>No thanks</a><p>Maybe later</p></li>";
+        headerHtml += "<li class='sign_in'>";
+		headerHtml += "<a href='" + SizeMe.contextAddress + "/?mode=signup' target='_blank' class='a_button' id='sizeme_btn_sign_up'>";
+		headerHtml += i18n.SPLASH.btn_sign_up_title+"</a>";
+		headerHtml += "<p>"+i18n.SPLASH.btn_sign_up_label+"</p></li>";
+        headerHtml += "<li class='log_in'><a href='#' class='a_button' id='sizeme_btn_login'>"+i18n.SPLASH.btn_log_in_title+"</a><p>"+i18n.SPLASH.btn_log_in_label+"</p></li>";
+        headerHtml += "<li class='no_thanks'><td><a href='#' class='a_button' id='sizeme_btn_no_thanks'>"+i18n.SPLASH.btn_no_thanks_title+"</a><p>"+i18n.SPLASH.btn_no_thanks_label+"</p></li>";
         headerHtml += "</ul></div>";
         return headerHtml;
     }
@@ -1526,9 +1527,9 @@
     function getProductSplash() {
         // *** SizeMe Splash in Product page
         var splashHtml = "<div id='sizeme_product_splash'>";
-		splashHtml += "<p>Unsure about the right size? Try ";
-		splashHtml += "<a href='" + SizeMe.contextAddress + "' target='_blank' id='sizeme_product_page_link' title='SizeMe is a free service to help you know how this item will fit _you_'></a>";
-		splashHtml += "<a href='#' id='sizeme_btn_no_thanks_product_splash' title='Close'></a>";
+		splashHtml += "<p>"+i18n.SPLASH.product_page_splashes[0]+" ";
+		splashHtml += "<a href='" + SizeMe.contextAddress + "' target='_blank' id='sizeme_product_page_link' title='"+i18n.SPLASH.product_page_splash_title+"'></a>";
+		splashHtml += "<a href='#' id='sizeme_btn_no_thanks_product_splash' title='"+i18n.COMMON.close_text+"'></a>";
         splashHtml += "</p></div>";
         return splashHtml;
     }
@@ -1658,9 +1659,7 @@
 
         var systemsGo = true;
 
-        var i18n = SizeMeI18N.get(sizeme_UI_options.lang);
-        LOCALIZED_STR = i18n.LOCALIZED_STR;
-        LOCALIZED_STR_longs = i18n.LOCALIZED_STR_longs;
+        i18n = SizeMeI18N.get(sizeme_UI_options.lang);
 
         // check data
         if (typeof sizeme_product === 'undefined') {
@@ -1853,7 +1852,7 @@
                         writeDetailedWindow(false);
                         moveSlider(OPTIMAL_FIT, false);
 
-                        $(".shopping_for").empty().html("<span class='shopping_for_text'>Shopping for: </span>")
+                        $(".shopping_for").empty().html("<span class='shopping_for_text'>"+i18n.COMMON.shopping_for+": </span>")
                             .append(function () {
                                 var select = document.createElement("select");
                                 select.className = "profileSelect";
@@ -1878,17 +1877,16 @@
                         $('.slider_bar, .slider_area').hide();
                         $(".shopping_for").empty();
                         $(".sizeme_header_content .shopping_for")
-                            .html("<span class='shopping_for_text no-profile'>You have no profiles on your account.</span>");
+                            .html("<span class='shopping_for_text no-profile'>"+i18n.MESSAGE.no_profiles+"</span>");
                         $(".sizeme_detailed_section .shopping_for")
                             .append(
                                 $("<span>").addClass("shopping_for_text no-profile")
-                                    .html("You have no profiles on your account. Go to " +
-                                        "<a id='logged_in_link' href='" + linkToSelectedProfile + "' target='_blank'>" +
-                                        "My Profiles</a> and create one.")
+                                    .html(i18n.MESSAGE.no_profiles+" "+i18n.COMMON.go_to+
+                                        "<a id='logged_in_link' href='" + linkToSelectedProfile + "' target='_blank'>" + i18n.COMMON.my_profiles + "</a> "+i18n+COMMON.and_create_one)
                             );
                     }
 
-                    $('#logged_in').html("<a id='logged_in_link' href='#' target='_blank'>My Profiles</a>");
+                    $('#logged_in').html("<a id='logged_in_link' href='#' target='_blank'>" + i18n.COMMON.my_profiles + "</a>");
 
                     // Yell change
                     doProfileChange(selectedProfile);

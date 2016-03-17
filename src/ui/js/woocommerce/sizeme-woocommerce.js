@@ -5,7 +5,8 @@ var sizeme_UI_options = {
     appendSplashTo: ".sizeme-selection-container",
     sizeSelectionContainer: ".sizeme-selection-container",
 	addToCartElement: ".single_add_to_cart_button",
-	addToCartEvent: "click"
+	addToCartEvent: "click",
+	lang: "en"	
 };
 
 jQuery.noConflict(true);
