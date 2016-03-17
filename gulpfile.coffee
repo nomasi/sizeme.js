@@ -46,12 +46,13 @@ gulp.task 'api.doc', ['clean.doc'], ->
 ##### UI #####
 
 gulp.task 'ui.lint', ->
-  gulp.src config.ui.js.src
+  gulp.src config.ui.lang.src.concat(config.ui.js.src)
   .pipe jshint()
   .pipe jshint.reporter("default")
 
 gulp.task 'ui.js', ['clean.js', 'ui.lint'], ->
-  gulp.src config.ui.js.src
+  gulp.src config.ui.lang.src.concat(config.ui.js.src)
+  .pipe concat "sizeme-ui.js"
   .pipe gulp.dest config.dest.js
   .pipe sourcemaps.init()
     .pipe uglify()
