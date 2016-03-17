@@ -13,13 +13,13 @@
     var LOCALIZED_STR_longs = {};
 
     var FIT_RANGES = {
-        1: {text: "too_small", arrowColor: "#999999"},
-        940: {text: "too_small", arrowColor: "#BB5555"},
-        1000: {text: "slim", arrowColor: "#457A4C"},
-        1055: {text: "regular", arrowColor: "#42AE49"},
-        1110: {text: "loose", arrowColor: "#87B98E"},
-        1165: {text: "too_big", arrowColor: "#BB5555"},
-        1225: {text: "too_big", arrowColor: "#BB5555"}
+        1: {label: "too_small", arrowColor: "#999999"},
+        940: {label: "too_small", arrowColor: "#BB5555"},
+        1000: {label: "slim", arrowColor: "#457A4C"},
+        1055: {label: "regular", arrowColor: "#42AE49"},
+        1110: {label: "loose", arrowColor: "#87B98E"},
+        1165: {label: "too_big", arrowColor: "#BB5555"},
+        1225: {label: "too_big", arrowColor: "#BB5555"}
     };
 
     var sliderPosXMin = 940;
@@ -576,7 +576,7 @@
                             sliderHtml += "</td>";
                         }
                         basePosX = (+singleFit);
-                        cellTitle = FIT_RANGES[singleFit].text;
+                        cellTitle = FIT_RANGES[singleFit].label;
                     }
                 }
             }
