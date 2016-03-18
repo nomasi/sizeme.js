@@ -1809,7 +1809,12 @@
 
                     if (typeof sizeme_product !== 'undefined') {
                         var prodId = null;
-                        sizeMeObj.match(new SizeMe.FitRequest(selectedProfile, sizeme_product.item), getMatchResponseHandler(prodId, sizeme_product), matchErrorHandler);
+                        var tmpItem = $.extend({}, sizeme_product.item);
+                        var itemType = tmpItem.itemType;
+                        if (itemType.indexOf('.') < 0) {
+                            tmpItem.itemType = itemType.split('').join('.');
+                        }
+                        sizeMeObj.match(new SizeMe.FitRequest(selectedProfile, tmpItem), getMatchResponseHandler(prodId, sizeme_product), matchErrorHandler);
                     }
                     SizeMe.trackEvent("activeProfileChanged", "Store: Active profile changed");
                 }
