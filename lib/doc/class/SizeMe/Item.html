@@ -43,7 +43,7 @@
 </div>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
-  <li>
+  <li deprecated>
     <span class='signature'>
       <a href='#addSize-dynamic'>
         #
@@ -51,8 +51,22 @@
 <b>addSize</b><span>(size, measurements)</span>
       </a>
     </span>
+    <span class='deprecated note title'>Deprecated</span>
     <span class='desc'>
-      Adds a new size information to this item. 
+      <strong>Deprecated.</strong>
+      Use addOption instead 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#addOption-dynamic'>
+        #
+(SizeMe.Item)
+<b>addOption</b><span>(label, measurements)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Adds a new selection option to this item. 
     </span>
   </li>
 </ul>
@@ -72,7 +86,7 @@
       <span class='name'>itemType</span>
       <span class='type'>
         (
-          <tt>Number</tt>
+          <tt>String</tt>
         )
       </span>
       &mdash;
@@ -122,6 +136,10 @@
       <br>
     </p>
     <div class='docstring'>
+  <div class='deprecated note'>
+    <strong>Deprecated.</strong>
+    Use addOption instead 
+  </div>
   <p>Adds a new size information to this item.</p>
 </div>
 <div class='tags'>
@@ -157,10 +175,53 @@
   </ul>
 </div>
   </div>
+  <div class='method_details'>
+    <p class='signature' id='addOption-dynamic'>
+      #
+(SizeMe.Item)
+<b>addOption</b><span>(label, measurements)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Adds a new selection option to this item.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>label</span>
+      <span class='type'>
+        (
+          <tt>*</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>the label for the option </span>
+    </li>
+    <li>
+      <span class='name'>measurements</span>
+      <span class='type'>
+        (
+          <tt><a href='../../class/SizeMe/Map.html'>SizeMe.Map</a></tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>a map of &quot;property-&gt;measurement&quot; pairs. </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      <tt><a href='../../class/SizeMe/Item.html'>SizeMe.Item</a></tt>
+    </li>
+  </ul>
+</div>
+  </div>
 </div>
     </div>
     <div id='footer'>
-  March 16, 16 17:11:31 by
+  March 18, 16 02:45:07 by
   <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
     Codo
   </a>
