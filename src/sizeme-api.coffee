@@ -408,7 +408,7 @@ A class for holding the information for specific item.
 ###
 class SizeMe.Item
   ###
-    @param [Number] itemType the type of the Item
+    @param [String] itemType the type of the Item
     @param [Number] itemLayer optional layer information
     @param [Number] itemThickness optional thickness value of the Item
     @param [Number] itemStretch optional stretch value of the Item
@@ -423,9 +423,21 @@ class SizeMe.Item
     @param {*} size the label for the size
     @param {SizeMe.Map} measurements a map of "property->measurement" pairs.
     @return {SizeMe.Item}
+    @deprecated Use addOption instead
   ###
   addSize: (size, measurements) ->
     @.measurements.addItem(size, measurements)
+    @
+
+  ###
+    Adds a new selection option to this item.
+
+    @param {*} label the label for the option
+    @param {SizeMe.Map} measurements a map of "property->measurement" pairs.
+    @return {SizeMe.Item}
+  ###
+  addOption: (label, measurements) ->
+    @.measurements.addItem(label, measurements)
     @
 
 class SizeMe.FitRange
