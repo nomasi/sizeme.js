@@ -1661,6 +1661,13 @@
 
         i18n = SizeMeI18N.get(sizeme_UI_options.lang);
 
+		// check options (and service status)
+		if (typeof sizeme_options === 'undefined') {
+			systemsGo = false;
+		} else if (sizeme_options.service_status === "off") {
+			systemsGo = false;
+		}
+
         // check data
         if (typeof sizeme_product === 'undefined') {
             systemsGo = false;
@@ -1668,7 +1675,12 @@
             systemsGo = false;
         } else if (findMaxMeasurement() === 0) {
             systemsGo = false;
-        }
+        } 
+		
+		// check existence of size selection element
+		if ($(sizeme_UI_options.sizeSelectionContainer).find('select').length === 0) {
+			systemsGo = false;
+		}
 
         if (systemsGo) {
             loadArrows(false); // everyone needs arrows
@@ -1678,10 +1690,12 @@
         addIds(sizeme_UI_options.sizeSelectionContainer);
 
         // buttonize
-        if (sizeme_options.buttonize === "yes") {
-            selectToButtons(sizeme_UI_options.sizeSelectionContainer);
-			$("#button_choose").remove();
-        }
+		if (typeof sizeme_options !== 'undefined') {
+			if (sizeme_options.buttonize === "yes") {
+				selectToButtons(sizeme_UI_options.sizeSelectionContainer);
+				$("#button_choose").remove();
+			}
+		}
 
 		// add add to cart event
 		if (sizeme_UI_options.addToCartEvent) {
