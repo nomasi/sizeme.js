@@ -17,7 +17,7 @@
                 not_fitted: "Liian lyhyt",
                 too_small: "Liian lyhyt",
                 slim: "Lyhyehkö",
-                regular: "Tavallinen",
+                regular: "Normaali",
                 loose: "Pitkähkö",
                 very_loose: "Pitkä",
                 huge: "Valtava",
