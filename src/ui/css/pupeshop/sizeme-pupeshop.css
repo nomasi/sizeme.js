@@ -2,3 +2,6 @@
  * SizeMe input styles specific for PupeShop
  */
 
+.sizeme_detailed_view_window .float-left {
+	float: none;
+}
