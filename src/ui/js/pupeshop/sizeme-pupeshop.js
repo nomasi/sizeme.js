@@ -3,7 +3,7 @@
 var sizeme_UI_options = {
     appendContentTo: ".productbuy",
     appendSplashTo: ".productbuy .row",
-    sizeSelectionContainer: ".productbuy .variation",
+    sizeSelectionContainer: ".variation",
 	addToCartElement: "input.to-cart",
 	addToCartEvent: "click",
 	lang: "fi"
