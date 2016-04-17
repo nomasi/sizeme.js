@@ -91,6 +91,7 @@
 				the_item: "The item's",
 				the_measurement: "measurement",
 				no_overlap: "is directly on you with no overlap.",
+				is_smaller: "is <u>smaller</u> than your matching measurement by",
 				overlaps_you: "overlaps you by",
 				arm_sleeve_straight: "when your arm and the item's sleeve are <u>completely straight</u>",
 				sm_considers_fit: "SizeMe considers this particular fit",

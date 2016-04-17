@@ -1317,7 +1317,7 @@
                                     $tip_txts[measurement] += i18n.FIT_INFO.no_overlap+"  ";
                                     $tip_txts[measurement] += getStretchedTxt(matchMap[measurement].componentStretch);
                                 } else {
-                                    $tip_txts[measurement] += "is <u>smaller</u> than your matching measurement by ";
+                                    $tip_txts[measurement] += i18n.FIT_INFO.is_smaller+" ";
                                     $tip_txts[measurement] += $txt.replace("-","");
                                     $tip_txts[measurement] += isPinchedTxt(measurement)+".  ";
                                 }
