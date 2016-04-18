@@ -1726,9 +1726,12 @@
                     // Analyze fit for recommendations
                     var fitOffset = Math.abs(result.totalFit - OPTIMAL_FIT);
                     if (fitOffset < smallestOffset) {
-                        smallestOffset = fitOffset;
-                        recommendedId = key;
-                        recommendedLabel = result.fitRangeLabel;
+						// check if recommended option exists (is for sale)
+						if ($("#input_" + key).length > 0) {
+							smallestOffset = fitOffset;
+							recommendedId = key;
+							recommendedLabel = result.fitRangeLabel;
+						}
                     }
 
                     // check if there are results in the first place
