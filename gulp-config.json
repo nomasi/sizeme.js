@@ -33,6 +33,10 @@
     "js": "src/ui/js/pupeshop/sizeme-pupeshop.js",
     "css": "src/ui/css/pupeshop/sizeme-pupeshop.css"
   },  
+  "printmotor": {
+    "js": "src/ui/js/printmotor/sizeme-printmotor.js",
+    "css": "src/ui/css/printmotor/sizeme-printmotor.css"
+  },    
   "jquery": {
     "js": "bower_components/jquery/jquery.js"
   },
