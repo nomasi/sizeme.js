@@ -197,6 +197,49 @@ gulp.task 'pupeshop.css', ['ui.css'], ->
     .pipe rename extname: '.min.css'
   .pipe sourcemaps.write './maps'
   .pipe gulp.dest config.dest.css
+  
+##### PRINTMOTOR #####
+
+gulp.task 'printmotor.lint', ->
+  gulp.src config.printmotor.js
+  .pipe jshint()
+  .pipe jshint.reporter("default")
+
+gulp.task 'printmotor.js', ['api.js', 'ui.js', 'printmotor.lint'], ->
+  gulp.src [config.dest.js + "/sizeme-api.js", config.dest.js + "/sizeme-ui.js", config.printmotor.js]
+  .pipe concat("sizeme-printmotor.js")
+  .pipe gulp.dest config.dest.js
+  .pipe uglify()
+  .pipe rename extname: '.min.js'
+  .pipe gulp.dest config.dest.js
+
+gulp.task 'printmotor-with-deps', ['printmotor.js'], ->
+  series gulp.src(config.jquery.js)
+  , gulp.src(config.jquery_ui.js)
+  , gulp.src(config.jqueryDialogOptions.js).pipe(closure($:'jQuery'))
+  , gulp.src(config.opentip.core).pipe(closure())
+  , gulp.src(config.opentip.adapter)
+  , gulp.src(config.dest.js + "/sizeme-printmotor.js")
+  .pipe concat("sizeme-printmotor-with-deps.js")
+  .pipe gulp.dest config.dest.js
+  .pipe sourcemaps.init()
+    .pipe uglify()
+    .pipe rename extname: '.min.js'
+  .pipe sourcemaps.write './maps'
+  .pipe gulp.dest config.dest.js
+
+gulp.task 'printmotor.css', ['ui.css'], ->
+  series gulp.src(config.jquery_ui.css)
+  , gulp.src(config.opentip.css)
+  , gulp.src(config.dest.css + "/sizeme-ui.css")
+  , gulp.src(config.printmotor.css)
+  .pipe concatCss "sizeme-printmotor.css", rebaseUrls: false
+  .pipe gulp.dest config.dest.css
+  .pipe sourcemaps.init()
+    .pipe minifyCss keepSpecialComments: "*"
+    .pipe rename extname: '.min.css'
+  .pipe sourcemaps.write './maps'
+  .pipe gulp.dest config.dest.css  
 
 ##### CLEAN AND RUN #####
 
@@ -211,4 +254,4 @@ gulp.task 'clean.css', (cb) ->
 
 gulp.task 'clean', [ 'clean.js', 'clean.css', 'clean.doc' ]
 
-gulp.task 'default', ['api.js', 'magento-with-deps', 'magento.css', 'woocommerce-with-deps', 'woocommerce.css', 'pupeshop-with-deps', 'pupeshop.css']
+gulp.task 'default', ['api.js', 'magento-with-deps', 'magento.css', 'woocommerce-with-deps', 'woocommerce.css', 'pupeshop-with-deps', 'pupeshop.css', 'printmotor-with-deps', 'printmotor.css']
