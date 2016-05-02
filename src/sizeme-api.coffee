@@ -270,25 +270,6 @@ class SizeMe
     undefined
 
   ###
-    Fetches item types and their measurement properties from the server.
-    Returned object contains item type id ("id") as a key and an object
-    containing the name of the item type ("name") and defined properties
-    of the item type as an array ("properties")
-
-    @param [Function] callback
-    @param [Function] errorCallback
-  ###
-  getItemTypes: (callback, errorCallback = defaultErrorCallback) ->
-    createCORSRequest("GET", "/api/itemTypes",
-      (xhr) ->
-        SizeMe.trackEvent("getItemTypes", "API: getItemTypes")
-        callback(JSON.parse(xhr.responseText))
-    ,
-      (xhr) -> errorCallback(xhr, xhr.status, xhr.statusText)
-    ).send()
-    undefined
-
-  ###
     Open the login frame and set the callback function for logging in
 
     @param loggedInCallback [Function]
