@@ -767,6 +767,8 @@ table#detailed_table {
 	font-size: 12px;
 }
 
+/* sleeve visualization */
+
 .opentip-container .sleeve {
 	float: right;
 	position: relative; top: 0; left: 15px;
@@ -798,6 +800,42 @@ table#detailed_table {
 .opentip-container .sleeve.negative_overlap .sleeve_overlap {
 	background-image: url(images/sizeme_sleeve_overlap_no_arrow.png);
 }
+
+/* front height visualization */
+
+.opentip-container .front_height {
+	float: right;
+	position: relative; top: 0; left: 15px;
+	width: 154px;
+	height: 108px;
+	margin: 0px 0px 10px 10px; 
+	padding: 0;
+	background-image: url(images/sizeme_front_height_arrowed.png);
+	background-position: 0px 0px; 
+	background-repeat: no-repeat;
+}
+
+.opentip-container .front_height.negative_overlap { background-image: url(images/sizeme_front_height_no_arrow.png); }
+
+.opentip-container .front_height div.meas {
+	position: absolute; top: 7px; left: 0px;
+	color: #000;
+	font-size: 12px;
+}
+
+.opentip-container .front_height .front_height_overlap {
+	position: absolute; top: 0; left: 0;
+	width: 147px;
+	height: 35px;
+	background-image: url(images/sizeme_front_height_overlap_arrowed.png);
+	background-position: left bottom; 
+}
+
+.opentip-container .front_height.negative_overlap .front_height_overlap {
+	background-image: url(images/sizeme_front_height_overlap_no_arrow.png);
+}
+
+/* detailed view window */
 
 .sizeme_detailed_view_window {
 	z-index: 10000 !important;
