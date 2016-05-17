@@ -1062,6 +1062,8 @@
                 dialogClass: "sizeme_detailed_view_window",
                 minHeight: 620,
                 minWidth: 940,
+				scaleH: 1,
+				scaleW: 1,
 				closeText: i18n.COMMON.close_text,
                 title: txts.window_title+' <span class="name">'+itemName+'</span>'
             });
