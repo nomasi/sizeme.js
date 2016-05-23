@@ -454,7 +454,8 @@ a.sm_detailed_view.size_guide {
 a.message_container  { color: #000; }
 a.message_container:hover { color: #333; }
 
-.message_container.missingMeasurements { background-image: url(images/information.png); }
+.message_container.missingMeasurements,
+.message_container.info { background-image: url(images/information.png); }
 .message_container.noMeasurements { background-image: url(images/error.png); }
 
 /* Special logout behaviour */
@@ -629,6 +630,7 @@ table#detailed_table {
  background-repeat: no-repeat;
  padding: 4px 0px 0px 5px;
  display: block;
+ min-height: 16px;
 }
 
 

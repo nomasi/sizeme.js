@@ -1298,7 +1298,8 @@ a.message_container:hover {
   color: #333;
 }
 
-.message_container.missingMeasurements {
+.message_container.missingMeasurements,
+.message_container.info {
   background-image: url(images/information.png);
 }
 
@@ -1532,6 +1533,7 @@ table#detailed_table {
   background-repeat: no-repeat;
   padding: 4px 0px 0px 5px;
   display: block;
+  min-height: 16px;
 }
 
 #dialog_close {

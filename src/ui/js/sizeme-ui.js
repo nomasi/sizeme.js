@@ -678,49 +678,51 @@
     function goWriteMessages(matchMap, missingMeasurements, accuracy) {
         var $message = "";
         var $message_type = "";
+        var $message_link = "";
 
         $(".sizeme_slider .slider_text_more_below").empty();
 
         if (!selectedProfile) {
             $message_type = "noMeasurements";
+            $message_link = linkToSelectedProfile;
             $message = i18n.MESSAGE.add_profiles;
         } else {
-            var smallestFit = 9999;
-            var largestFit = 0;
-
-            for (var measurement in matchMap) {
-                if (matchMap.hasOwnProperty(measurement)) {
-                    if (matchMap[measurement].componentFit > 0) {
-                        if (matchMap[measurement].componentFit < smallestFit) {
-                            smallestFit = matchMap[measurement].componentFit;
-                        }
-                        if (matchMap[measurement].componentFit > largestFit) {
-                            largestFit = matchMap[measurement].componentFit;
-                        }
-                    }
-                }
-            }
-
             if (missingMeasurements[0]) {
                 if (missingMeasurements[0].length > 0) {
                     $message_type = "missingMeasurements";
+					$message_link = linkToSelectedProfile;
                     $message = i18n.MESSAGE.missing_measurements;
                 }
             }
 
             if (accuracy < accuracyThreshold) {
                 $message_type = "noMeasurements";
+				$message_link = linkToSelectedProfile;
                 $message = i18n.MESSAGE.no_measurements;
             }
+			
+			if ( (!$message_type) && (typeof matchMap.neck_opening_width !== "undefined") ) {
+				if (matchMap.neck_opening_width.overlap < 0)	{
+					$message_type = "info";
+					$message = i18n.MESSAGE.no_top_button;
+				}
+			}
         }
 
         if ($message_type) {
-            $('<a></a>')
-                .addClass("message_container "+$message_type)
-                .text($message)
-                .attr("href", linkToSelectedProfile)
-                .attr("target", "_blank")
-                .appendTo(".sizeme_slider .slider_text_more_below");
+			if ($message_link) {
+				$('<a></a>')
+					.addClass("message_container "+$message_type)
+					.text($message)
+					.attr("href", linkToSelectedProfile)
+					.attr("target", "_blank")
+					.appendTo(".sizeme_slider .slider_text_more_below");
+			} else {
+				$('<div></div>')
+					.addClass("message_container "+$message_type)
+					.text($message)
+					.appendTo(".sizeme_slider .slider_text_more_below");
+			}
         }
     }
 
@@ -1274,6 +1276,7 @@
                     }
                     if (drawReason > 0) {
                         var $txt = "";
+						var $meas_top = 0;
                         $tip_txts[measurement] = i18n.FIT_INFO.the_item+" "+i18n.MEASUREMENT[measurement].toLowerCase()+" "+i18n.FIT_INFO.the_measurement+" ";
 
                         if (matchMap[measurement]) {
@@ -1285,61 +1288,62 @@
                                 $txt = "0.0 cm";
                             }
 
-                            if (measurement === "sleeve") {
-                                var $sleeve_txt = "<div class='sleeve" + (matchMap[measurement].overlap < 0 ? " negative_overlap" : "") + "'>";
-                                var $sleeve_height = Math.round(29 + (75*(matchMap[measurement].percentage / 0.3)));	// zero-point + (wrist_to_finger * (overlap_percentage / normal_finger_ratio))
-                                $sleeve_height = Math.max(11, $sleeve_height);	// never under 11 (34 px)
-                                $sleeve_height = Math.min(105, $sleeve_height);	// never over overlap image height
+							switch(measurement) {
+								case "sleeve":
+									var $sleeve_txt = "<div class='sleeve" + (matchMap[measurement].overlap < 0 ? " negative_overlap" : "") + "'>";
+									var $sleeve_height = Math.round(29 + (75*(matchMap[measurement].percentage / 0.3)));	// zero-point + (wrist_to_finger * (overlap_percentage / normal_finger_ratio))
+									$sleeve_height = Math.max(11, $sleeve_height);	// never under 11 (34 px)
+									$sleeve_height = Math.min(105, $sleeve_height);	// never over overlap image height
 
-                                var $meas_top = Math.round((($sleeve_height - 29) / 2)+29-9);
-                                if (($sleeve_height - 29) < 14) { // no fit in middle if no room
-                                    $meas_top = $sleeve_height+23;
-                                }
-                                if (matchMap[measurement].overlap < 0) {
-                                    $sleeve_txt += "<div class='meas' style='top:14px;left:-7px;'>"+$txt+"</div>";	// negative overlap in different place
-                                    if (matchMap[measurement].componentFit >= 1000) {
-                                        $sleeve_height = 29;
-                                    }
-                                } else {
-                                    $sleeve_txt += "<div class='meas' style='top:"+$meas_top+"px;";
-                                    if (matchMap[measurement].overlap >= 100) {
-                                        $sleeve_txt += "left:-7px;";
-                                    }
-                                    $sleeve_txt += "'>"+$txt+"</div>";	// mid point?
-                                }
+									$meas_top = Math.round((($sleeve_height - 29) / 2)+29-9);
+									if (($sleeve_height - 29) < 14) { // no fit in middle if no room
+										$meas_top = $sleeve_height+23;
+									}
+									if (matchMap[measurement].overlap < 0) {
+										$sleeve_txt += "<div class='meas' style='top:14px;left:-7px;'>"+$txt+"</div>";	// negative overlap in different place
+										if (matchMap[measurement].componentFit >= 1000) {
+											$sleeve_height = 29;
+										}
+									} else {
+										$sleeve_txt += "<div class='meas' style='top:"+$meas_top+"px;";
+										if (matchMap[measurement].overlap >= 100) {
+											$sleeve_txt += "left:-7px;";
+										}
+										$sleeve_txt += "'>"+$txt+"</div>";	// mid point?
+									}
 
-                                $sleeve_txt += "<div class='sleeve_overlap' style='height:"+($sleeve_height+23)+"px;'></div>";	// sleeve + image bottom clearance
-                                $sleeve_txt += "</div>";
-                                $tip_txts[measurement] = $sleeve_txt + $tip_txts[measurement];
-                            }
-							
-                            if (measurement === "front_height") {
-                                var $front_height_txt = "<div class='front_height" + (matchMap[measurement].overlap < 0 ? " negative_overlap" : "") + "'>";
-                                var $front_height_height = Math.round(25 + (matchMap[measurement].percentage*(9 / 0.05)));	// zero-point + (overlap_percentage * (pant waistband height in px / pant waistband in %))
-                                $front_height_height = Math.max(0, $front_height_height);	// never under 0 (+23 = 34 px)
-                                $front_height_height = Math.min(105, $front_height_height);	// never over overlap image height (+23 px)
+									$sleeve_txt += "<div class='sleeve_overlap' style='height:"+($sleeve_height+23)+"px;'></div>";	// sleeve + image bottom clearance
+									$sleeve_txt += "</div>";
+									$tip_txts[measurement] = $sleeve_txt + $tip_txts[measurement];
+									break;
+								case "front_height":
+									var $front_height_txt = "<div class='front_height" + (matchMap[measurement].overlap < 0 ? " negative_overlap" : "") + "'>";
+									var $front_height_height = Math.round(25 + (matchMap[measurement].percentage*(9 / 0.05)));	// zero-point + (overlap_percentage * (pant waistband height in px / pant waistband in %))
+									$front_height_height = Math.max(0, $front_height_height);	// never under 0 (+23 = 34 px)
+									$front_height_height = Math.min(105, $front_height_height);	// never over overlap image height (+23 px)
 
-                                var $meas_top = Math.round((($front_height_height - 25) / 2)+25-9);
-                                if (($front_height_height - 25) < 12) { // no fit in middle if no room
-                                    $meas_top = $front_height_height+23;
-                                }
-                                if (matchMap[measurement].overlap < 0) {
-                                    $front_height_txt += "<div class='meas' style='top:14px;left:-7px;'>"+$txt+"</div>";	// negative overlap in different place
-                                    if (matchMap[measurement].componentFit >= 1000) {
-                                        $front_height_height = 28;
-                                    }
-                                } else {
-                                    $front_height_txt += "<div class='meas' style='top:"+$meas_top+"px;";
-                                    if (matchMap[measurement].overlap >= 100) {
-                                        $front_height_txt += "left:-12px;";
-                                    }
-                                    $front_height_txt += "'>"+$txt+"</div>";	// mid point?
-                                }
+									$meas_top = Math.round((($front_height_height - 25) / 2)+25-9);
+									if (($front_height_height - 25) < 12) { // no fit in middle if no room
+										$meas_top = $front_height_height+23;
+									}
+									if (matchMap[measurement].overlap < 0) {
+										$front_height_txt += "<div class='meas' style='top:14px;left:-7px;'>"+$txt+"</div>";	// negative overlap in different place
+										if (matchMap[measurement].componentFit >= 1000) {
+											$front_height_height = 28;
+										}
+									} else {
+										$front_height_txt += "<div class='meas' style='top:"+$meas_top+"px;";
+										if (matchMap[measurement].overlap >= 100) {
+											$front_height_txt += "left:-12px;";
+										}
+										$front_height_txt += "'>"+$txt+"</div>";	// mid point?
+									}
 
-                                $front_height_txt += "<div class='front_height_overlap' style='height:"+($front_height_height+23)+"px;'></div>";	// front_height + image (arrow) bottom clearance
-                                $front_height_txt += "</div>";
-                                $tip_txts[measurement] = $front_height_txt + $tip_txts[measurement];
-                            }							
+									$front_height_txt += "<div class='front_height_overlap' style='height:"+($front_height_height+23)+"px;'></div>";	// front_height + image (arrow) bottom clearance
+									$front_height_txt += "</div>";
+									$tip_txts[measurement] = $front_height_txt + $tip_txts[measurement];
+									break;
+                            }	// end switch measurement					
 
                             if (matchMap[measurement].overlap <= 0) {
                                 if (matchMap[measurement].componentFit >= 1000) {
@@ -1407,16 +1411,20 @@
                 if (matchMap[measurement]) {
                     if (matchMap[measurement].componentFit > 0) {
                         $txt = i18n.FIT_VERDICT[getFit(matchMap[measurement].componentFit).label];
+						
                         if (isLongFit(measurement)) {
                             $txt = i18n.FIT_VERDICT_LONG[getFit(matchMap[measurement].componentFit).label];
                         }
+						
                         $cell = $(document.createElement("td"))
                             .html('<div>'+$txt+'</div>')
                             .addClass("run_highlight")
                             .data("measurement", measurement);
+							
                         if (!isImportant(matchMap[measurement].importance, matchMap[measurement].componentFit)) {
                             $cell.html("").addClass("info");
                         }
+						
                         $row.append(colorCell($cell, matchMap[measurement], measurement_arrows[measurement]));
                     } else if (sizeme_product.item.measurements[inputKey][measurement] > 0) {
                         $txt = "";
