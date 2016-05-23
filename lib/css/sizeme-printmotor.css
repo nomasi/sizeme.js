@@ -1531,9 +1531,10 @@ table#detailed_table {
   background-image: url(images/information.png);
   background-position: left 4px;
   background-repeat: no-repeat;
-  padding: 4px 0px 0px 5px;
+  padding: 4px 0px 0px 22px;
   display: block;
   min-height: 16px;
+  text-align: left;
 }
 
 #dialog_close {
