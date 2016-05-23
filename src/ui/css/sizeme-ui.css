@@ -119,7 +119,7 @@
 #sizeme_detailed_view_content .splash li.no_thanks { width: 20%; margin-right: 0; }
 
 #sizeme_detailed_view_content .splash li p { font-size: 10px; }
-
+		
 .a_button {
  background-color: white;
  color: #000!important;
@@ -135,6 +135,10 @@
 
 #sizeme_header.splash .a_button {
  margin-left: 10px;
+}
+
+#sizeme_detailed_view_content .a_button {
+ min-width: 60px;
 }
 
 .a_button#sizeme_btn_login { 

@@ -878,6 +878,10 @@ button.ui-button::-moz-focus-inner {
   margin-left: 10px;
 }
 
+#sizeme_detailed_view_content .a_button {
+  min-width: 60px;
+}
+
 .a_button#sizeme_btn_login {
   background-image: -ms-linear-gradient(top right, #FFFFFF 0%, #CFCFCF 100%);
   background-image: -moz-linear-gradient(top right, #FFFFFF 0%, #CFCFCF 100%);

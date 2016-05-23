@@ -1558,11 +1558,11 @@
         headerHtml += "</p>";
         headerHtml += "<ul class='splash_choices'>";
         headerHtml += "<li class='sign_in'>";
-		headerHtml += "<a href='" + SizeMe.contextAddress + "/?mode=signup' target='_blank' class='a_button' id='sizeme_btn_sign_up'>";
+		headerHtml += "<a href='" + SizeMe.contextAddress + "/?mode=signup' target='_blank' class='a_button' id='sizeme_btn_sign_up' title='"+i18n.SPLASH.btn_sign_up_label+"'>";
 		headerHtml += i18n.SPLASH.btn_sign_up_title+"</a>";
-		headerHtml += "<p>"+i18n.SPLASH.btn_sign_up_label+"</p></li>";
-        headerHtml += "<li class='log_in'><a href='#' class='a_button' id='sizeme_btn_login'>"+i18n.SPLASH.btn_log_in_title+"</a><p>"+i18n.SPLASH.btn_log_in_label+"</p></li>";
-        headerHtml += "<li class='no_thanks'><td><a href='#' class='a_button' id='sizeme_btn_no_thanks'>"+i18n.SPLASH.btn_no_thanks_title+"</a><p>"+i18n.SPLASH.btn_no_thanks_label+"</p></li>";
+		headerHtml += "</li>";
+        headerHtml += "<li class='log_in'><a href='#' class='a_button' id='sizeme_btn_login' title='"+i18n.SPLASH.btn_log_in_label+"'>"+i18n.SPLASH.btn_log_in_title+"</a></li>";
+        headerHtml += "<li class='no_thanks'><td><a href='#' class='a_button' id='sizeme_btn_no_thanks' title='"+i18n.SPLASH.btn_no_thanks_label+"'>"+i18n.SPLASH.btn_no_thanks_title+"</a></li>";
         headerHtml += "</ul></div>";
         return headerHtml;
     }
