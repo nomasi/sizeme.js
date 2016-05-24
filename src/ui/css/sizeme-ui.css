@@ -453,9 +453,9 @@ a.sm_detailed_view.size_guide {
  padding: 4px 8px 4px 26px;
  background-position: 5px center;
  background-repeat: no-repeat;
+ color: #000;
 }
 
-a.message_container  { color: #000; }
 a.message_container:hover { color: #333; }
 
 .message_container.missingMeasurements,
