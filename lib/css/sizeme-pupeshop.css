@@ -878,6 +878,10 @@ button.ui-button::-moz-focus-inner {
   margin-left: 10px;
 }
 
+#sizeme_detailed_view_content .a_button {
+  min-width: 60px;
+}
+
 .a_button#sizeme_btn_login {
   background-image: -ms-linear-gradient(top right, #FFFFFF 0%, #CFCFCF 100%);
   background-image: -moz-linear-gradient(top right, #FFFFFF 0%, #CFCFCF 100%);
@@ -1288,9 +1292,6 @@ a.sm_detailed_view.size_guide {
   padding: 4px 8px 4px 26px;
   background-position: 5px center;
   background-repeat: no-repeat;
-}
-
-a.message_container {
   color: #000;
 }
 
@@ -1298,7 +1299,8 @@ a.message_container:hover {
   color: #333;
 }
 
-.message_container.missingMeasurements {
+.message_container.missingMeasurements,
+.message_container.info {
   background-image: url(images/information.png);
 }
 
@@ -1530,8 +1532,10 @@ table#detailed_table {
   background-image: url(images/information.png);
   background-position: left 4px;
   background-repeat: no-repeat;
-  padding: 4px 0px 0px 5px;
+  padding: 4px 0px 0px 22px;
   display: block;
+  min-height: 16px;
+  text-align: left;
 }
 
 #dialog_close {
@@ -1678,6 +1682,8 @@ table#detailed_table {
   font-size: 12px;
 }
 
+/* sleeve visualization */
+
 .opentip-container .sleeve {
   float: right;
   position: relative;
@@ -1717,6 +1723,50 @@ table#detailed_table {
 .opentip-container .sleeve.negative_overlap .sleeve_overlap {
   background-image: url(images/sizeme_sleeve_overlap_no_arrow.png);
 }
+
+/* front height visualization */
+
+.opentip-container .front_height {
+  float: right;
+  position: relative;
+  top: 0;
+  left: 15px;
+  width: 154px;
+  height: 108px;
+  margin: 0px 0px 10px 10px;
+  padding: 0;
+  background-image: url(images/sizeme_front_height_arrowed.png);
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
+}
+
+.opentip-container .front_height.negative_overlap {
+  background-image: url(images/sizeme_front_height_no_arrow.png);
+}
+
+.opentip-container .front_height div.meas {
+  position: absolute;
+  top: 7px;
+  left: 0px;
+  color: #000;
+  font-size: 12px;
+}
+
+.opentip-container .front_height .front_height_overlap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 147px;
+  height: 35px;
+  background-image: url(images/sizeme_front_height_overlap_arrowed.png);
+  background-position: left bottom;
+}
+
+.opentip-container .front_height.negative_overlap .front_height_overlap {
+  background-image: url(images/sizeme_front_height_overlap_no_arrow.png);
+}
+
+/* detailed view window */
 
 .sizeme_detailed_view_window {
   z-index: 10000 !important;
