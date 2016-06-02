@@ -686,7 +686,7 @@
         }
     }
 
-    function goWriteMessages(matchMap, missingMeasurements, accuracy) {
+    function goWriteMessages(matchMap, missingMeasurements, accuracy, totalFit) {
         var $message = "";
         var $message_type = "";
         var $message_link = "";
@@ -713,7 +713,7 @@
             }
 			
 			if ( (!$message_type) && (typeof matchMap.neck_opening_width !== "undefined") ) {
-				if (matchMap.neck_opening_width.overlap < 0)	{
+				if ( (totalFit >= 1000) && (matchMap.neck_opening_width.overlap < 0) )	{
 					$message_type = "info";
 					$message = i18n.MESSAGE.no_top_button;
 				}
@@ -1045,8 +1045,8 @@
             inputKey = Object.keys(sizeme_product.item.measurements)[0];
         }
 		var retval = false;
-		if (typeof sizeme_product.item.measurements[inputKey] !== undefined) {
-			if (typeof sizeme_product.item.measurements[inputKey].neck_opening_width !== undefined) {
+		if (typeof sizeme_product.item.measurements[inputKey] !== "undefined") {
+			if (typeof sizeme_product.item.measurements[inputKey].neck_opening_width !== "undefined") {
 				retval = (sizeme_product.item.measurements[inputKey].neck_opening_width > 0);
 			}
 		}
@@ -1530,7 +1530,7 @@
             moveAreaSlider(thisFit, matchMap, animateSlider);
         }
         if (sizeme_local_options.writeMessages) {
-            goWriteMessages(matchMap, thisData.missingMeasurements, thisData.accuracy);
+            goWriteMessages(matchMap, thisData.missingMeasurements, thisData.accuracy, thisFit);
         }
         updateDetailedSliderTip(thisSize, thisFit);
         updateDetailedTable(matchMap, thisData.inputKey, thisData.missingMeasurements);
