@@ -66,7 +66,8 @@
 				missing_measurements: "Add more measurements to your profile for increased accuracy",
 				no_measurements: "Add measurements to your profile for a size recommendation.",
 				add_this_measurement: "Add this measurement to your profile to include it in the fit calculation.",
-				no_profiles: "You have no profiles on your account."
+				no_profiles: "You have no profiles on your account.",
+				no_top_button: "The shirt's top button for this size won't close."
 			},
 			DETAILED: {
 				window_title: "Detailed View for",

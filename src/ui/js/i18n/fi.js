@@ -66,7 +66,8 @@
 				missing_measurements: "Lisää mittoja profiiliisi tarkempaa tulosta varten",
 				no_measurements: "Lisää mittoja profiiliisi kokosuositusta varten.",
 				add_this_measurement: "Lisää tämä mitta profiilisi tarkempaa tulosta varten.",
-				no_profiles: "Tililläsi ei ole yhtään mittaprofiilia."
+				no_profiles: "Tililläsi ei ole yhtään mittaprofiilia.",
+				no_top_button: "Paidan ylin nappi ei tässä koossa mene kiinni."
 			},
 			DETAILED: {
 				window_title: "Sopivuustiedot tuotteelle",
