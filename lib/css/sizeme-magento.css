@@ -1286,13 +1286,14 @@ a.sm_detailed_view.size_guide {
 /* I write messages in money */
 
 .message_container {
-  background-color: #bbb;
-  font-size: 10px;
+  background-color: #ccc;
+  font-size: 14px;
   border-radius: 4px;
   padding: 4px 8px 4px 26px;
   background-position: 5px center;
   background-repeat: no-repeat;
   color: #000;
+  display: inline-block;
 }
 
 a.message_container:hover {
