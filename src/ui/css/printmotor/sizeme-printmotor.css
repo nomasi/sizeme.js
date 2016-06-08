@@ -2,3 +2,6 @@
  * SizeMe input styles specific for PrintMotor
  */
 
+#sizeme_detailed_view_content p.splash_text { 
+ font-size: 0.8em;
+}

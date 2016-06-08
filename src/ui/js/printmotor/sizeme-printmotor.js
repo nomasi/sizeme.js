@@ -1,7 +1,7 @@
 /* globals jQuery: false */
 
 var sizeme_UI_options = {
-	appendContentTo: ".descriptionholder",
+	appendContentTo: ".sizeme-size-guide",
 	appendSplashTo: ".descriptionholder .variationdataholder-size",
 	sizeSelectionContainer: ".descriptionholder .variationdataholder-size",
 	addToCartElement: ".addtocartlink",
