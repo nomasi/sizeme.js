@@ -846,6 +846,11 @@ button.ui-button::-moz-focus-inner {
   margin-top: 1px;
 }
 
+#sizeme_detailed_view_content .splash ul {
+  list-style: none;
+  padding: 0;
+}
+
 #sizeme_detailed_view_content .splash li {
   width: 35%;
   margin-right: 5%;
@@ -1772,7 +1777,8 @@ table#detailed_table {
 /* detailed view window */
 
 .sizeme_detailed_view_window {
-  z-index: 10000 !important;
+  z-index: 999999999 !important;
+  /* ugly but effective */
 }
 
 .sizeme_detailed_view_window * {
@@ -1782,6 +1788,7 @@ table#detailed_table {
 @media only screen and (max-width: 40.063em) {
   #sizeme_detailed_view_content {
     text-align: center;
+    overflow-x: hidden !important;
   }
 
   #sizeme_detailed_view_content .dialog_col {
