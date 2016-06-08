@@ -850,6 +850,8 @@ button.ui-button::-moz-focus-inner {
   width: 35%;
   margin-right: 5%;
   float: left;
+  list-style: none;
+  padding: 0;
 }
 
 #sizeme_detailed_view_content .splash li.no_thanks {
