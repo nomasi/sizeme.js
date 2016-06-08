@@ -1034,7 +1034,7 @@
     }
 
     function initOpentip() {
-        Opentip.lastZIndex = 10000;
+        Opentip.lastZIndex = 999999999;
         Opentip.styles.myDefaultStyle = {
             //target: true,
             //tipJoint: "center top",
