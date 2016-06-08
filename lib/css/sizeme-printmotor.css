@@ -850,6 +850,8 @@ button.ui-button::-moz-focus-inner {
   width: 35%;
   margin-right: 5%;
   float: left;
+  list-style: none;
+  padding: 0;
 }
 
 #sizeme_detailed_view_content .splash li.no_thanks {
@@ -1811,3 +1813,7 @@ table#detailed_table {
 /*!
  * SizeMe input styles specific for PrintMotor
  */
+
+#sizeme_detailed_view_content p.splash_text {
+  font-size: 0.8em;
+}

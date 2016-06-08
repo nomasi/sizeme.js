@@ -114,6 +114,8 @@
  width: 35%;
  margin-right: 5%; 
  float: left;
+ list-style: none;
+ padding: 0;
 }
 
 #sizeme_detailed_view_content .splash li.no_thanks { width: 20%; margin-right: 0; }
