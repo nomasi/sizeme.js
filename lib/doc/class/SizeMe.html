@@ -103,6 +103,19 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#getProductInfo-static'>
+        .
+(void)
+<b>getProductInfo</b><span>(sku, callback, errorCallback = defaultErrorCallback)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Fetches the sizing information for a group of products based on the given SKU.
+
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#loginFrame-static'>
         .
 (void)
@@ -180,6 +193,54 @@ user is not logged in, the returned token is null.</p><p>This function is execut
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
+    <li>
+      <span class='name'>callback</span>
+      <span class='type'>
+        (
+          <tt>Function</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>function to execute after the request is completed </span>
+    </li>
+    <li>
+      <span class='name'>errorCallback</span>
+      <span class='type'>
+        (
+          <tt>Function</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>function to execute if there was an error </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getProductInfo-static'>
+      .
+(void)
+<b>getProductInfo</b><span>(sku, callback, errorCallback = defaultErrorCallback)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Fetches the sizing information for a group of products based on the given
+SKU. If SKU refers to a parent product, all it&#39;s children are returned. If
+it refers to a child product, only that child is returned.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>sku</span>
+      <span class='type'>
+        (
+          <tt>String</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>The SKU of the product/product group </span>
+    </li>
     <li>
       <span class='name'>callback</span>
       <span class='type'>
@@ -463,7 +524,7 @@ This function is executed asynchronously, so it will return immediately.</p>
 </div>
     </div>
     <div id='footer'>
-  May 02, 16 15:38:04 by
+  June 13, 16 16:09:02 by
   <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
     Codo
   </a>

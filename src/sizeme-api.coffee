@@ -129,6 +129,26 @@ class SizeMe
       xhr.send()
     return
 
+  ###
+    Fetches the sizing information for a group of products based on the given
+    SKU. If SKU refers to a parent product, all it's children are returned. If
+    it refers to a child product, only that child is returned.
+
+    @param [String] sku The SKU of the product/product group
+    @param [Function] callback
+      function to execute after the request is completed
+    @param [Function] errorCallback function to execute if there was an error
+  ###
+  @getProductInfo = (sku, callback, errorCallback = defaultErrorCallback) ->
+    xhr = createCORSRequest("GET", "/api/products/#{sku}",
+      (xhr) ->
+        callback(JSON.parse(xhr.responseText))
+    ,
+      (xhr) -> errorCallback(xhr, xhr.status, xhr.statusText)
+    )
+    xhr.send()
+    return
+
   createFitResponse = (xhr) ->
     response = JSON.parse(xhr.responseText)
     responseMap = new SizeMe.Map()
@@ -380,9 +400,12 @@ class SizeMe.Map
 class SizeMe.FitRequest
   ###
     @param [String] profileId the id of the profile
-    @param [SizeMe.Item] item object containing the item information
+    @param [SizeMe.Item, String] item
+      object containing size information or SKU of the product
   ###
-  constructor: (@profileId, @item) ->
+  constructor: (@profileId, item) ->
+    if typeof item == "string" then @sku = item
+    else @item = item
 
 ###
 A class for holding the information for specific item.
