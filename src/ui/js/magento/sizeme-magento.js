@@ -1,5 +1,3 @@
-/* globals jQuery: false */
-
 var sizeme_UI_options = {
     appendContentTo: ".product-options-bottom",
     appendSplashTo: ".sizeme-selection-container",
@@ -8,5 +6,3 @@ var sizeme_UI_options = {
 	addToCartEvent: "click",
 	lang: "en"
 };
-
-jQuery.noConflict(true);
