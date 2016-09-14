@@ -1,5 +1,3 @@
-/* globals jQuery: false */
-
 var sizeme_UI_options = {
     appendContentTo: ".productbuy",
     appendSplashTo: ".productbuy .margin-small-t",
@@ -8,5 +6,3 @@ var sizeme_UI_options = {
 	addToCartEvent: "click",
 	lang: "fi"
 };
-
-jQuery.noConflict(true);

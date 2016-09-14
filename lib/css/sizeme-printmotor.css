@@ -93,6 +93,7 @@
   width: 100%;
   height: 100%;
 }
+
 /*!
  * jQuery UI Resizable 1.9.2
  * http://jqueryui.com
@@ -182,6 +183,7 @@
   right: -5px;
   top: -5px;
 }
+
 /*!
  * jQuery UI Button 1.9.2
  * http://jqueryui.com
@@ -325,6 +327,7 @@ button.ui-button::-moz-focus-inner {
 }
 
 /* reset extra padding in Firefox */
+
 /*!
  * jQuery UI Dialog 1.9.2
  * http://jqueryui.com
@@ -411,6 +414,7 @@ button.ui-button::-moz-focus-inner {
 .ui-draggable .ui-dialog-titlebar {
   cursor: move;
 }
+
 .opentip-container,
 .opentip-container * {
   -webkit-box-sizing: border-box;
@@ -720,6 +724,7 @@ button.ui-button::-moz-focus-inner {
     transform: rotate(360deg);
   }
 }
+
 /*!
  * --- SizeMe Stylee ---
  */

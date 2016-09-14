@@ -21,6 +21,15 @@
       "src": ["src/ui/js/i18n.js", "src/ui/js/i18n/*.js"]
     }
   },
+  "loader": {
+    "js": "src/ui/js/jquery-loader.js"
+  },
+  "shops": [
+    "magento",
+    "woocommerce",
+    "pupeshop",
+    "printmotor"
+  ],
   "magento": {
     "js": "src/ui/js/magento/sizeme-magento.js",
     "css": "src/ui/css/magento/sizeme-magento.css"
@@ -37,9 +46,6 @@
     "js": "src/ui/js/printmotor/sizeme-printmotor.js",
     "css": "src/ui/css/printmotor/sizeme-printmotor.css"
   },    
-  "jquery": {
-    "js": "bower_components/jquery/jquery.js"
-  },
   "jquery_ui": {
     "js": [
       "bower_components/jquery-ui/ui/jquery.ui.core.js",

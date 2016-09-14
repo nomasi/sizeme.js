@@ -3,3 +3,5 @@ target
 node
 etc
 bower_components
+/lib/css/sizeme-all.css
+lib/js/sizeme-all.js
