@@ -85,11 +85,12 @@ gulp.task 'ui.css', ->
 ##### DEPS ######
 
 gulp.task 'deps.js', ->
-  series gulp.src(config.jqueryDialogOptions.js)
-  , gulp.src(config.opentip.core)
+  series gulp.src(config.jquery_ui.js)
+  , gulp.src(config.jqueryDialogOptions.js).pipe(closure($:'jQuery'))
+  , gulp.src(config.opentip.core).pipe(closure())
   , gulp.src(config.opentip.adapter)
   .pipe concat("sizeme-deps.js")
-  .pipe(wrapJs('window.sizemeDeps = function(jQuery) { var $ = jQuery; %= body % }'))
+  .pipe(wrapJs('window.sizemeDeps = function(jQuery) { %= body % }'))
   .pipe(closure(window:'window'))
   .pipe gulp.dest config.dest.js
   .pipe sourcemaps.init()
@@ -122,7 +123,7 @@ gulp.task 'all.css', gulp.series('ui.css', ->
 
 gulp.task 'shops.js', gulp.series('all.js', (cb) ->
   config.shops.forEach (shop) ->
-    gulp.src [ "src/ui/js/#{shop}/sizeme-#{shop}.js", config.dest.js + "/sizeme-all.js" ]
+    gulp.src [ config[shop].js, config.dest.js + "/sizeme-all.js" ]
     .pipe concat("sizeme-#{shop}.js")
     .pipe gulp.dest config.dest.js
     .pipe sourcemaps.init()
@@ -135,7 +136,7 @@ gulp.task 'shops.js', gulp.series('all.js', (cb) ->
 gulp.task 'shops.css', gulp.series('all.css', (cb) ->
   config.shops.forEach (shop) ->
     series gulp.src(config.dest.css + "/sizeme-all.css")
-    , gulp.src("src/ui/css/#{shop}/sizeme-#{shop}.css")
+    , gulp.src(config[shop].css)
     .pipe concatCss "sizeme-#{shop}.css", rebaseUrls: false
     .pipe gulp.dest config.dest.css
     .pipe sourcemaps.init()
