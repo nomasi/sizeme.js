@@ -1829,3 +1829,8 @@ table#detailed_table {
 #sizeme_detailed_view_content p.splash_text {
   font-size: 0.8em;
 }
+
+#sizeme_detailed_view_content select {
+  max-width: 90%;
+  min-width: 50%;
+}
