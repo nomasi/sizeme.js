@@ -2475,6 +2475,8 @@
                         }
                         // relay change to cloned and vice versa
                         $(sizeme_UI_options.sizeSelectionContainer).find("select").val(thisVal);
+						// trigger possible change event for all concerned parties
+                        $(sizeme_UI_options.sizeSelectionContainer).find("select").trigger("change");
                     });
 
                     // remove existing recommendation
