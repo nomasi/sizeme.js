@@ -1781,6 +1781,12 @@
                     }
 
                 });
+				
+                $("<div class='sizeme_detailed_section'></div>")
+                    .append("<h2>" + i18n.COMMON.selected_size + "</h2>")
+                    .append($clone)
+                    .appendTo("#col2");
+					
 				// add change event to cloned select too
 				$(sizeme_UI_options.sizeSelectionContainer + '.cloned').find("select").change(function () {
 					thisVal = $(this).val();
@@ -1788,11 +1794,6 @@
 					$(sizeme_UI_options.sizeSelectionContainer + ':not(".cloned")').find("select").val(thisVal);
 					$(sizeme_UI_options.sizeSelectionContainer + ':not(".cloned")').find("select").trigger("change");
 				});
-				
-                $("<div class='sizeme_detailed_section'></div>")
-                    .append("<h2>" + i18n.COMMON.selected_size + "</h2>")
-                    .append($clone)
-                    .appendTo("#col2");
 
                 // clone slider (without detailed view toggler and in content stuff)
                 var $slider_clone = $(".sizeme_slider")
