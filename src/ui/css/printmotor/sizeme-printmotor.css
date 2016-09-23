@@ -14,3 +14,15 @@
 #sizeme_detailed_view_content table#detailed_table {
     font-size: 80%;
 }
+
+#detailed_view_link a, a.sm_detailed_view {
+	text-decoration: none;
+	background-color: rgb(99, 99, 99);
+	background-image: none;
+	border: 0px none;
+	border-radius: 0px;
+	text-transform: uppercase;
+	padding: 10px 8px;
+	margin: 8px 0px 10px;
+	color: white !important;	
+}
