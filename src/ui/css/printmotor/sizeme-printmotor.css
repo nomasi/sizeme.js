@@ -16,13 +16,13 @@
 }
 
 #detailed_view_link a, a.sm_detailed_view {
-	text-decoration: none;
+	text-decoration: none !important;
 	background-color: rgb(99, 99, 99);
 	background-image: none;
 	border: 0px none;
 	border-radius: 0px;
 	text-transform: uppercase;
 	padding: 10px 8px;
-	margin: 8px 0px 10px;
+	margin: 8px 0px 10px !important;
 	color: white !important;	
 }
