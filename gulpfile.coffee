@@ -14,6 +14,15 @@ merge       = require 'gulp-merge'
 closure     = require 'gulp-jsclosure'
 config      = require './gulp-config.json'
 sourcemaps  = require 'gulp-sourcemaps'
+wrapJs      = require 'gulp-wrap-js'
+
+##### CLEAN #####
+
+gulp.task 'clean.doc', (done) ->
+  del [ config.dest.doc ], done
+
+gulp.task 'clean', (done) ->
+  del [ config.dest.js, config.dest.css + "/**/*.css", config.dest.css + "/maps" ], done
 
 ##### API #####
 
@@ -22,7 +31,7 @@ gulp.task 'api.lint', ->
     .pipe coffeelint()
     .pipe coffeelint.reporter()
 
-gulp.task 'api.js', ['clean.js', 'api.lint'], ->
+gulp.task 'api.js', gulp.series('api.lint', ->
   merge(
     gulp.src(config.ga.src),
     gulp.src(config.api.src).pipe(coffee())
@@ -34,14 +43,16 @@ gulp.task 'api.js', ['clean.js', 'api.lint'], ->
       .pipe rename extname: '.min.js'
     .pipe sourcemaps.write './maps'
     .pipe gulp.dest config.dest.js
+)
 
-gulp.task 'api.doc', ['clean.doc'], ->
+gulp.task 'api.doc', gulp.series('clean.doc', ->
   gulp.src config.api.src
     .pipe codo
       name: "SizeMe API"
       title: "API documentation for SizeMe"
       readme: "README.md"
       dir: config.dest.doc
+)
 
 ##### UI #####
 
@@ -50,7 +61,7 @@ gulp.task 'ui.lint', ->
   .pipe jshint()
   .pipe jshint.reporter("default")
 
-gulp.task 'ui.js', ['clean.js', 'ui.lint'], ->
+gulp.task 'ui.js', gulp.series('ui.lint', ->
   gulp.src config.ui.lang.src.concat(config.ui.js.src)
   .pipe concat "sizeme-ui.js"
   .pipe gulp.dest config.dest.js
@@ -59,8 +70,9 @@ gulp.task 'ui.js', ['clean.js', 'ui.lint'], ->
     .pipe rename extname: '.min.js'
   .pipe sourcemaps.write './maps'
   .pipe gulp.dest config.dest.js
+)
 
-gulp.task 'ui.css', ['clean.css'], ->
+gulp.task 'ui.css', ->
   gulp.src config.ui.css.src
   .pipe gulp.dest config.dest.css
   .pipe sourcemaps.init()
@@ -69,189 +81,73 @@ gulp.task 'ui.css', ['clean.css'], ->
   .pipe sourcemaps.write './maps'
   .pipe gulp.dest config.dest.css
 
-##### MAGENTO #####
 
-gulp.task 'magento.lint', ->
-  gulp.src config.magento.js
-  .pipe jshint()
-  .pipe jshint.reporter("default")
+##### DEPS ######
 
-gulp.task 'magento.js', ['api.js', 'ui.js', 'magento.lint'], ->
-  gulp.src [config.dest.js + "/sizeme-api.js", config.dest.js + "/sizeme-ui.js", config.magento.js]
-  .pipe concat("sizeme-magento.js")
-  .pipe gulp.dest config.dest.js
-  .pipe uglify()
-  .pipe rename extname: '.min.js'
-  .pipe gulp.dest config.dest.js
-
-gulp.task 'magento-with-deps', ['magento.js'], ->
-  series gulp.src(config.jquery.js)
-  , gulp.src(config.jquery_ui.js)
+gulp.task 'deps.js', ->
+  series gulp.src(config.jquery_ui.js)
   , gulp.src(config.jqueryDialogOptions.js).pipe(closure($:'jQuery'))
   , gulp.src(config.opentip.core).pipe(closure())
   , gulp.src(config.opentip.adapter)
-  , gulp.src(config.dest.js + "/sizeme-magento.js")
-    .pipe concat("sizeme-magento-with-deps.js")
+  .pipe concat("sizeme-deps.js")
+  .pipe(wrapJs('window.sizemeDeps = function(jQuery) { %= body % }'))
+  .pipe(closure(window:'window'))
+  .pipe gulp.dest config.dest.js
+  .pipe sourcemaps.init()
+  .pipe uglify()
+  .pipe rename extname: '.min.js'
+  .pipe sourcemaps.write './maps'
+  .pipe gulp.dest config.dest.js
+
+
+##### HELPERS #####
+
+gulp.task 'all.js', gulp.series('api.js', 'ui.js', 'deps.js', ->
+  gulp.src [
+    config.dest.js + "/sizeme-api.js"
+    config.dest.js + "/sizeme-ui.js"
+    config.dest.js + "/sizeme-deps.js"
+    config.loader.js
+  ]
+  .pipe concat("sizeme-all.js")
+  .pipe gulp.dest config.dest.js
+)
+
+gulp.task 'all.css', gulp.series('ui.css', ->
+  series gulp.src(config.jquery_ui.css)
+  , gulp.src(config.opentip.css)
+  , gulp.src(config.dest.css + "/sizeme-ui.css")
+  .pipe concatCss "sizeme-all.css", rebaseUrls: false
+  .pipe gulp.dest config.dest.css
+)
+
+gulp.task 'shops.js', gulp.series('all.js', (cb) ->
+  config.shops.forEach (shop) ->
+    gulp.src [ config[shop].js, config.dest.js + "/sizeme-all.js" ]
+    .pipe concat("sizeme-#{shop}.js")
     .pipe gulp.dest config.dest.js
     .pipe sourcemaps.init()
-      .pipe uglify()
-      .pipe rename extname: '.min.js'
-    .pipe sourcemaps.write './maps'
+    .pipe uglify()
+    .pipe rename extname: '.min.js'
     .pipe gulp.dest config.dest.js
+  cb()
+)
 
-gulp.task 'magento.css', ['ui.css'], ->
-  series gulp.src(config.jquery_ui.css)
-  , gulp.src(config.opentip.css)
-  , gulp.src(config.dest.css + "/sizeme-ui.css")
-  , gulp.src(config.magento.css)
-    .pipe concatCss "sizeme-magento.css", rebaseUrls: false
+gulp.task 'shops.css', gulp.series('all.css', (cb) ->
+  config.shops.forEach (shop) ->
+    series gulp.src(config.dest.css + "/sizeme-all.css")
+    , gulp.src(config[shop].css)
+    .pipe concatCss "sizeme-#{shop}.css", rebaseUrls: false
     .pipe gulp.dest config.dest.css
     .pipe sourcemaps.init()
-      .pipe minifyCss keepSpecialComments: "*"
-      .pipe rename extname: '.min.css'
+    .pipe minifyCss keepSpecialComments: "*"
+    .pipe rename extname: '.min.css'
     .pipe sourcemaps.write './maps'
     .pipe gulp.dest config.dest.css
+  cb()
+)
 
-##### WOOCOMMERCE #####
+##### RUN #####
 
-gulp.task 'woocommerce.lint', ->
-  gulp.src config.woocommerce.js
-  .pipe jshint()
-  .pipe jshint.reporter("default")
-
-gulp.task 'woocommerce.js', ['api.js', 'ui.js', 'woocommerce.lint'], ->
-  gulp.src [config.dest.js + "/sizeme-api.js", config.dest.js + "/sizeme-ui.js", config.woocommerce.js]
-  .pipe concat("sizeme-woocommerce.js")
-  .pipe gulp.dest config.dest.js
-  .pipe uglify()
-  .pipe rename extname: '.min.js'
-  .pipe gulp.dest config.dest.js
-
-gulp.task 'woocommerce-with-deps', ['woocommerce.js'], ->
-  series gulp.src(config.jquery.js)
-  , gulp.src(config.jquery_ui.js)
-  , gulp.src(config.jqueryDialogOptions.js).pipe(closure($:'jQuery'))
-  , gulp.src(config.opentip.core).pipe(closure())
-  , gulp.src(config.opentip.adapter)
-  , gulp.src(config.dest.js + "/sizeme-woocommerce.js")
-  .pipe concat("sizeme-woocommerce-with-deps.js")
-  .pipe gulp.dest config.dest.js
-  .pipe sourcemaps.init()
-    .pipe uglify()
-    .pipe rename extname: '.min.js'
-  .pipe sourcemaps.write './maps'
-  .pipe gulp.dest config.dest.js
-
-gulp.task 'woocommerce.css', ['ui.css'], ->
-  series gulp.src(config.jquery_ui.css)
-  , gulp.src(config.opentip.css)
-  , gulp.src(config.dest.css + "/sizeme-ui.css")
-  , gulp.src(config.woocommerce.css)
-  .pipe concatCss "sizeme-woocommerce.css", rebaseUrls: false
-  .pipe gulp.dest config.dest.css
-  .pipe sourcemaps.init()
-    .pipe minifyCss keepSpecialComments: "*"
-    .pipe rename extname: '.min.css'
-  .pipe sourcemaps.write './maps'
-  .pipe gulp.dest config.dest.css
-  
-##### PUPESHOP #####
-
-gulp.task 'pupeshop.lint', ->
-  gulp.src config.pupeshop.js
-  .pipe jshint()
-  .pipe jshint.reporter("default")
-
-gulp.task 'pupeshop.js', ['api.js', 'ui.js', 'pupeshop.lint'], ->
-  gulp.src [config.dest.js + "/sizeme-api.js", config.dest.js + "/sizeme-ui.js", config.pupeshop.js]
-  .pipe concat("sizeme-pupeshop.js")
-  .pipe gulp.dest config.dest.js
-  .pipe uglify()
-  .pipe rename extname: '.min.js'
-  .pipe gulp.dest config.dest.js
-
-gulp.task 'pupeshop-with-deps', ['pupeshop.js'], ->
-  series gulp.src(config.jquery.js)
-  , gulp.src(config.jquery_ui.js)
-  , gulp.src(config.jqueryDialogOptions.js).pipe(closure($:'jQuery'))
-  , gulp.src(config.opentip.core).pipe(closure())
-  , gulp.src(config.opentip.adapter)
-  , gulp.src(config.dest.js + "/sizeme-pupeshop.js")
-  .pipe concat("sizeme-pupeshop-with-deps.js")
-  .pipe gulp.dest config.dest.js
-  .pipe sourcemaps.init()
-    .pipe uglify()
-    .pipe rename extname: '.min.js'
-  .pipe sourcemaps.write './maps'
-  .pipe gulp.dest config.dest.js
-
-gulp.task 'pupeshop.css', ['ui.css'], ->
-  series gulp.src(config.jquery_ui.css)
-  , gulp.src(config.opentip.css)
-  , gulp.src(config.dest.css + "/sizeme-ui.css")
-  , gulp.src(config.pupeshop.css)
-  .pipe concatCss "sizeme-pupeshop.css", rebaseUrls: false
-  .pipe gulp.dest config.dest.css
-  .pipe sourcemaps.init()
-    .pipe minifyCss keepSpecialComments: "*"
-    .pipe rename extname: '.min.css'
-  .pipe sourcemaps.write './maps'
-  .pipe gulp.dest config.dest.css
-  
-##### PRINTMOTOR #####
-
-gulp.task 'printmotor.lint', ->
-  gulp.src config.printmotor.js
-  .pipe jshint()
-  .pipe jshint.reporter("default")
-
-gulp.task 'printmotor.js', ['api.js', 'ui.js', 'printmotor.lint'], ->
-  gulp.src [config.dest.js + "/sizeme-api.js", config.dest.js + "/sizeme-ui.js", config.printmotor.js]
-  .pipe concat("sizeme-printmotor.js")
-  .pipe gulp.dest config.dest.js
-  .pipe uglify()
-  .pipe rename extname: '.min.js'
-  .pipe gulp.dest config.dest.js
-
-gulp.task 'printmotor-with-deps', ['printmotor.js'], ->
-  series gulp.src(config.jquery.js)
-  , gulp.src(config.jquery_ui.js)
-  , gulp.src(config.jqueryDialogOptions.js).pipe(closure($:'jQuery'))
-  , gulp.src(config.opentip.core).pipe(closure())
-  , gulp.src(config.opentip.adapter)
-  , gulp.src(config.dest.js + "/sizeme-printmotor.js")
-  .pipe concat("sizeme-printmotor-with-deps.js")
-  .pipe gulp.dest config.dest.js
-  .pipe sourcemaps.init()
-    .pipe uglify()
-    .pipe rename extname: '.min.js'
-  .pipe sourcemaps.write './maps'
-  .pipe gulp.dest config.dest.js
-
-gulp.task 'printmotor.css', ['ui.css'], ->
-  series gulp.src(config.jquery_ui.css)
-  , gulp.src(config.opentip.css)
-  , gulp.src(config.dest.css + "/sizeme-ui.css")
-  , gulp.src(config.printmotor.css)
-  .pipe concatCss "sizeme-printmotor.css", rebaseUrls: false
-  .pipe gulp.dest config.dest.css
-  .pipe sourcemaps.init()
-    .pipe minifyCss keepSpecialComments: "*"
-    .pipe rename extname: '.min.css'
-  .pipe sourcemaps.write './maps'
-  .pipe gulp.dest config.dest.css  
-
-##### CLEAN AND RUN #####
-
-gulp.task 'clean.js', (cb) ->
-  del [ config.dest.js ], cb
-
-gulp.task 'clean.doc', (cb) ->
-  del [ config.dest.doc ], cb
-
-gulp.task 'clean.css', (cb) ->
-  del [ config.dest.css + "/**/*.css" ], cb
-
-gulp.task 'clean', [ 'clean.js', 'clean.css', 'clean.doc' ]
-
-gulp.task 'default', ['api.js', 'magento-with-deps', 'magento.css', 'woocommerce-with-deps', 'woocommerce.css', 'pupeshop-with-deps', 'pupeshop.css', 'printmotor-with-deps', 'printmotor.css']
+gulp.task 'default', gulp.series('clean', gulp.parallel('shops.js', 'shops.css')), (cb) ->
+  cb()

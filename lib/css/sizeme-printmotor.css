@@ -93,6 +93,7 @@
   width: 100%;
   height: 100%;
 }
+
 /*!
  * jQuery UI Resizable 1.9.2
  * http://jqueryui.com
@@ -182,6 +183,7 @@
   right: -5px;
   top: -5px;
 }
+
 /*!
  * jQuery UI Button 1.9.2
  * http://jqueryui.com
@@ -325,6 +327,7 @@ button.ui-button::-moz-focus-inner {
 }
 
 /* reset extra padding in Firefox */
+
 /*!
  * jQuery UI Dialog 1.9.2
  * http://jqueryui.com
@@ -411,6 +414,7 @@ button.ui-button::-moz-focus-inner {
 .ui-draggable .ui-dialog-titlebar {
   cursor: move;
 }
+
 .opentip-container,
 .opentip-container * {
   -webkit-box-sizing: border-box;
@@ -720,6 +724,7 @@ button.ui-button::-moz-focus-inner {
     transform: rotate(360deg);
   }
 }
+
 /*!
  * --- SizeMe Stylee ---
  */
@@ -1823,4 +1828,65 @@ table#detailed_table {
 
 #sizeme_detailed_view_content p.splash_text {
   font-size: 0.8em;
+}
+
+#sizeme_detailed_view_content select {
+  max-width: 90%;
+  min-width: 50%;
+}
+
+#sizeme_detailed_view_content table#detailed_table {
+  font-size: 80%;
+}
+
+#detailed_view_link a,
+a.sm_detailed_view {
+  text-decoration: none !important;
+  background-color: rgb(99, 99, 99);
+  background-image: none;
+  border: 0px none;
+  border-radius: 0px;
+  text-transform: uppercase;
+  padding: 10px 8px;
+  margin: 8px 0px 10px !important;
+  color: white !important;
+}
+
+@media (max-width: 865px) {
+  #sizeme_detailed_view_content table#detailed_table td {
+    padding: 0;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  #sizeme_detailed_view_content {
+    text-align: center;
+    overflow-x: hidden !important;
+  }
+
+  #sizeme_detailed_view_content .dialog_col {
+    float: none;
+    width: 100% !important;
+    height: auto;
+  }
+
+  #sizeme_detailed_view_content #detailed_table {
+    margin-bottom: 2rem;
+  }
+
+  #sizeme_detailed_view_content .splash {
+    width: 100%;
+    position: static;
+  }
+
+  .ui-dialog .ui-dialog-bottombar {
+    position: static;
+    display: none;
+  }
+
+  #sizeme_detailed_view_content .sizeme_advertisement {
+    position: static;
+    background-color: #ccc;
+    padding-bottom: 2px;
+  }
 }
