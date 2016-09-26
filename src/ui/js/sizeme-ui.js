@@ -1670,6 +1670,8 @@
 								}
 							}
 						});
+					} else {
+						plotItem(c, item_drawing, false, scale, offsetX, offsetY, false);
 					}
                 } else {
                     // Size Guider
@@ -2491,8 +2493,11 @@
                         thisData = $(thisId).data("fitData");
                         thisSize = $(thisId).text();
                         if (thisVal) {
+							$('.slider_bar, .slider_area, #detailed_table').show();
                             updateSlider(thisSize, thisData, (thisVal === recommendedId), sizeme_UI_options.detailedViewContainer, true);
-                        }
+                        } else {
+							$('.slider_bar, .slider_area, #detailed_table').hide();
+						}
                         // relay change to cloned (if exists), but do not trigger change there
                         $(sizeme_UI_options.sizeSelectionContainer + '.cloned').find("select").val(thisVal);
                         SizeMe.trackEvent("sizeChanged", "Store: Product size changed");
