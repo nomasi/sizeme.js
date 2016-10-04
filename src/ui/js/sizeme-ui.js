@@ -1654,7 +1654,7 @@
 
                 // item
                 plotItem(c, item_drawing, false, scale, offsetX, offsetY, false);
-                var inputKey = $(sizeme_UI_options.sizeSelectionElement).val();
+                var inputKey = $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val();
 
                 // arrows
                 if (matchMap) {
@@ -1705,7 +1705,7 @@
         }
 
         function hasNeckOpening() {
-            var inputKey = $(sizeme_UI_options.sizeSelectionElement).val();
+            var inputKey = $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val();
             if (!inputKey) {
                 inputKey = Object.keys(sizeme_product.item.measurements)[0];
             }
@@ -2389,8 +2389,15 @@
         $(function () {
 
             var systemsGo = true;
-
-            i18n = SizeMeI18N.get(sizeme_UI_options.lang);
+			
+			// language sniffer
+			var sizemeLang;
+			if (typeof sizeme_UI_options.lang === 'undefined') {
+				sizemeLang = $('html').attr('lang');
+			} else {
+				sizemeLang = sizeme_UI_options.lang;
+			}
+            i18n = SizeMeI18N.get(sizemeLang);
 
             // check options (and service status)
             if (typeof sizeme_options === 'undefined') {
@@ -2408,7 +2415,7 @@
                 systemsGo = false;
             }
 			
-			// fallback for Makia Live
+			// fallback for legacy size selection pointer
 			if (typeof sizeme_UI_options.sizeSelectionContainer !== 'undefined') sizeme_UI_options.sizeSelectionElement = sizeme_UI_options.sizeSelectionContainer + " select";
 
             // check existence of size selection element
@@ -2525,7 +2532,7 @@
                         }
                         sizeme_UI_options.firstRecommendation = false;
                     } else {
-                        thisId = '#input_' + $(sizeme_UI_options.sizeSelectionElement).val();
+                        thisId = '#input_' + $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val();
                         if ($(thisId).data("fitData")) {
                             thisData = $(thisId).data("fitData");
                             thisSize = $(thisId).text();
@@ -2675,11 +2682,11 @@
                 // Show size guide text only if there actually is a size guide (otherwise hidden with css)
                 $(".sizeme p").show();
 
-                // bind change to select
-                $(sizeme_UI_options.sizeSelectionElement).change(function () {
+                // bind change to original select
+                $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').change(function () {
                     var thisVal = $(this).val();
                     // relay change to cloned and vice versa
-                    $(sizeme_UI_options.sizeSelectionElement).val(thisVal);
+                    $("#sizeme_detailed_view_content .sizeme-size-selector.cloned").val(thisVal);
                     updateDetailedTable("", thisVal);
                 });
 
