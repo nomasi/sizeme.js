@@ -4,5 +4,6 @@ var sizeme_UI_options = {
     sizeSelectionElement: ".variation select",
 	addToCartElement: "input.to-cart",
 	addToCartEvent: "click",
+    firstRecommendation: true,	
 	lang: "fi"
 };

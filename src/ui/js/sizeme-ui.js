@@ -127,8 +127,7 @@
         var sizeme_local_options = {
             fitAreaSlider: true,
             writeMessages: true,
-            writeOverlaps: true,
-            firstRecommendation: true
+            writeOverlaps: true
         };
 
         function sizeText(txt) {
@@ -2511,7 +2510,7 @@
                     $(".sm-buttonset").find(".sm-selectable").removeClass('sm-recommended');
 
                     // set selection to recommendation on first match
-                    if (sizeme_local_options.firstRecommendation) {
+                    if (sizeme_UI_options.firstRecommendation) {
                         // select recommended
                         $(sizeme_UI_options.sizeSelectionElement).val(recommendedId);
                         // remove existing active
@@ -2524,7 +2523,7 @@
                             thisSize = recommendedInput.text();
                             updateSlider(thisSize, thisData, true, sizeme_UI_options.detailedViewContainer, true);
                         }
-                        sizeme_local_options.firstRecommendation = false;
+                        sizeme_UI_options.firstRecommendation = false;
                     } else {
                         thisId = '#input_' + $(sizeme_UI_options.sizeSelectionElement).val();
                         if ($(thisId).data("fitData")) {
