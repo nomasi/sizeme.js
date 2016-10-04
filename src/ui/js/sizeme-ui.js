@@ -1786,12 +1786,10 @@
                 // clone size select (and possible buttons) to detailed window
                 var $clone = $(sizeme_UI_options.sizeSelectionElement+', .sm-buttonset').clone(true, true);
 				$clone.addClass("cloned");
-                $clone.find("[id]").each(function () {
-                    this.id = "clone_" + this.id;
+                $clone.find("*").addBack().each(function () {
                     $(this).addClass("cloned");
-                    if (this.name) {
-                        this.name = "clone_" + this.name;
-                    }
+                    if (this.id) this.id = "clone_" + this.id;
+                    if (this.name) this.name = "clone_" + this.name;
                 });
 				
                 $("<div class='sizeme_detailed_section sizeme_detailed_size_selection_section'></div>")
@@ -2511,8 +2509,10 @@
 
                     // set selection to recommendation on first match
                     if (sizeme_UI_options.firstRecommendation) {
-                        // select recommended
-                        $(sizeme_UI_options.sizeSelectionElement).val(recommendedId);
+                        // select recommended (at original)
+                        $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val(recommendedId);
+                        // select recommended (at possible clone)
+                        $("#sizeme_detailed_view_content .sizeme-size-selector.cloned").val(recommendedId);
                         // remove existing active
                         $(".sm-buttonset").find(".sm-selectable").removeClass('sm-state-active');
                         // add class
