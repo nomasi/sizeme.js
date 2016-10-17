@@ -71,7 +71,7 @@
 			},
 			DETAILED: {
 				window_title: "Detaljerad Bild för", 
-				button_text: "Detaljerad Bild för lämplighet",
+				button_text: "Detaljerad Bild",
 				table_title: "Detaljerade lämpliga delar"
 			},
 			SIZE_GUIDE: {
