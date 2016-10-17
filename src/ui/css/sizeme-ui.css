@@ -429,7 +429,7 @@ a.sm_detailed_view:hover { color: #666; background-color: #ccc; }
 a.sm_detailed_view:active { color: #666; }
 
 a.sm_detailed_view.size_guide {
- margin: 18px 0 0 0;
+ margin: 0 0 18px;
 }
 
 .sizeme_slider .slider_text span.sm-text-recommended { 
