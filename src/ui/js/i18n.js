@@ -2,6 +2,7 @@
     "use strict";
 
     var SizeMeI18N = function (defaultLang) {
+		// langs defined by ISO 639-1 Language Code (fallback to english)
         var defLang = defaultLang || "en";
 
         var languages = {};

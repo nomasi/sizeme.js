@@ -1,8 +1,9 @@
 var sizeme_UI_options = {
     appendContentTo: ".productbuy",
     appendSplashTo: ".productbuy .margin-small-t",
-    sizeSelectionContainer: ".variation",
+    sizeSelectionElement: ".variation select",
 	addToCartElement: "input.to-cart",
 	addToCartEvent: "click",
+    firstRecommendation: true,	
 	lang: "fi"
 };
