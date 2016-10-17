@@ -1,8 +1,8 @@
 var sizeme_UI_options = {
 	appendContentTo: ".sizeme-size-guide",
 	appendSplashTo: ".descriptionholder .variationdataholder-size",
-	sizeSelectionContainer: ".variationdata-size",
+	sizeSelectionElement: ".variationdata-size select",
 	addToCartElement: ".addtocartlink",
 	addToCartEvent: "click",
-	lang: "en"
+    firstRecommendation: false
 };

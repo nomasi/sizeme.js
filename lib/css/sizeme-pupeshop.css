@@ -1107,7 +1107,7 @@ a#sizeme_btn_re-activator {
 
 .sizeme_slider .slider_text_more_below {
   margin-top: 6px;
-  height: 18px;
+  min-height: 18px;
   width: 100%;
 }
 

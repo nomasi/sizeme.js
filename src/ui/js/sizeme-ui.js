@@ -127,8 +127,7 @@
         var sizeme_local_options = {
             fitAreaSlider: true,
             writeMessages: true,
-            writeOverlaps: true,
-            firstRecommendation: true
+            writeOverlaps: true
         };
 
         function sizeText(txt) {
@@ -157,9 +156,9 @@
             return returnFit;
         }
 
-        function addIds(parentElement) {
+        function addIds(selectElement) {
             // add ids to select for easy handling
-            $(parentElement + " option").each(function () {
+            $(selectElement + " option").each(function () {
                 var myVal = $(this).val();
                 var myText = $(this).text();
                 $(this).addClass("sm-selectable element_for_" + myVal);
@@ -172,6 +171,8 @@
                     }
                 }
             });
+			// add class for clarity
+			$(selectElement).addClass("sizeme-size-selector");
         }
 
         function getItemTypeArr() {
@@ -1359,7 +1360,7 @@
         }
 
         function selectToButtons(element) {
-            $(element + " select").hide();
+            $(element).hide();
             var numClass = "num_" + $(element + " option").length;
             var $content = $(document.createElement("div")).addClass("sm-buttonset " + numClass);
             $(element + " option").each(function () {
@@ -1374,12 +1375,12 @@
                     .on("click", function () {
                         $(".sm-buttonset").find(".sm-selectable").removeClass("sm-state-active");
                         $(".element_for_" + thisVal).addClass("sm-state-active");
-                        $(sizeme_UI_options.sizeSelectionContainer + ':not(".cloned")').find("select").val(thisVal);
-                        $(sizeme_UI_options.sizeSelectionContainer + ':not(".cloned")').find("select").trigger("change");	// yell change at original size selector
+                        $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val(thisVal);
+                        $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').trigger("change");	// yell change at original size selector
                     });
                 $content.append($div);
             });
-            $(element).append($content);
+            $(element).after($content);
         }
 
         function getMaxY(data) {
@@ -1653,7 +1654,7 @@
 
                 // item
                 plotItem(c, item_drawing, false, scale, offsetX, offsetY, false);
-                var inputKey = $(sizeme_UI_options.sizeSelectionContainer).find("select").val();
+                var inputKey = $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val();
 
                 // arrows
                 if (matchMap) {
@@ -1704,7 +1705,7 @@
         }
 
         function hasNeckOpening() {
-            var inputKey = $(sizeme_UI_options.sizeSelectionContainer).find("select").val();
+            var inputKey = $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val();
             if (!inputKey) {
                 inputKey = Object.keys(sizeme_product.item.measurements)[0];
             }
@@ -1783,28 +1784,25 @@
                     .appendTo("#col2");
 
                 // clone size select (and possible buttons) to detailed window
-                var $clone = $(sizeme_UI_options.sizeSelectionContainer).clone(true, true);
+                var $clone = $(sizeme_UI_options.sizeSelectionElement+', .sm-buttonset').clone(true, true);
 				$clone.addClass("cloned");
-                $clone.find("[id]").each(function () {
-                    this.id = "clone_" + this.id;
+                $clone.find("*").addBack().each(function () {
                     $(this).addClass("cloned");
-                    if (this.name) {
-                        this.name = "clone_" + this.name;
-                    }
-
+                    if (this.id) this.id = "clone_" + this.id;
+                    if (this.name) this.name = "clone_" + this.name;
                 });
 				
-                $("<div class='sizeme_detailed_section'></div>")
+                $("<div class='sizeme_detailed_section sizeme_detailed_size_selection_section'></div>")
                     .append("<h2>" + i18n.COMMON.selected_size + "</h2>")
                     .append($clone)
                     .appendTo("#col2");
 					
-				// add change event to cloned select too
-				$(sizeme_UI_options.sizeSelectionContainer + '.cloned').find("select").change(function () {
+				// add change event to cloned select too (not possible buttonset)
+				$("#sizeme_detailed_view_content .sizeme-size-selector.cloned").change(function () {
 					var thisVal = $(this).val();
 					// send value to original select and trigger change there
-					$(sizeme_UI_options.sizeSelectionContainer + ':not(".cloned")').find("select").val(thisVal);
-					$(sizeme_UI_options.sizeSelectionContainer + ':not(".cloned")').find("select").trigger("change");
+					$(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val(thisVal);
+					$(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').trigger("change");
 				});
 
                 // clone slider (without detailed view toggler and in content stuff)
@@ -2391,8 +2389,15 @@
         $(function () {
 
             var systemsGo = true;
-
-            i18n = SizeMeI18N.get(sizeme_UI_options.lang);
+			
+			// language sniffer
+			var sizemeLang;
+			if (typeof sizeme_UI_options.lang === 'undefined') {
+				sizemeLang = $('html').attr('lang');
+			} else {
+				sizemeLang = sizeme_UI_options.lang;
+			}
+            i18n = SizeMeI18N.get(sizemeLang);
 
             // check options (and service status)
             if (typeof sizeme_options === 'undefined') {
@@ -2409,9 +2414,12 @@
             } else if (findMaxMeasurement() === 0) {
                 systemsGo = false;
             }
+			
+			// fallback for legacy size selection pointer
+			if (typeof sizeme_UI_options.sizeSelectionContainer !== 'undefined') sizeme_UI_options.sizeSelectionElement = sizeme_UI_options.sizeSelectionContainer + " select";
 
             // check existence of size selection element
-            if ($(sizeme_UI_options.sizeSelectionContainer).find('select').length === 0) {
+            if ($(sizeme_UI_options.sizeSelectionElement).length === 0) {
                 systemsGo = false;
             }
 
@@ -2420,12 +2428,12 @@
             }
 
             //stuff we do anyway
-            addIds(sizeme_UI_options.sizeSelectionContainer);
+            addIds(sizeme_UI_options.sizeSelectionElement);
 
             // buttonize
             if (typeof sizeme_options !== 'undefined') {
                 if (sizeme_options.buttonize === "yes") {
-                    selectToButtons(sizeme_UI_options.sizeSelectionContainer);
+                    selectToButtons(sizeme_UI_options.sizeSelectionElement);
                     $("#button_choose").remove();
                 }
             }
@@ -2487,7 +2495,7 @@
                     });
 
                     // bind change to size selector (only original, clone handled separately)
-                    $(sizeme_UI_options.sizeSelectionContainer + ':not(".cloned")').find("select").change(function () {
+                    $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').change(function () {
                         thisVal = $(this).val();
                         thisId = '#input_' + thisVal;
                         thisData = $(thisId).data("fitData");
@@ -2499,7 +2507,7 @@
 							$('.slider_bar, .slider_area, #detailed_table').hide();
 						}
                         // relay change to cloned (if exists), but do not trigger change there
-                        $(sizeme_UI_options.sizeSelectionContainer + '.cloned').find("select").val(thisVal);
+                        $("#sizeme_detailed_view_content .sizeme-size-selector.cloned").val(thisVal);
                         SizeMe.trackEvent("sizeChanged", "Store: Product size changed");
                     });
 
@@ -2507,9 +2515,11 @@
                     $(".sm-buttonset").find(".sm-selectable").removeClass('sm-recommended');
 
                     // set selection to recommendation on first match
-                    if (sizeme_local_options.firstRecommendation) {
-                        // select recommended
-                        $(sizeme_UI_options.sizeSelectionContainer).find("select").val(recommendedId);
+                    if (sizeme_UI_options.firstRecommendation) {
+                        // select recommended (at original)
+                        $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val(recommendedId);
+                        // select recommended (at possible clone)
+                        $("#sizeme_detailed_view_content .sizeme-size-selector.cloned").val(recommendedId);
                         // remove existing active
                         $(".sm-buttonset").find(".sm-selectable").removeClass('sm-state-active');
                         // add class
@@ -2520,9 +2530,9 @@
                             thisSize = recommendedInput.text();
                             updateSlider(thisSize, thisData, true, sizeme_UI_options.detailedViewContainer, true);
                         }
-                        sizeme_local_options.firstRecommendation = false;
+                        sizeme_UI_options.firstRecommendation = false;
                     } else {
-                        thisId = '#input_' + $(sizeme_UI_options.sizeSelectionContainer).find("select").val();
+                        thisId = '#input_' + $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val();
                         if ($(thisId).data("fitData")) {
                             thisData = $(thisId).data("fitData");
                             thisSize = $(thisId).text();
@@ -2672,11 +2682,11 @@
                 // Show size guide text only if there actually is a size guide (otherwise hidden with css)
                 $(".sizeme p").show();
 
-                // bind change to select
-                $(sizeme_UI_options.sizeSelectionContainer).find("select").change(function () {
+                // bind change to original select
+                $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').change(function () {
                     var thisVal = $(this).val();
                     // relay change to cloned and vice versa
-                    $(sizeme_UI_options.sizeSelectionContainer).find("select").val(thisVal);
+                    $("#sizeme_detailed_view_content .sizeme-size-selector.cloned").val(thisVal);
                     updateDetailedTable("", thisVal);
                 });
 
