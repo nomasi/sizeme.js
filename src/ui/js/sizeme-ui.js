@@ -4,12 +4,15 @@
 // www.sizeme.com
 // License undecided
 /* jshint browser:true, jquery:true */
-/* globals sizeme_product: false, sizeme_options: false, sizeme_UI_options: false, Opentip: false, SizeMe: false */
+/* globals sizeme_options: false, Opentip: false, SizeMe: false */
 
 (function (window, undefined) {
-    "use strict";
-    window.sizemeInit = function ($) {
+
+    SizeMe.UI = function ($) {
+
+        var sizemeProduct;
         var i18n = {};
+        var uiOptions = SizeMe.UI.options;
 
         var FIT_RANGES = {
             1: {label: "too_small", arrowColor: "#999999"},
@@ -130,6 +133,35 @@
             writeOverlaps: true
         };
 
+        // Cookie functions
+        function createCookie(name, value, days) {
+            var expires;
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toGMTString();
+            }
+            else {
+                expires = "";
+            }
+            document.cookie = name + "=" + value + expires + "; path=/";
+        }
+
+        function readCookie(name) {
+            var ca = document.cookie.split(';'), c;
+            for (var i = 0; i < ca.length; i++) {
+                c = ca[i].trim().split('=');
+                if (c[0] === name) {
+                    return c[1];
+                }
+            }
+            return null;
+        }
+
+        function eraseCookie(name) {
+            createCookie(name, "", -1);
+        }
+
         function sizeText(txt) {
             var retStr = txt;
             retStr = retStr.split(" -")[0];
@@ -164,19 +196,17 @@
                 $(this).addClass("sm-selectable element_for_" + myVal);
                 this.id = (myVal ? "input_" + myVal : "choose");
                 if (myVal) {
-                    if (typeof sizeme_product !== "undefined") {
-                        if (sizeme_product.item.measurements[myVal]) {
-                            sizeKeys.push({key: myVal, sizeLabel: myText});
-                        }
+                    if (sizemeProduct.item.measurements[myVal]) {
+                        sizeKeys.push({key: myVal, sizeLabel: myText});
                     }
                 }
             });
-			// add class for clarity
-			$(selectElement).addClass("sizeme-size-selector");
+            // add class for clarity
+            $(selectElement).addClass("sizeme-size-selector");
         }
 
         function getItemTypeArr() {
-            var itemTypeStr = sizeme_product.item.itemType.toString();
+            var itemTypeStr = sizemeProduct.item.itemType.toString();
             var itemTypeArr = [0, 0, 0, 0, 0, 0, 0];
             var separator = '';
             if (itemTypeStr.indexOf('.') > -1) separator = '.';
@@ -939,14 +969,14 @@
                                     color: arrowColor
                                 };
                             }
-							// define just in case
-							measurement_arrows.pant_waist = {
-								mirror: false,
-								coords: [{X: -250, Y: 958}, {X: 250, Y: 958}],
-								style: arcStyle,
-								lift: false,
-								color: arrowColor
-							};							
+                            // define just in case
+                            measurement_arrows.pant_waist = {
+                                mirror: false,
+                                coords: [{X: -250, Y: 958}, {X: 250, Y: 958}],
+                                style: arcStyle,
+                                lift: false,
+                                color: arrowColor
+                            };
                             break;
                     }
 
@@ -1184,39 +1214,36 @@
             }
         }
 
-
-        function getSliderHtml(systemsGo) {
+        function getSliderHtml() {
             var sliderHtml = "";
             var basePosX = 0;
             var cellTitle = "";
             sliderHtml += "<div class='sizeme_slider'>";
-            if (systemsGo) {
-                sliderHtml += "<div class='slider_text slider_text_above'></div>";
-                sliderHtml += "<div class='slider_container'>";
-                sliderHtml += "<div class='slider_bar'>";
-                sliderHtml += "</div>";
-                if (sizeme_local_options.fitAreaSlider) {
-                    sliderHtml += "<div class='slider_area'></div>";
-                }
-                sliderHtml += "<table class='slider_table'><tr>";
-                for (var singleFit in FIT_RANGES) {
-                    if (FIT_RANGES.hasOwnProperty(singleFit)) {
-                        if (singleFit > 1) {
-                            if (basePosX !== 0) {
-                                var perc_width = Math.round((singleFit - basePosX) * sliderScale);
-                                sliderHtml += "<td class='" + cellTitle + "'";
-                                sliderHtml += " style='width: " + perc_width + "%; min-width: " + perc_width + "%;'>";
-                                sliderHtml += i18n.FIT_VERDICT[cellTitle];
-                                sliderHtml += "</td>";
-                            }
-                            basePosX = (+singleFit);
-                            cellTitle = FIT_RANGES[singleFit].label;
+            sliderHtml += "<div class='slider_text slider_text_above'></div>";
+            sliderHtml += "<div class='slider_container'>";
+            sliderHtml += "<div class='slider_bar'>";
+            sliderHtml += "</div>";
+            if (sizeme_local_options.fitAreaSlider) {
+                sliderHtml += "<div class='slider_area'></div>";
+            }
+            sliderHtml += "<table class='slider_table'><tr>";
+            for (var singleFit in FIT_RANGES) {
+                if (FIT_RANGES.hasOwnProperty(singleFit)) {
+                    if (singleFit > 1) {
+                        if (basePosX !== 0) {
+                            var perc_width = Math.round((singleFit - basePosX) * sliderScale);
+                            sliderHtml += "<td class='" + cellTitle + "'";
+                            sliderHtml += " style='width: " + perc_width + "%; min-width: " + perc_width + "%;'>";
+                            sliderHtml += i18n.FIT_VERDICT[cellTitle];
+                            sliderHtml += "</td>";
                         }
+                        basePosX = (+singleFit);
+                        cellTitle = FIT_RANGES[singleFit].label;
                     }
                 }
-                sliderHtml += "</tr></table>";
-                sliderHtml += "</div>";
             }
+            sliderHtml += "</tr></table>";
+            sliderHtml += "</div>";
             sliderHtml += "<div class='slider_text slider_text_below'></div>";
             sliderHtml += "<div class='slider_text slider_text_more_below'></div>";
             sliderHtml += "</div>";
@@ -1375,8 +1402,8 @@
                     .on("click", function () {
                         $(".sm-buttonset").find(".sm-selectable").removeClass("sm-state-active");
                         $(".element_for_" + thisVal).addClass("sm-state-active");
-                        $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val(thisVal);
-                        $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').trigger("change");	// yell change at original size selector
+                        $(uiOptions.sizeSelectionElement + ':not(".cloned")').val(thisVal);
+                        $(uiOptions.sizeSelectionElement + ':not(".cloned")').trigger("change");	// yell change at original size selector
                     });
                 $content.append($div);
             });
@@ -1654,35 +1681,35 @@
 
                 // item
                 plotItem(c, item_drawing, false, scale, offsetX, offsetY, false);
-                var inputKey = $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val();
+                var inputKey = $(uiOptions.sizeSelectionElement + ':not(".cloned")').val();
 
                 // arrows
                 if (matchMap) {
                     // Detailed
-					if (inputKey) {
-						sizeme_product.item.measurements[inputKey].each(function (measurement) {
-							if (sizeme_product.item.measurements[inputKey][measurement] > 0 && measurement_arrows[measurement]) {
-								// var draw = (matchMap[measurement].componentFit > 0);
-								var draw = true;
-								if (draw) {
-									c.strokeStyle = measurement_arrows[measurement].color;
-									c.fillStyle = measurement_arrows[measurement].color;
-									plotItem(c, measurement_arrows[measurement], true, scale, offsetX, offsetY, (measurement === highlight && highlight !== null));
-								}
-							}
-						});
-					} else {
-						plotItem(c, item_drawing, false, scale, offsetX, offsetY, false);
-					}
+                    if (inputKey) {
+                        sizemeProduct.item.measurements[inputKey].each(function (measurement) {
+                            if (sizemeProduct.item.measurements[inputKey][measurement] > 0 && measurement_arrows[measurement]) {
+                                // var draw = (matchMap[measurement].componentFit > 0);
+                                var draw = true;
+                                if (draw) {
+                                    c.strokeStyle = measurement_arrows[measurement].color;
+                                    c.fillStyle = measurement_arrows[measurement].color;
+                                    plotItem(c, measurement_arrows[measurement], true, scale, offsetX, offsetY, (measurement === highlight && highlight !== null));
+                                }
+                            }
+                        });
+                    } else {
+                        plotItem(c, item_drawing, false, scale, offsetX, offsetY, false);
+                    }
                 } else {
                     // Size Guider
                     if (!inputKey) {
-                        inputKey = Object.keys(sizeme_product.item.measurements)[0];
+                        inputKey = Object.keys(sizemeProduct.item.measurements)[0];
                     }
                     if (inputKey) {
-                        if (typeof sizeme_product.item.measurements[inputKey] !== "undefined") {
-                            sizeme_product.item.measurements[inputKey].each(function (measurement) {
-                                if (sizeme_product.item.measurements[inputKey][measurement] > 0 && measurement_arrows[measurement]) {
+                        if (typeof sizemeProduct.item.measurements[inputKey] !== "undefined") {
+                            sizemeProduct.item.measurements[inputKey].each(function (measurement) {
+                                if (sizemeProduct.item.measurements[inputKey][measurement] > 0 && measurement_arrows[measurement]) {
                                     c.strokeStyle = measurement_arrows[measurement].color;
                                     c.fillStyle = measurement_arrows[measurement].color;
                                     plotItem(c, measurement_arrows[measurement], true, scale, offsetX, offsetY, (measurement === highlight && highlight !== null));
@@ -1705,14 +1732,14 @@
         }
 
         function hasNeckOpening() {
-            var inputKey = $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val();
+            var inputKey = $(uiOptions.sizeSelectionElement + ':not(".cloned")').val();
             if (!inputKey) {
-                inputKey = Object.keys(sizeme_product.item.measurements)[0];
+                inputKey = Object.keys(sizemeProduct.item.measurements)[0];
             }
             var retval = false;
-            if (typeof sizeme_product.item.measurements[inputKey] !== "undefined") {
-                if (typeof sizeme_product.item.measurements[inputKey].neck_opening_width !== "undefined") {
-                    retval = (sizeme_product.item.measurements[inputKey].neck_opening_width > 0);
+            if (typeof sizemeProduct.item.measurements[inputKey] !== "undefined") {
+                if (typeof sizemeProduct.item.measurements[inputKey].neck_opening_width !== "undefined") {
+                    retval = (sizemeProduct.item.measurements[inputKey].neck_opening_width > 0);
                 }
             }
             return retval;
@@ -1728,7 +1755,7 @@
 
         function writeDetailedWindow(isSizeGuide) {
             // create detailed dialog window
-            itemName = sizeme_product.name;
+            itemName = sizemeProduct.name;
             var txts = i18n.DETAILED;
             var linkTarget = ".sizeme_slider .slider_text_below";
 
@@ -1736,7 +1763,7 @@
 
             if (isSizeGuide) {
                 txts = i18n.SIZE_GUIDE;
-                linkTarget = sizeme_UI_options.appendContentTo;
+                linkTarget = uiOptions.appendContentTo;
             }
 
             var $dialog = $('<div id="sizeme_detailed_view_content"></div>')
@@ -1784,26 +1811,26 @@
                     .appendTo("#col2");
 
                 // clone size select (and possible buttons) to detailed window
-                var $clone = $(sizeme_UI_options.sizeSelectionElement+', .sm-buttonset').clone(true, true);
-				$clone.addClass("cloned");
+                var $clone = $(uiOptions.sizeSelectionElement + ', .sm-buttonset').clone(true, true);
+                $clone.addClass("cloned");
                 $clone.find("*").addBack().each(function () {
                     $(this).addClass("cloned");
                     if (this.id) this.id = "clone_" + this.id;
                     if (this.name) this.name = "clone_" + this.name;
                 });
-				
+
                 $("<div class='sizeme_detailed_section sizeme_detailed_size_selection_section'></div>")
                     .append("<h2>" + i18n.COMMON.selected_size + "</h2>")
                     .append($clone)
                     .appendTo("#col2");
-					
-				// add change event to cloned select too (not possible buttonset)
-				$("#sizeme_detailed_view_content .sizeme-size-selector.cloned").change(function () {
-					var thisVal = $(this).val();
-					// send value to original select and trigger change there
-					$(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val(thisVal);
-					$(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').trigger("change");
-				});
+
+                // add change event to cloned select too (not possible buttonset)
+                $("#sizeme_detailed_view_content .sizeme-size-selector.cloned").change(function () {
+                    var thisVal = $(this).val();
+                    // send value to original select and trigger change there
+                    $(uiOptions.sizeSelectionElement + ':not(".cloned")').val(thisVal);
+                    $(uiOptions.sizeSelectionElement + ':not(".cloned")').trigger("change");
+                });
 
                 // clone slider (without detailed view toggler and in content stuff)
                 var $slider_clone = $(".sizeme_slider")
@@ -1943,8 +1970,8 @@
 
                 $row = $(document.createElement("tr")).addClass("header_row");
                 $i = 0;
-                sizeme_product.item.measurements[inputKey].each(function (measurement) {
-                    if (sizeme_product.item.measurements[inputKey][measurement] > 0) {
+                sizemeProduct.item.measurements[inputKey].each(function (measurement) {
+                    if (sizemeProduct.item.measurements[inputKey][measurement] > 0) {
                         var $txt = '<span class="num">' + (++$i) + '</span>' + i18n.MEASUREMENT[measurement];
                         if (measurement_arrows[measurement]) {
                             measurement_arrows[measurement].num = $i;
@@ -1959,12 +1986,12 @@
 
                 if (sizeme_local_options.writeOverlaps) {
                     $row = $(document.createElement("tr")).addClass("data_row");
-                    sizeme_product.item.measurements[inputKey].each(function (measurement) {
+                    sizemeProduct.item.measurements[inputKey].each(function (measurement) {
                         var drawReason = 0;
                         if (matchMap[measurement] && matchMap[measurement].componentFit > 0) {
                             drawReason = 1;
                         }
-                        if (sizeme_product.item.measurements[inputKey][measurement] > 0) {
+                        if (sizemeProduct.item.measurements[inputKey][measurement] > 0) {
                             drawReason = 2;
                         }
                         if (drawReason > 0) {
@@ -2069,8 +2096,8 @@
                                     $tip_txts[measurement] += i18n.FIT_INFO.sm_considers_fit + " <b>" + $fitVerdict.toLowerCase() + "</b>.";
                                 }
 
-                            } else if (sizeme_product.item.measurements[inputKey][measurement] > 0) {
-                                $txt = (sizeme_product.item.measurements[inputKey][measurement] / 10).toFixed(1) + " cm";
+                            } else if (sizemeProduct.item.measurements[inputKey][measurement] > 0) {
+                                $txt = (sizemeProduct.item.measurements[inputKey][measurement] / 10).toFixed(1) + " cm";
                                 $tip_txts[measurement] += i18n.COMMON.is + " " + $txt + ".  ";
                                 if (missingMeasurements) {
                                     if (getMissingMeasurement(missingMeasurements, measurement) !== null) {
@@ -2099,7 +2126,7 @@
                 }
 
                 $row = $(document.createElement("tr")).addClass("data_row fit_label_row");
-                sizeme_product.item.measurements[inputKey].each(function (measurement, value) {
+                sizemeProduct.item.measurements[inputKey].each(function (measurement, value) {
                     var $cell;
                     if (matchMap[measurement]) {
                         if (matchMap[measurement].componentFit > 0) {
@@ -2115,7 +2142,7 @@
                                 .data("measurement", measurement);
 
                             $row.append(colorCell($cell, matchMap[measurement], measurement_arrows[measurement]));
-                        } else if (sizeme_product.item.measurements[inputKey][measurement] > 0) {
+                        } else if (sizemeProduct.item.measurements[inputKey][measurement] > 0) {
                             $txt = "";
                             $cell = $(document.createElement("td"))
                                 .html($txt)
@@ -2123,7 +2150,7 @@
                                 .data("measurement", measurement);
                             $row.append($cell);
                         }
-                    } else if (sizeme_product.item.measurements[inputKey][measurement] > 0) {
+                    } else if (sizemeProduct.item.measurements[inputKey][measurement] > 0) {
                         $txt = "";
                         var $class = "",
                             missing;
@@ -2149,12 +2176,12 @@
                 // *** Size Guide ***
                 $row = $(document.createElement("tr")).addClass("header_row");
                 $i = 0;
-                var $first = Object.keys(sizeme_product.item.measurements)[0],
+                var $first = Object.keys(sizemeProduct.item.measurements)[0],
                     $j, measurement;
                 $row.append($(document.createElement("td")).html(i18n.COMMON.size).addClass("size_column"));
                 for ($j = 0; $j < FIT_ORDER.length; $j++) {
                     measurement = FIT_ORDER[$j];
-                    if (sizeme_product.item.measurements[$first][measurement] > 0) {
+                    if (sizemeProduct.item.measurements[$first][measurement] > 0) {
                         $txt = '<span class="num">' + (++$i) + '</span>' + i18n.MEASUREMENT[measurement];
                         if (measurement_arrows[measurement]) {
                             measurement_arrows[measurement].num = $i;
@@ -2177,8 +2204,8 @@
                     $row.append($(document.createElement("td")).html(sizeText(sizeKeys[$i].sizeLabel)).addClass("size_column"));
                     for ($j = 0; $j < FIT_ORDER.length; $j++) {
                         measurement = FIT_ORDER[$j];
-                        if (sizeme_product.item.measurements[key][measurement] > 0) {
-                            $txt = (sizeme_product.item.measurements[key][measurement] / 10).toFixed(1);
+                        if (sizemeProduct.item.measurements[key][measurement] > 0) {
+                            $txt = (sizemeProduct.item.measurements[key][measurement] / 10).toFixed(1);
                             $cell = $(document.createElement("td")).text($txt + " cm").addClass("run_highlight cell_" + measurement).data("measurement", measurement);
                             $row.append(colorCell($cell, "", measurement_arrows[measurement]));
                         }
@@ -2263,184 +2290,79 @@
             return splashHtml;
         }
 
-        function findMaxMeasurement() {
+        function findMaxMeasurement(product) {
             var maxVal = 0;
-            sizeme_product.item.measurements.each(function (key, measurement_set) {
-                sizeme_product.item.measurements[key].each(function (key_2, value) {
+            product.item.measurements.each(function (key) {
+                product.item.measurements[key].each(function (key_2, value) {
                     maxVal = Math.max(value, maxVal);
                 });
             });
             return maxVal;
         }
 
-        var DataStorage = (function () {
-
-            function DataStorage(type) {
-                if (storageAvailable(type)) {
-                    this.storage = window[type];
-                } else {
-                    this.storage = null;
-                }
-            }
-
-            DataStorage.prototype.storage = null;
-
-            function storageAvailable(type) {
-                try {
-                    var _tstorage = window[type];
-                    var x = '__storage_test__';
-                    _tstorage.setItem(x, x);
-                    _tstorage.removeItem(x);
-                    return true;
-                } catch (e) {
-                    return false;
-                }
-            }
-
-            DataStorage.prototype.withStorage = function (callback) {
-                if (this.storage === null) {
-                    return;
-                }
-
-                return callback(this.storage);
-            };
-
-            return DataStorage;
-        })();
-
-        var Storage = new DataStorage('sessionStorage');
-        var sizeMe;
-
-        function sizeMeLogout() {
-            sizeMe = null;
-            clearAuthToken();
+        function buttonize() {
+            selectToButtons(uiOptions.sizeSelectionElement);
+            $("#button_choose").remove();
         }
 
-        function clearAuthToken() {
-            Storage.withStorage(function (storage) {
-                storage.removeItem('authToken');
-            });
+        function setProfileLink() {
+            if (selectedProfile === null) {
+                linkToSelectedProfile = SizeMe.contextAddress + "/account/profiles.html";
+            } else {
+                linkToSelectedProfile = SizeMe.contextAddress + "/account/profiles/" + selectedProfile + "/profile.html";
+            }
         }
 
-        function getAuthToken() {
-            var deferred = $.Deferred();
+        function doProfileChange(newValue, matchFn) {
+            selectedProfile = newValue;
+            setProfileLink();
 
-            Storage.withStorage(function (storage) {
-                var storedTokenObj = storage.getItem('authToken'),
-                    storedToken;
-                if (storedTokenObj !== null) {
-                    storedToken = JSON.parse(storedTokenObj);
-                    if (storedToken.expires !== undefined) {
-                        storedToken.expires = Date.parse(storedToken.expires);
-                        // Has token expired?
-                        if (storedToken.expires > new Date().getTime()) {
-                            if (storedToken.token !== undefined) {
-                                deferred.resolve(storedToken.token);
-                            } else {
-                                deferred.reject(null);
-                            }
-                        }
-                    }
-                }
-            });
+            if (selectedProfile === null) {
+                eraseCookie("sizeme_profileId");
+                goWriteMessages();
+            } else {
+                $(".profileSelect").val(selectedProfile);
+                createCookie("sizeme_profileId", selectedProfile, cookieLifetime);
 
-            if (deferred.state() === "pending") {
-                SizeMe.getAuthToken(function (authTokenObj) {
-                    if (authTokenObj === null || authTokenObj.token === null) {
-                        deferred.reject(null);
-                    } else {
-                        Storage.withStorage(function (storage) {
-                            storage.setItem('authToken', JSON.stringify(authTokenObj));
-                        });
-                        deferred.resolve(authTokenObj.token);
-                    }
-                });
+                matchFn(selectedProfile);
+                SizeMe.trackEvent("activeProfileChanged", "Store: Active profile changed");
             }
-
-            return deferred.promise();
+            $('#logged_in_link').attr("href", linkToSelectedProfile);
+            // end of function  doProfileChange
         }
 
-        function sizeMeInit(authorizedCb, unauthorizedCb) {
-            var deferred = $.Deferred();
-            getAuthToken().then(
-                function (authToken) {
-                    deferred.resolve(new SizeMe(authToken));
-                }, function () {
-                    deferred.reject(null);
-                }
-            );
-
-            sizeMe = deferred.promise();
-            sizeMe.then(
-                function (smObj) {
-                    if (authorizedCb !== null) {
-                        authorizedCb(smObj);
-                    }
-                },
-                function () {
-                    if (unauthorizedCb !== null) {
-                        unauthorizedCb();
-                    }
-                }
-            );
-        }
-
-        // Load on ready for all pages
-        $(function () {
-
-            var systemsGo = true;
-			
-			// language sniffer
-			var sizemeLang;
-			if (typeof sizeme_UI_options.lang === 'undefined') {
-				sizemeLang = $('html').attr('lang');
-			} else {
-				sizemeLang = sizeme_UI_options.lang;
-			}
-            i18n = SizeMeI18N.get(sizemeLang);
-
-            // check options (and service status)
-            if (typeof sizeme_options === 'undefined') {
-                systemsGo = false;
-            } else if (sizeme_options.service_status === "off") {
-                systemsGo = false;
+        var checkSystems = function (product) {
+            // fallback for legacy size selection pointer
+            if (typeof uiOptions.sizeSelectionContainer !== 'undefined') {
+                uiOptions.sizeSelectionElement = uiOptions.sizeSelectionContainer + " select";
             }
 
-            // check data
-            if (typeof sizeme_product === 'undefined') {
-                systemsGo = false;
-            } else if (sizeme_product.item.itemType === 0) {
-                systemsGo = false;
-            } else if (findMaxMeasurement() === 0) {
-                systemsGo = false;
-            }
-			
-			// fallback for legacy size selection pointer
-			if (typeof sizeme_UI_options.sizeSelectionContainer !== 'undefined') sizeme_UI_options.sizeSelectionElement = sizeme_UI_options.sizeSelectionContainer + " select";
+            return $(uiOptions.sizeSelectionElement).length !== 0 && // check existence of size selection element
+                findMaxMeasurement(product) !== 0;
+        };
 
-            // check existence of size selection element
-            if ($(sizeme_UI_options.sizeSelectionElement).length === 0) {
-                systemsGo = false;
-            }
+        var init = function (product, logoutFn, isLoggedIn) {
+            sizemeProduct = product;
 
-            if (systemsGo) {
-                loadArrows(false); // everyone needs arrows
+            // language sniffer
+            var sizemeLang;
+            if (typeof uiOptions.lang === 'undefined') {
+                sizemeLang = $('html').attr('lang');
+            } else {
+                sizemeLang = uiOptions.lang;
             }
+            i18n = SizeMe.I18N.get(sizemeLang);
 
-            //stuff we do anyway
-            addIds(sizeme_UI_options.sizeSelectionElement);
+            addIds(SizeMe.UI.options.sizeSelectionElement);
+            loadArrows(false); // everyone needs arrows
 
             // buttonize
-            if (typeof sizeme_options !== 'undefined') {
-                if (sizeme_options.buttonize === "yes") {
-                    selectToButtons(sizeme_UI_options.sizeSelectionElement);
-                    $("#button_choose").remove();
-                }
+            if (typeof sizeme_options !== 'undefined' && sizeme_options.buttonize === "yes") {
+                buttonize();
             }
 
-            // add add to cart event
-            if (sizeme_UI_options.addToCartEvent) {
-                $(sizeme_UI_options.addToCartElement).on(sizeme_UI_options.addToCartEvent, function () {
+            if (uiOptions.addToCartEvent) {
+                $(uiOptions.addToCartElement).on(uiOptions.addToCartEvent, function () {
                     if (isLoggedIn()) {
                         SizeMe.trackEvent("addToCartSM", "Store: Product added to cart by SizeMe user");
                     } else {
@@ -2450,348 +2372,269 @@
                 });
             }
 
-            var getMatchResponseHandler = function (prodId, sizeme_product) {
-                if (!systemsGo) {
-                    return function () {
-                    };
-                }
-                return function (responseMap) {
-                    var smallestOffset = 9999,  // for recommendation
-                        thisVal, thisId, thisData, thisSize;
+            // delegate logout to #logout-element from now on
+            $(document).on("click", "#logout", function () {
+                logoutFn();
+            });
+        };
 
-                    responseMap.each(function (key, result) {
-                        var classKey = ".element_for_" + key;
-                        $(classKey)
-                            .removeClass('sm-too_small sm-slim sm-regular sm-loose sm-very_loose sm-huge sm-too_big')
-                            .addClass('sm-' + result.fitRangeLabel);
+        var matchResponseHandler = function (responseMap) {
+            var smallestOffset = 9999,  // for recommendation
+                thisVal, thisId, thisData, thisSize;
 
-                        // Analyze fit for recommendations
-                        var fitOffset = Math.abs(result.totalFit - OPTIMAL_FIT);
-                        if (fitOffset < smallestOffset) {
-                            // check if recommended option exists (is for sale)
-                            if ($("#input_" + key).length > 0) {
-                                smallestOffset = fitOffset;
-                                recommendedId = key;
-                                recommendedLabel = result.fitRangeLabel;
-                            }
-                        }
+            responseMap.each(function (key, result) {
+                var classKey = ".element_for_" + key;
+                $(classKey)
+                    .removeClass('sm-too_small sm-slim sm-regular sm-loose sm-very_loose sm-huge sm-too_big')
+                    .addClass('sm-' + result.fitRangeLabel);
 
-                        // check if there are results in the first place
-                        if (result.accuracy < accuracyThreshold) {
-                            $('.slider_bar, .slider_area').hide();
-                        } else {
-                            $('.slider_bar, .slider_area').show();
-                        }
-
-                        // write data to inputs
-                        $("#input_" + key).data("fitData", {
-                            totalFit: result.totalFit,
-                            fitRangeLabel: result.fitRangeLabel,
-                            matchMap: result.matchMap,
-                            missingMeasurements: result.missingMeasurements,
-                            accuracy: result.accuracy,
-                            inputKey: key
-                        });
-                    });
-
-                    // bind change to size selector (only original, clone handled separately)
-                    $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').change(function () {
-                        thisVal = $(this).val();
-                        thisId = '#input_' + thisVal;
-                        thisData = $(thisId).data("fitData");
-                        thisSize = $(thisId).text();
-                        if (thisVal) {
-							$('.slider_bar, .slider_area, #detailed_table').show();
-                            updateSlider(thisSize, thisData, (thisVal === recommendedId), sizeme_UI_options.detailedViewContainer, true);
-                        } else {
-							$('.slider_bar, .slider_area, #detailed_table').hide();
-						}
-                        // relay change to cloned (if exists), but do not trigger change there
-                        $("#sizeme_detailed_view_content .sizeme-size-selector.cloned").val(thisVal);
-                        SizeMe.trackEvent("sizeChanged", "Store: Product size changed");
-                    });
-
-                    // remove existing recommendation
-                    $(".sm-buttonset").find(".sm-selectable").removeClass('sm-recommended');
-
-                    // set selection to recommendation on first match
-                    if (sizeme_UI_options.firstRecommendation) {
-                        // select recommended (at original)
-                        $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val(recommendedId);
-                        // select recommended (at possible clone)
-                        $("#sizeme_detailed_view_content .sizeme-size-selector.cloned").val(recommendedId);
-                        // remove existing active
-                        $(".sm-buttonset").find(".sm-selectable").removeClass('sm-state-active');
-                        // add class
-                        $(".element_for_" + recommendedId).addClass('sm-recommended sm-state-active');
-                        var recommendedInput = $("#input_" + recommendedId);
-                        if (recommendedInput.data("fitData")) {
-                            thisData = recommendedInput.data("fitData");
-                            thisSize = recommendedInput.text();
-                            updateSlider(thisSize, thisData, true, sizeme_UI_options.detailedViewContainer, true);
-                        }
-                        sizeme_UI_options.firstRecommendation = false;
-                    } else {
-                        thisId = '#input_' + $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val();
-                        if ($(thisId).data("fitData")) {
-                            thisData = $(thisId).data("fitData");
-                            thisSize = $(thisId).text();
-                            updateSlider(thisSize, thisData, true, sizeme_UI_options.detailedViewContainer, true);
-                        }
+                // Analyze fit for recommendations
+                var fitOffset = Math.abs(result.totalFit - OPTIMAL_FIT);
+                if (fitOffset < smallestOffset) {
+                    // check if recommended option exists (is for sale)
+                    if ($("#input_" + key).length > 0) {
+                        smallestOffset = fitOffset;
+                        recommendedId = key;
+                        recommendedLabel = result.fitRangeLabel;
                     }
-                };
-                // end of function 	getMatchResponseHandler
-            };
+                }
 
-            var matchErrorHandler = function () {
+                // check if there are results in the first place
+                if (result.accuracy < accuracyThreshold) {
+                    $('.slider_bar, .slider_area').hide();
+                } else {
+                    $('.slider_bar, .slider_area').show();
+                }
+
+                // write data to inputs
+                $("#input_" + key).data("fitData", {
+                    totalFit: result.totalFit,
+                    fitRangeLabel: result.fitRangeLabel,
+                    matchMap: result.matchMap,
+                    missingMeasurements: result.missingMeasurements,
+                    accuracy: result.accuracy,
+                    inputKey: key
+                });
+            });
+
+            // bind change to size selector (only original, clone handled separately)
+            $(uiOptions.sizeSelectionElement + ':not(".cloned")').change(function () {
+                thisVal = $(this).val();
+                thisId = '#input_' + thisVal;
+                thisData = $(thisId).data("fitData");
+                thisSize = $(thisId).text();
+                if (thisVal) {
+                    $('.slider_bar, .slider_area, #detailed_table').show();
+                    updateSlider(thisSize, thisData, (thisVal === recommendedId), uiOptions.detailedViewContainer, true);
+                } else {
+                    $('.slider_bar, .slider_area, #detailed_table').hide();
+                }
+                // relay change to cloned (if exists), but do not trigger change there
+                $("#sizeme_detailed_view_content .sizeme-size-selector.cloned").val(thisVal);
+                SizeMe.trackEvent("sizeChanged", "Store: Product size changed");
+            });
+
+            // remove existing recommendation
+            $(".sm-buttonset").find(".sm-selectable").removeClass('sm-recommended');
+
+            // set selection to recommendation on first match
+            if (uiOptions.firstRecommendation) {
+                // select recommended (at original)
+                $(uiOptions.sizeSelectionElement + ':not(".cloned")').val(recommendedId);
+                // select recommended (at possible clone)
+                $("#sizeme_detailed_view_content .sizeme-size-selector.cloned").val(recommendedId);
+                // remove existing active
+                $(".sm-buttonset").find(".sm-selectable").removeClass('sm-state-active');
+                // add class
+                $(".element_for_" + recommendedId).addClass('sm-recommended sm-state-active');
+                var recommendedInput = $("#input_" + recommendedId);
+                if (recommendedInput.data("fitData")) {
+                    thisData = recommendedInput.data("fitData");
+                    thisSize = recommendedInput.text();
+                    updateSlider(thisSize, thisData, true, uiOptions.detailedViewContainer, true);
+                }
+                uiOptions.firstRecommendation = false;
+            } else {
+                thisId = '#input_' + $(uiOptions.sizeSelectionElement + ':not(".cloned")').val();
+                if ($(thisId).data("fitData")) {
+                    thisData = $(thisId).data("fitData");
+                    thisSize = $(thisId).text();
+                    updateSlider(thisSize, thisData, true, uiOptions.detailedViewContainer, true);
+                }
+            }
+            // end of function 	matchResponseHandler
+        };
+
+        var profileListHandler = function (profileList, matchFn) {
+            var cookieProfile = readCookie("sizeme_profileId");
+            var $i = 0;
+            var $new = "<div id='sizeme_header_container'>" + getStandardHeader() + "</div>";
+
+            // Prepend header to body
+            $(uiOptions.appendContentTo).append(getSliderHtml());
+            $(".sizeme_slider .slider_text_below").append($new);
+            $("#sizeme_header.in_content").find("#logo").on("click", function () {
+                $("#sizeme_header.in_content").toggleClass("opened");
+            });
+
+            if (profileList.length > 0) {
+                selectedProfile = profileList[0].id;
+                $.each(profileList, function () {
+                    if (this.id === cookieProfile) {
+                        selectedProfile = this.id;
+                        return false;
+                    }
+                });
+
+                writeDetailedWindow(false);
+                moveSlider(OPTIMAL_FIT, false);
+
+                $(".shopping_for").empty().html("<span class='shopping_for_text'>" + i18n.COMMON.shopping_for + ": </span>")
+                    .append(function () {
+                        var select = document.createElement("select");
+                        select.className = "profileSelect";
+                        select.id = "id_profileSelect_" + (++$i);
+                        return select;
+                    });
+                $.each(profileList, function () {
+                    $("<option>").appendTo(".profileSelect")
+                        .attr("value", this.id)
+                        .text(this.profileName);
+                });
+                $('.profileSelect')
+                    .val(selectedProfile)
+                    .change(function () {
+                        doProfileChange(this.value, matchFn);
+                    });
+            } else {
+                selectedProfile = null;
+                setProfileLink();
+                writeDetailedWindow(false);
+                updateDetailedTable();
+                $('.slider_bar, .slider_area').hide();
+                $(".shopping_for").empty();
+                $(".sizeme_header_content .shopping_for")
+                    .html("<span class='shopping_for_text no-profile'>" + i18n.MESSAGE.no_profiles + "</span>");
+                $(".sizeme_detailed_section .shopping_for")
+                    .append(
+                        $("<span>").addClass("shopping_for_text no-profile")
+                            .html(i18n.MESSAGE.no_profiles + " " + i18n.COMMON.go_to +
+                                "<a id='logged_in_link' href='" + linkToSelectedProfile + "' target='_blank'>" + i18n.COMMON.my_profiles + "</a> " + i18n + COMMON.and_create_one)
+                    );
+            }
+
+            $('#logged_in').html("<a id='logged_in_link' href='#' target='_blank'>" + i18n.COMMON.my_profiles + "</a>");
+
+            // Yell change
+            doProfileChange(selectedProfile, matchFn);
+        };
+
+        var login = function () {
+            eraseCookie("sizeme_no_thanks");
+            eraseCookie("sizeme_no_product_splash");
+
+            // remove existing (if exists)
+            $("#sizeme_header").remove();
+            $("#popup_opener").remove();
+            $("#sizeme_product_splash").remove();
+            $("#sizeme_detailed_view_content").dialog("destroy").remove();
+
+            //$("#logout").click(logoutFn);
+        };
+
+        var logout = function (loginFn, clearAuthToken) {
+            loadArrows(true);
+
+            // Size Guide for non-loving users
+            writeDetailedWindow(true);
+            updateDetailedTable();
+
+            // Makia live temporary exception
+            // Show size guide text only if there actually is a size guide (otherwise hidden with css)
+            $(".sizeme p").show();
+
+            // bind change to original select
+            $(uiOptions.sizeSelectionElement + ':not(".cloned")').change(function () {
+                var thisVal = $(this).val();
+                // relay change to cloned and vice versa
+                $("#sizeme_detailed_view_content .sizeme-size-selector.cloned").val(thisVal);
+                updateDetailedTable("", thisVal);
+            });
+
+            if (sizeme_options.service_status === "on") {
+                var splashContent;
+                // Add splash content in detailed
+                splashContent = getSplashDetailed();
+                if (noThanks()) {
+                    splashContent = $(splashContent).hide();
+                }
+                $("#sizeme_detailed_view_content").append(splashContent);
+
+                // login button
+                $("#sizeme_btn_login").click(function () {
+                    SizeMe.trackEvent("clickLogin", "Store: Login clicked");
+                    clearAuthToken();
+                    SizeMe.loginFrame(function () {
+                        loginFn();
+                    });
+                    return false;
+                });
+
+                $("#sizeme_btn_sign_up").click(function () {
+                    SizeMe.trackEvent("clickSignUp", "Store: Sign up clicked");
+                    clearAuthToken();
+                    return true;
+                });
+
+                // no thanks button
+                $("#sizeme_btn_no_thanks").on("click", function () {
+                    SizeMe.trackEvent("noThanks", "Store: SizeMe, no thanks");
+                    createCookie("sizeme_no_thanks", "true", cookieLifetime);
+                    $(".splash").hide();
+                    $("#sizeme_btn_no_thanks_product_splash").trigger("click");		// also close possible product splasher
+                    return false;
+                });
+
+                // Product page splash
+                if (!noProductSplash()) {
+                    $(uiOptions.appendSplashTo).append(getProductSplash());
+                    $("#sizeme_btn_no_thanks_product_splash").on("click", function () {
+                        SizeMe.trackEvent("noProductSplash", "Store: Product splash closed");
+                        createCookie("sizeme_no_product_splash", "true", cookieLifetime);
+                        $("#sizeme_product_splash").slideUp();
+                        return false;
+                    });
+
+                    $("#sizeme_product_page_link").on("click", function () {
+                        SizeMe.trackEvent("clickProductSplash", "Store: Product splash clicked");
+                    });
+
+                }
+            }
+
+            // end of function 	loggedOutCb
+
+        };
+
+        return {
+            checkSystems: checkSystems,
+            noThanks: noThanks,
+            matchResponseHandler: matchResponseHandler,
+            matchErrorHandler: function () {
                 // this is called when the match function returns an error.  This is most likely due to a wrong or unadded itemType and only visible when the user is logged in.
                 // if the itemType is
                 $(".sizeme_slider").hide();
                 console.error("SizeMe: error in match function.  Please contact your local SizeMe dealer.");
-
                 // end of function 	matchErrorHandler
-            };
+            },
+            profileListHandler: profileListHandler,
+            init: init,
+            login: login,
+            logout: logout
+        };
 
-
-            var loggedInCb = function (sizeMeObj) {
-
-                function setProfileLink() {
-                    if (selectedProfile === null) {
-                        linkToSelectedProfile = SizeMe.contextAddress + "/account/profiles.html";
-                    } else {
-                        linkToSelectedProfile = SizeMe.contextAddress + "/account/profiles/" + selectedProfile + "/profile.html";
-                    }
-                }
-
-                var doProfileChange = function (newValue) {
-                    selectedProfile = newValue;
-                    setProfileLink();
-
-                    if (selectedProfile === null) {
-                        eraseCookie("sizeme_profileId");
-                        goWriteMessages();
-                    } else {
-                        $(".profileSelect").val(selectedProfile);
-                        createCookie("sizeme_profileId", selectedProfile, cookieLifetime);
-
-                        if (typeof sizeme_product !== 'undefined') {
-                            var prodId = null;
-                            var tmpItem = $.extend({}, sizeme_product.item);
-                            var itemType = tmpItem.itemType;
-                            if (itemType.indexOf('.') < 0) {
-                                tmpItem.itemType = itemType.split('').join('.');
-                            }
-                            sizeMeObj.match(new SizeMe.FitRequest(selectedProfile, tmpItem), getMatchResponseHandler(prodId, sizeme_product), matchErrorHandler);
-                        }
-                        SizeMe.trackEvent("activeProfileChanged", "Store: Active profile changed");
-                    }
-                    $('#logged_in_link').attr("href", linkToSelectedProfile);
-                    // end of function  doProfileChange
-                };
-
-                eraseCookie("sizeme_no_thanks");
-                eraseCookie("sizeme_no_product_splash");
-
-                // remove existing (if exists)
-                $("#sizeme_header").remove();
-                $("#popup_opener").remove();
-                $("#sizeme_product_splash").remove();
-                $("#sizeme_detailed_view_content").dialog("destroy").remove();
-
-                // *** SizeMe Magic
-                if (sizeMeObj !== null) {
-                    sizeMeObj.fetchProfilesForAccount(function (profileList) {
-                        var cookieProfile = readCookie("sizeme_profileId");
-                        var $i = 0;
-                        var $new = "<div id='sizeme_header_container'>" + getStandardHeader() + "</div>";
-
-                        // Prepend header to body
-                        $(sizeme_UI_options.appendContentTo).append(getSliderHtml(systemsGo));
-                        $(".sizeme_slider .slider_text_below").append($new);
-                        $("#sizeme_header.in_content").find("#logo").on("click", function () {
-                            $("#sizeme_header.in_content").toggleClass("opened");
-                        });
-
-                        if (profileList.length > 0) {
-                            selectedProfile = profileList[0].id;
-                            $.each(profileList, function () {
-                                if (this.id === cookieProfile) {
-                                    selectedProfile = this.id;
-                                    return false;
-                                }
-                            });
-
-                            writeDetailedWindow(false);
-                            moveSlider(OPTIMAL_FIT, false);
-
-                            $(".shopping_for").empty().html("<span class='shopping_for_text'>" + i18n.COMMON.shopping_for + ": </span>")
-                                .append(function () {
-                                    var select = document.createElement("select");
-                                    select.className = "profileSelect";
-                                    select.id = "id_profileSelect_" + (++$i);
-                                    return select;
-                                });
-                            $.each(profileList, function () {
-                                $("<option>").appendTo(".profileSelect")
-                                    .attr("value", this.id)
-                                    .text(this.profileName);
-                            });
-                            $('.profileSelect')
-                                .val(selectedProfile)
-                                .change(function () {
-                                    doProfileChange(this.value);
-                                });
-                        } else {
-                            selectedProfile = null;
-                            setProfileLink();
-                            writeDetailedWindow(false);
-                            updateDetailedTable();
-                            $('.slider_bar, .slider_area').hide();
-                            $(".shopping_for").empty();
-                            $(".sizeme_header_content .shopping_for")
-                                .html("<span class='shopping_for_text no-profile'>" + i18n.MESSAGE.no_profiles + "</span>");
-                            $(".sizeme_detailed_section .shopping_for")
-                                .append(
-                                    $("<span>").addClass("shopping_for_text no-profile")
-                                        .html(i18n.MESSAGE.no_profiles + " " + i18n.COMMON.go_to +
-                                            "<a id='logged_in_link' href='" + linkToSelectedProfile + "' target='_blank'>" + i18n.COMMON.my_profiles + "</a> " + i18n + COMMON.and_create_one)
-                                );
-                        }
-
-                        $('#logged_in').html("<a id='logged_in_link' href='#' target='_blank'>" + i18n.COMMON.my_profiles + "</a>");
-
-                        // Yell change
-                        doProfileChange(selectedProfile);
-                    });
-                }
-
-                $("#logout").click(loggedOutCb);
-
-                // end of function 	loggedInCb
-            };
-
-            var loggedOutCb = function () {
-
-                loadArrows(true);
-
-                // Size Guide for non-loving users
-                writeDetailedWindow(true);
-                updateDetailedTable();
-
-                // Makia live temporary exception
-                // Show size guide text only if there actually is a size guide (otherwise hidden with css)
-                $(".sizeme p").show();
-
-                // bind change to original select
-                $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').change(function () {
-                    var thisVal = $(this).val();
-                    // relay change to cloned and vice versa
-                    $("#sizeme_detailed_view_content .sizeme-size-selector.cloned").val(thisVal);
-                    updateDetailedTable("", thisVal);
-                });
-
-                if (sizeme_options.service_status === "on") {
-                    var splashContent;
-                    // Add splash content in detailed
-                    splashContent = getSplashDetailed();
-                    if (noThanks()) {
-                        splashContent = $(splashContent).hide();
-                    }
-                    $("#sizeme_detailed_view_content").append(splashContent);
-
-                    // login button
-                    $("#sizeme_btn_login").click(function () {
-                        SizeMe.trackEvent("clickLogin", "Store: Login clicked");
-                        clearAuthToken();
-                        SizeMe.loginFrame(function () {
-                            sizeMeInit(loggedInCb);
-                        });
-                        return false;
-                    });
-
-                    $("#sizeme_btn_sign_up").click(function () {
-                        SizeMe.trackEvent("clickSignUp", "Store: Sign up clicked");
-                        clearAuthToken();
-                        return true;
-                    });
-
-                    // no thanks button
-                    $("#sizeme_btn_no_thanks").on("click", function () {
-                        SizeMe.trackEvent("noThanks", "Store: SizeMe, no thanks");
-                        createCookie("sizeme_no_thanks", "true", cookieLifetime);
-                        $(".splash").hide();
-                        $("#sizeme_btn_no_thanks_product_splash").trigger("click");		// also close possible product splasher
-                        return false;
-                    });
-
-                    // Product page splash
-                    if (!noProductSplash()) {
-                        $(sizeme_UI_options.appendSplashTo).append(getProductSplash());
-                        $("#sizeme_btn_no_thanks_product_splash").on("click", function () {
-                            SizeMe.trackEvent("noProductSplash", "Store: Product splash closed");
-                            createCookie("sizeme_no_product_splash", "true", cookieLifetime);
-                            $("#sizeme_product_splash").slideUp();
-                            return false;
-                        });
-
-                        $("#sizeme_product_page_link").on("click", function () {
-                            SizeMe.trackEvent("clickProductSplash", "Store: Product splash clicked");
-                        });
-
-                    }
-                }
-
-                // end of function 	loggedOutCb
-            };
-
-            if (systemsGo) {
-                if (noThanks()) {
-                    SizeMe.trackEvent("productPageNoSM", "Store: Product page load, SizeMe refused");
-                    loggedOutCb();
-                } else {
-                    sizeMeInit(function (smObj) {
-                        SizeMe.trackEvent("productPageLoggedIn", "Store: Product page load, logged in");
-                        loggedInCb(smObj);
-                    }, function () {
-                        SizeMe.trackEvent("productPageLoggedOut", "Store: Product page load, logged out");
-                        loggedOutCb();
-                    });
-                }
-            }
-            // *** End
-        });
-
-        function isLoggedIn() {
-            return sizeMe !== null && sizeMe.state() === "resolved";
-        }
-
-        // Cookie functions
-        function createCookie(name, value, days) {
-            var expires;
-            if (days) {
-                var date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toGMTString();
-            }
-            else {
-                expires = "";
-            }
-            document.cookie = name + "=" + value + expires + "; path=/";
-        }
-
-        function readCookie(name) {
-            var ca = document.cookie.split(';'), c;
-            for (var i = 0; i < ca.length; i++) {
-                c = ca[i].trim().split('=');
-                if (c[0] === name) {
-                    return c[1];
-                }
-            }
-            return null;
-        }
-
-        function eraseCookie(name) {
-            createCookie(name, "", -1);
-        }
     };
+
+    SizeMe.UI.options = {};
+
 })(window);

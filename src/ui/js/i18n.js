@@ -17,6 +17,6 @@
         };
     };
 
-    window.SizeMeI18N = new SizeMeI18N("en");
+    SizeMe.I18N = new SizeMeI18N("en");
 
 })(window);

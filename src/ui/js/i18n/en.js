@@ -1,7 +1,7 @@
-(function (window) {
+(function (undefined) {
     "use strict";
 
-    window.SizeMeI18N.add("en",
+    SizeMe.I18N.add("en",
         {
             FIT_VERDICT: {
                 not_fitted: "Too small",
@@ -113,4 +113,4 @@
         }
     );
 
-})(window);
+})();

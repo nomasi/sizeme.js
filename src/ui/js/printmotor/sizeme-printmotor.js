@@ -1,4 +1,4 @@
-var sizeme_UI_options = {
+SizeMe.UI.options = {
 	appendContentTo: ".sizeme-size-guide",
 	appendSplashTo: ".descriptionholder .variationdataholder-size",
 	sizeSelectionElement: ".variationdata-size select",

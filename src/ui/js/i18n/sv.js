@@ -1,7 +1,7 @@
-(function (window) {
+(function (undefined) {
 	"use strict";
 
-	window.SizeMeI18N.add("sv",
+	SizeMe.I18N.add("sv",
 		{
 			FIT_VERDICT: {
 				not_fitted: "För liten",
@@ -113,4 +113,4 @@
 		}
 	);
 
-})(window);
+})();

@@ -1,7 +1,7 @@
-(function (window) {
+(function (undefined) {
     "use strict";
 
-    window.SizeMeI18N.add("fi",
+    SizeMe.I18N.add("fi",
         {
             FIT_VERDICT: {
                 not_fitted: "Pieni",
@@ -113,4 +113,4 @@
         }
     );
 
-})(window);
+})();

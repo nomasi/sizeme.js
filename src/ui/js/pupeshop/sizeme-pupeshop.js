@@ -1,4 +1,4 @@
-var sizeme_UI_options = {
+SizeMe.UI.options = {
     appendContentTo: ".productbuy",
     appendSplashTo: ".productbuy .margin-small-t",
     sizeSelectionElement: ".variation select",
