@@ -332,8 +332,8 @@ a#sizeme_btn_re-activator {
 .sizeme_slider table.slider_table td { 
  height: 24px;
  vertical-align: middle;
- font-size: 1rem;
- line-height: 1rem;
+ font-size: inherit;
+ line-height: inherit;
  color: white;
  border: 0;
  padding: 0;
