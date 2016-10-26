@@ -2493,12 +2493,18 @@
 			if (systemsGo) {
 				$(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').change(function () {
 					var thisVal = $(this).val();
-					updateSlider();					
-					
 					// relay change to cloned (if exists), but do not trigger change there
 					$("#sizeme_detailed_view_content .sizeme-size-selector.cloned").val(thisVal);
+					updateSlider();					
 					SizeMe.trackEvent("sizeChanged", "Store: Product size changed");
 				});
+				
+				// if there are extra elements that change the size selector somehow, use this
+				if (sizeme_UI_options.sizeChangeClickElement) {
+					$(sizeme_UI_options.sizeChangeClickElement).on("click", function() { 
+						$(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').trigger("change");
+					});
+				}
 			}
 
             var getMatchResponseHandler = function (prodId, sizeme_product) {
