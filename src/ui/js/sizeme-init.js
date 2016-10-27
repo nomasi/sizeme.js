@@ -94,7 +94,7 @@
                     var smProduct = new SizeMe.Item(
                         product.itemType, product.itemLayer, product.itemThickness, product.itemStretch
                     );
-                    $.each(product.measurements, function(label, value) {
+                    $.each(product.measurements, function (label, value) {
                         smProduct.addOption(label, SizeMe.Map.fromObject(value));
                     });
                     productPromise.resolve({
@@ -123,17 +123,20 @@
                 sizemeUI.checkSystems(product);
 
             var doMatch = function (selectedProfile) {
-                if (product) {
-                    var tmpItem = $.extend({}, product.item);
-                    var itemType = tmpItem.itemType;
+                var item;
+                if (typeof sizeme_product === "string") {
+                    item = sizeme_product;
+                } else {
+                    item = $.extend({}, product.item);
+                    var itemType = item.itemType;
                     if (itemType.indexOf('.') < 0) {
-                        tmpItem.itemType = itemType.split('').join('.');
+                        item.itemType = itemType.split('').join('.');
                     }
-                    sizeme.match(new SizeMe.FitRequest(selectedProfile, tmpItem),
-                        sizemeUI.matchResponseHandler,
-                        sizemeUI.matchErrorHandler
-                    );
                 }
+                sizeme.match(new SizeMe.FitRequest(selectedProfile, item),
+                    sizemeUI.matchResponseHandler,
+                    sizemeUI.matchErrorHandler
+                );
             };
 
             var loggedInCb = function () {
@@ -176,7 +179,7 @@
             /**** TEST SETTINGS ****/
             SizeMe.contextAddress = "https://sizeme.greitco.com";
             console.log(sizeme_product);
-            window.sizeme_product = "M2146C | HARBOUR T-SHIRT | BLACK | 161";
+            //window.sizeme_product = "M6969A | SIZEME T-SHIRT | BLACK | 161";
             /**** ****/
             var sizemeDef = $.Deferred();
             initSizeme().always(function () {
