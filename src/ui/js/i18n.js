@@ -1,3 +1,4 @@
+/* globals SizeMe: false */
 (function(window) {
     "use strict";
 

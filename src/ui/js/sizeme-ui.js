@@ -7,10 +7,9 @@
 /* globals sizeme_options: false, Opentip: false, SizeMe: false */
 
 (function (window, undefined) {
+    "use strict";
+    SizeMe.UI = function ($, sizemeProduct, tokenHelper) {
 
-    SizeMe.UI = function ($) {
-
-        var sizemeProduct;
         var i18n = {};
         var uiOptions = SizeMe.UI.options;
 
@@ -139,7 +138,7 @@
             if (days) {
                 var date = new Date();
                 date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toGMTString();
+                expires = "; expires=" + date.toUTCString(); // toGMTString is deprecated and to-be removed
             }
             else {
                 expires = "";
@@ -173,7 +172,9 @@
             var returnFit, singleFit;
             var ranges;
             ranges = FIT_RANGES_LESS_IMPORTANCE;
-            if (importance == 1) ranges = FIT_RANGES;
+            if (importance === 1) {
+                ranges = FIT_RANGES;
+            }
             for (singleFit in ranges) {
                 if (ranges.hasOwnProperty(singleFit)) {
                     if (fitValue < singleFit) {
@@ -209,9 +210,13 @@
             var itemTypeStr = sizemeProduct.item.itemType.toString();
             var itemTypeArr = [0, 0, 0, 0, 0, 0, 0];
             var separator = '';
-            if (itemTypeStr.indexOf('.') > -1) separator = '.';
+            if (itemTypeStr.indexOf('.') > -1) {
+                separator = '.';
+            }
             var itemTypeSplitted = itemTypeStr.split(separator, 7);
-            for (var i = 0; i < itemTypeSplitted.length; i++) itemTypeArr[i] = +itemTypeSplitted[i];
+            for (var i = 0; i < itemTypeSplitted.length; i++) {
+                itemTypeArr[i] = +itemTypeSplitted[i];
+            }
             return itemTypeArr;
         }
 
@@ -1815,8 +1820,12 @@
                 $clone.addClass("cloned");
                 $clone.find("*").addBack().each(function () {
                     $(this).addClass("cloned");
-                    if (this.id) this.id = "clone_" + this.id;
-                    if (this.name) this.name = "clone_" + this.name;
+                    if (this.id) {
+                        this.id = "clone_" + this.id;
+                    }
+                    if (this.name) {
+                        this.name = "clone_" + this.name;
+                    }
                 });
 
                 $("<div class='sizeme_detailed_section sizeme_detailed_size_selection_section'></div>")
@@ -1891,7 +1900,7 @@
                             "<a id='sizeme_ad_link' href='" + SizeMe.contextAddress + "' class='logo' target='_blank'></a></p>")
                         .appendTo("#sizeme_detailed_view_content");
                     $("#sizeme_ad_link").on("click", function () {
-                        clearAuthToken();
+                        tokenHelper.clearAuthToken();
                         if (noThanks()) {
                             eraseCookie("sizeme_no_thanks");
                             $(".splash").fadeIn();
@@ -2295,16 +2304,6 @@
             return splashHtml;
         }
 
-        function findMaxMeasurement(product) {
-            var maxVal = 0;
-            $.each(product.item.measurements, function (_, measurements) {
-                $.each(measurements, function (_, value) {
-                    maxVal = Math.max(value, maxVal);
-                });
-            });
-            return maxVal;
-        }
-
         function buttonize() {
             selectToButtons(uiOptions.sizeSelectionElement);
             $("#button_choose").remove();
@@ -2335,53 +2334,6 @@
             $('#logged_in_link').attr("href", linkToSelectedProfile);
             // end of function  doProfileChange
         }
-
-        var checkSystems = function (product) {
-            // fallback for legacy size selection pointer
-            if (typeof uiOptions.sizeSelectionContainer !== 'undefined') {
-                uiOptions.sizeSelectionElement = uiOptions.sizeSelectionContainer + " select";
-            }
-
-            return $(uiOptions.sizeSelectionElement).length !== 0 && // check existence of size selection element
-                findMaxMeasurement(product) !== 0;
-        };
-
-        var init = function (product, logoutFn, isLoggedIn) {
-            sizemeProduct = product;
-
-            // language sniffer
-            var sizemeLang;
-            if (typeof uiOptions.lang === 'undefined') {
-                sizemeLang = $('html').attr('lang');
-            } else {
-                sizemeLang = uiOptions.lang;
-            }
-            i18n = SizeMe.I18N.get(sizemeLang);
-
-            addIds(SizeMe.UI.options.sizeSelectionElement);
-            loadArrows(false); // everyone needs arrows
-
-            // buttonize
-            if (typeof sizeme_options !== 'undefined' && sizeme_options.buttonize === "yes") {
-                buttonize();
-            }
-
-            if (uiOptions.addToCartEvent) {
-                $(uiOptions.addToCartElement).on(uiOptions.addToCartEvent, function () {
-                    if (isLoggedIn()) {
-                        SizeMe.trackEvent("addToCartSM", "Store: Product added to cart by SizeMe user");
-                    } else {
-                        SizeMe.trackEvent("addToCart", "Store: Product added to cart");
-                    }
-
-                });
-            }
-
-            // delegate logout to #logout-element from now on
-            $(document).on("click", "#logout", function () {
-                logoutFn();
-            });
-        };
 
         var matchResponseHandler = function (responseMap) {
             var smallestOffset = 9999,  // for recommendation
@@ -2524,7 +2476,7 @@
                     .append(
                         $("<span>").addClass("shopping_for_text no-profile")
                             .html(i18n.MESSAGE.no_profiles + " " + i18n.COMMON.go_to +
-                                "<a id='logged_in_link' href='" + linkToSelectedProfile + "' target='_blank'>" + i18n.COMMON.my_profiles + "</a> " + i18n + COMMON.and_create_one)
+                                "<a id='logged_in_link' href='" + linkToSelectedProfile + "' target='_blank'>" + i18n.COMMON.my_profiles + "</a> " + i18n.COMMON.and_create_one)
                     );
             }
 
@@ -2534,7 +2486,7 @@
             doProfileChange(selectedProfile, matchFn);
         };
 
-        var login = function () {
+        var login = function (logoutFn) {
             eraseCookie("sizeme_no_thanks");
             eraseCookie("sizeme_no_product_splash");
 
@@ -2544,10 +2496,10 @@
             $("#sizeme_product_splash").remove();
             $("#sizeme_detailed_view_content").dialog("destroy").remove();
 
-            //$("#logout").click(logoutFn);
+            $("#logout").click(logoutFn);
         };
 
-        var logout = function (loginFn, clearAuthToken) {
+        var logout = function (loginFn) {
             loadArrows(true);
 
             // Size Guide for non-loving users
@@ -2578,7 +2530,7 @@
                 // login button
                 $("#sizeme_btn_login").click(function () {
                     SizeMe.trackEvent("clickLogin", "Store: Login clicked");
-                    clearAuthToken();
+                    tokenHelper.clearAuthToken();
                     SizeMe.loginFrame(function () {
                         loginFn();
                     });
@@ -2587,7 +2539,7 @@
 
                 $("#sizeme_btn_sign_up").click(function () {
                     SizeMe.trackEvent("clickSignUp", "Store: Sign up clicked");
-                    clearAuthToken();
+                    tokenHelper.clearAuthToken();
                     return true;
                 });
 
@@ -2621,8 +2573,48 @@
 
         };
 
+        var init = function () {
+            // fallback for legacy size selection pointer
+            if (typeof uiOptions.sizeSelectionContainer !== 'undefined') {
+                uiOptions.sizeSelectionElement = uiOptions.sizeSelectionContainer + " select";
+            }
+
+            if (!$(uiOptions.sizeSelectionElement).length) {
+                throw Error("No selection elements found with id " + uiOptions.sizeSelectionElement);
+            }
+
+            // language sniffer
+            var sizemeLang;
+            if (typeof uiOptions.lang === 'undefined') {
+                sizemeLang = $('html').attr('lang');
+            } else {
+                sizemeLang = uiOptions.lang;
+            }
+            i18n = SizeMe.I18N.get(sizemeLang);
+
+            addIds(SizeMe.UI.options.sizeSelectionElement);
+            loadArrows(false); // everyone needs arrows
+
+            // buttonize
+            if (typeof sizeme_options !== 'undefined' && sizeme_options.buttonize === "yes") {
+                buttonize();
+            }
+
+            if (uiOptions.addToCartEvent) {
+                $(uiOptions.addToCartElement).on(uiOptions.addToCartEvent, function () {
+                    if (tokenHelper.isLoggedIn()) {
+                        SizeMe.trackEvent("addToCartSM", "Store: Product added to cart by SizeMe user");
+                    } else {
+                        SizeMe.trackEvent("addToCart", "Store: Product added to cart");
+                    }
+
+                });
+            }
+        };
+
+        init();
+
         return {
-            checkSystems: checkSystems,
             noThanks: noThanks,
             matchResponseHandler: matchResponseHandler,
             matchErrorHandler: function () {
@@ -2633,11 +2625,9 @@
                 // end of function 	matchErrorHandler
             },
             profileListHandler: profileListHandler,
-            init: init,
             login: login,
             logout: logout
         };
-
     };
 
     SizeMe.UI.options = {};

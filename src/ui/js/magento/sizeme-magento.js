@@ -1,3 +1,4 @@
+/* globals SizeMe: false */
 SizeMe.UI.options = {
     appendContentTo: ".product-options",
     appendSplashTo: ".product-options",

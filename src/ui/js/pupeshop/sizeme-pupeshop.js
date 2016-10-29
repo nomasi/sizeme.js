@@ -1,3 +1,4 @@
+/* globals SizeMe: false */
 SizeMe.UI.options = {
     appendContentTo: ".productbuy",
     appendSplashTo: ".productbuy .margin-small-t",

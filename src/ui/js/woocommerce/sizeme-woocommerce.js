@@ -1,3 +1,4 @@
+/* globals SizeMe: false */
 SizeMe.UI.options = {
     appendContentTo: ".variations_form",
     appendSplashTo: ".sizeme-selection-container",
