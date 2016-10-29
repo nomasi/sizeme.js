@@ -1,4 +1,5 @@
-var sizeme_UI_options = {
+/* globals SizeMe: false */
+SizeMe.UI.options = {
     appendContentTo: ".product-options",
     appendSplashTo: ".product-options",
     sizeSelectionElement: "select.sizeme-magento-size-selector",

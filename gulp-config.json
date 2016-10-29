@@ -12,7 +12,7 @@
   },
   "ui": {
     "js": {
-      "src": "src/ui/js/sizeme-ui.js"
+      "src": ["src/ui/js/sizeme-ui.js", "src/ui/js/sizeme-init.js"]
     },
     "css": {
       "src": "src/ui/css/sizeme-ui.css"
