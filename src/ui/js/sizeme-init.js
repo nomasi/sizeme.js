@@ -100,15 +100,6 @@
             var productPromise = $.Deferred();
             if (sizeme_product.SKU) {
                 SizeMe.getProductInfo(sizeme_product.SKU, function (dbItem) {
-                    // temporary kludge until item-map is fixed
-                    (function () {
-                        var itemMap = {};
-                        $.each(sizeme_product.item, function (id, sku) {
-                            itemMap[sku] = id;
-                        });
-                        sizeme_product.item = itemMap;
-                    })();
-
                     var productItem = $.extend({}, dbItem, { measurements: {} });
                     $.each(dbItem.measurements, function (sku, values) {
                         if (sizeme_product.item[sku]) {
