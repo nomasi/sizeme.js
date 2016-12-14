@@ -1960,11 +1960,11 @@
         }
 
 		function checkAndCloneSizeSelect() {
-			var num_actuals = $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').find("[value]").length;
-			var num_clones = $(sizeme_UI_options.sizeSelectionElement + '.cloned').find("[value]").length;
+			var num_actuals = $(uiOptions.sizeSelectionElement + ':not(".cloned")').find("[value]").length;
+			var num_clones = $(uiOptions.sizeSelectionElement + '.cloned').find("[value]").length;
 			// if num of either (original) has changed, update clone
 			if (num_actuals != num_clones) {
-				var $clone = $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').clone(false, false);
+				var $clone = $(uiOptions.sizeSelectionElement + ':not(".cloned")').clone(false, false);
 				$clone.addClass("cloned");
                 $clone.find("*").addBack().each(function () {
                     $(this).addClass("cloned");
@@ -1980,8 +1980,8 @@
 				$("#sizeme_detailed_view_content .sizeme-size-selector.cloned").change(function () {
 					var thisVal = $(this).val();
 					// send value to original select and trigger change there
-					$(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val(thisVal);
-					$(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').trigger("change");
+					$(uiOptions.sizeSelectionElement + ':not(".cloned")').val(thisVal);
+					$(uiOptions.sizeSelectionElement + ':not(".cloned")').trigger("change");
 				});
 			}
 		}
@@ -2229,7 +2229,7 @@
 
 				var sizeKeys = [];
 
-				$(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').find("[value]").each(function () {
+				$(uiOptions.sizeSelectionElement + ':not(".cloned")').find("[value]").each(function () {
 					var myVal = $(this).val();
 					var myText = $(this).text();
 					if (myVal) {
@@ -2277,8 +2277,8 @@
         }
 
         function updateSlider() {
-			var thisVal = $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').val();
-			var $thisEl = $(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').find("[value='" + thisVal + "']").eq(0);			
+			var thisVal = $(uiOptions.sizeSelectionElement + ':not(".cloned")').val();
+			var $thisEl = $(uiOptions.sizeSelectionElement + ':not(".cloned")').find("[value='" + thisVal + "']").eq(0);
 			var thisData = fitData[thisVal];
 			var thisSize = $thisEl.text();
             if (typeof thisData !== "undefined") {
@@ -2370,8 +2370,8 @@
             } else {
                 $(".profileSelect").val(selectedProfile);
                 createCookie("sizeme_profileId", selectedProfile, cookieLifetime);
-            } else {
-				$(sizeme_UI_options.sizeSelectionElement).addClass("sizeme-size-selector");
+
+				$(uiOptions.sizeSelectionElement).addClass("sizeme-size-selector");
 
                 matchFn(selectedProfile);
                 SizeMe.trackEvent("activeProfileChanged", "Store: Active profile changed");
@@ -2382,18 +2382,18 @@
 
         var matchResponseHandler = function (responseMap) {
 			if (systemsGo) {
-				$(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').change(function () {
+				$(uiOptions.sizeSelectionElement + ':not(".cloned")').change(function () {
 					var thisVal = $(this).val();
 					// relay change to cloned (if exists), but do not trigger change there
 					$("#sizeme_detailed_view_content .sizeme-size-selector.cloned").val(thisVal);
-					updateSlider();					
+					updateSlider();
 					SizeMe.trackEvent("sizeChanged", "Store: Product size changed");
 				});
-				
+
 				// if there are extra elements that change the size selector somehow, use this
-				if (sizeme_UI_options.sizeChangeClickElement) {
-					$(sizeme_UI_options.sizeChangeClickElement).on("click", function() { 
-						$(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').trigger("change");
+				if (uiOptions.sizeChangeClickElement) {
+					$(uiOptions.sizeChangeClickElement).on("click", function() {
+						$(uiOptions.sizeSelectionElement + ':not(".cloned")').trigger("change");
 					});
 				}
 			}
@@ -2412,7 +2412,7 @@
                 var fitOffset = Math.abs(result.totalFit - OPTIMAL_FIT);
                 if (fitOffset < smallestOffset) {
                     // check if recommended option exists (is for sale)
-                            if ($(sizeme_UI_options.sizeSelectionElement + ':not(".cloned")').find("[value='" + key + "']").length > 0) {
+                            if ($(uiOptions.sizeSelectionElement + ':not(".cloned")').find("[value='" + key + "']").length > 0) {
                         smallestOffset = fitOffset;
                         recommendedId = key;
                         recommendedLabel = result.fitRangeLabel;
@@ -2425,25 +2425,25 @@
                 } else {
                     $('.slider_bar, .slider_area').show();
                 }
-
-                        // write data to fitData
-                        fitData[key] = {
+				
+                // write data to fitData
+                fitData[key] = {
                     totalFit: result.totalFit,
                     fitRangeLabel: result.fitRangeLabel,
                     matchMap: result.matchMap,
                     missingMeasurements: result.missingMeasurements,
                     accuracy: result.accuracy,
                     inputKey: key
-                        };
+                };
             });
 
             // remove existing recommendation
             $(".sm-buttonset").find(".sm-selectable").removeClass('sm-recommended');
 
             // set selection to recommendation on first match
-					var thisData, thisSize;
+			var thisData, thisSize;
 
-                    if ((sizeme_UI_options.firstRecommendation) && (recommendedId)) {
+            if ((uiOptions.firstRecommendation) && (recommendedId)) {
                 // select recommended (at original)
                 $(uiOptions.sizeSelectionElement + ':not(".cloned")').val(recommendedId);
                 // select recommended (at possible clone)
@@ -2452,11 +2452,10 @@
                 $(".sm-buttonset").find(".sm-selectable").removeClass('sm-state-active');
                 // add class
                 $(".element_for_" + recommendedId).addClass('sm-recommended sm-state-active');
-                        updateSlider();
+                updateSlider();
                 uiOptions.firstRecommendation = false;
             } else {
-                        updateSlider();
-                }
+                updateSlider();
             }
             // end of function 	matchResponseHandler
         };
@@ -2631,7 +2630,6 @@
             }
             i18n = SizeMe.I18N.get(sizemeLang);
 
-            addIds(SizeMe.UI.options.sizeSelectionElement);
             loadArrows(false); // everyone needs arrows
 
             // buttonize
