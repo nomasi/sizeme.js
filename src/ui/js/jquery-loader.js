@@ -1,13 +1,13 @@
 /* jshint browser:true, jquery:true */
-/* globals sizemeInit: false, sizemeDeps: false */
+/* globals SizeMe:false */
 (function (window, undefined) {
     "use strict";
     var init, maybeLoadJq;
 
     init = function (noConflict) {
         jQuery(document).ready(function () {
-            sizemeDeps(jQuery);
-            sizemeInit(jQuery);
+            SizeMe.sizemeDeps(jQuery);
+            SizeMe.sizemeInit(jQuery);
             if (!noConflict) {
                 jQuery.noConflict(true);
             }

@@ -1,4 +1,5 @@
-var sizeme_UI_options = {
+/* globals SizeMe: false */
+SizeMe.UI.options = {
     appendContentTo: ".variations_form",
     appendSplashTo: ".sizeme-selection-container",
     sizeSelectionElement: ".sizeme-selection-container select",

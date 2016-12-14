@@ -90,7 +90,7 @@ gulp.task 'deps.js', ->
   , gulp.src(config.opentip.core).pipe(closure())
   , gulp.src(config.opentip.adapter)
   .pipe concat("sizeme-deps.js")
-  .pipe(wrapJs('window.sizemeDeps = function(jQuery) { %= body % }'))
+  .pipe(wrapJs('SizeMe.sizemeDeps = function(jQuery) { %= body % }'))
   .pipe(closure(window:'window'))
   .pipe gulp.dest config.dest.js
   .pipe sourcemaps.init()
@@ -123,7 +123,7 @@ gulp.task 'all.css', gulp.series('ui.css', ->
 
 gulp.task 'shops.js', gulp.series('all.js', (cb) ->
   config.shops.forEach (shop) ->
-    gulp.src [ config[shop].js, config.dest.js + "/sizeme-all.js" ]
+    gulp.src [ config.dest.js + "/sizeme-all.js", config[shop].js ]
     .pipe concat("sizeme-#{shop}.js")
     .pipe gulp.dest config.dest.js
     .pipe sourcemaps.init()
