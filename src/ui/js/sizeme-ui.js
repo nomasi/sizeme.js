@@ -1811,12 +1811,8 @@
                 $clone.addClass("cloned");
                 $clone.find("*").addBack().each(function () {
                     $(this).addClass("cloned");
-                    if (this.id) {
-                        this.id = "clone_" + this.id;
-                    }
-                    if (this.name) {
-                        this.name = "clone_" + this.name;
-                    }
+                    if (this.id) this.id = "clone_" + this.id;
+                    if (this.name) this.name = "clone_" + this.name;
                 });
 
                 $("<div class='sizeme_detailed_section sizeme_detailed_size_selection_section'></div>")
@@ -1825,7 +1821,7 @@
                     .appendTo("#col2");
 
                 // add change event to cloned select too (not possible buttonset)
-                $("#sizeme_detailed_view_content .sizeme-size-selector.cloned").change(function () {
+                $(uiOptions.sizeSelectionElement + '.cloned').change(function () {
                     var thisVal = $(this).val();
                     // send value to original select and trigger change there
                     $(uiOptions.sizeSelectionElement + ':not(".cloned")').val(thisVal);
@@ -1977,7 +1973,7 @@
                     .append($clone);
 
 				// add change event to cloned select too (not possible buttonset)
-				$("#sizeme_detailed_view_content .sizeme-size-selector.cloned").change(function () {
+				$(uiOptions.sizeSelectionElement + '.cloned').change(function () {
 					var thisVal = $(this).val();
 					// send value to original select and trigger change there
 					$(uiOptions.sizeSelectionElement + ':not(".cloned")').val(thisVal);
@@ -2384,7 +2380,7 @@
 			$(uiOptions.sizeSelectionElement + ':not(".cloned")').change(function () {
 				var thisVal = $(this).val();
 				// relay change to cloned (if exists), but do not trigger change there
-				$("#sizeme_detailed_view_content .sizeme-size-selector.cloned").val(thisVal);
+				$(uiOptions.sizeSelectionElement + '.cloned').val(thisVal);
 				updateSlider();
 				SizeMe.trackEvent("sizeChanged", "Store: Product size changed");
 			});
