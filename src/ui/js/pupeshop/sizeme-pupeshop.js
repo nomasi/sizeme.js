@@ -6,5 +6,6 @@ SizeMe.UI.options = {
 	addToCartElement: "input.to-cart",
 	addToCartEvent: "click",
     firstRecommendation: true,	
+	sizeChangeClickElement: "",
 	lang: "fi"
 };

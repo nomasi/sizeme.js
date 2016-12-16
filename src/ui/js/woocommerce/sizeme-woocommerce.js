@@ -5,5 +5,6 @@ SizeMe.UI.options = {
     sizeSelectionElement: ".sizeme-selection-container select",
 	addToCartElement: ".single_add_to_cart_button",
 	addToCartEvent: "click",
-    firstRecommendation: true
+    firstRecommendation: true,
+	sizeChangeClickElement: ""
 };
