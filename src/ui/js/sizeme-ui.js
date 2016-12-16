@@ -1374,12 +1374,14 @@
             }
         }
 
-        function selectToButtons($selectElement) {
+        function selectToButtons(sizeSelectionElement) {
+			var $selectElement = $(sizeSelectionElement);
 			var sizeCount = $selectElement.find("[value]").length;
 			if (!sizeCount) return;	// quit if there are no elements to buttonize
 
             $selectElement.hide();
             var $content = $(document.createElement("div")).addClass("sm-buttonset num_" + sizeCount);	// add 2 classes
+			
             $selectElement.find("[value]").each(function () {
 
                 var thisVal = $(this).val();
@@ -1398,10 +1400,11 @@
                         $(".sm-buttonset").find(".sm-selectable").removeClass("sm-state-active");
                         $(".element_for_" + thisVal).addClass("sm-state-active");
                         $(uiOptions.sizeSelectionElement + ':not(".cloned")').val(thisVal);
-                        $(uiOptions.sizeSelectionElement + ':not(".cloned")').trigger("change");	// yell change at original size selector
+                        $(uiOptions.invokeElement + ':not(".cloned")').trigger(uiOptions.invokeEvent);	// yell event at original invoker
                     });
                 $content.append($div);
             });
+			
             $selectElement.after($content);
             $("#button_choose").remove();
         }
@@ -1937,8 +1940,8 @@
         }
 
 		function checkAndCloneSizeSelect() {
-			// clone actual selection element and possible buttons too
-			var $clone = $(uiOptions.sizeSelectionElement + ':not(".cloned"), .sm-buttonset:not(".cloned")').clone(false, false);
+			// clone actual selection element
+			var $clone = $(uiOptions.sizeSelectionElement + ':not(".cloned")').clone(false, false);
 			$clone.addClass("cloned");
 			$clone.find("*").addBack().each(function () {
 				$(this).addClass("cloned");
@@ -1949,13 +1952,27 @@
 			$(".sizeme_detailed_size_selection_section")
 				.html("<h2>" + i18n.COMMON.selected_size + "</h2>")
 				.append($clone);
+			
+			// clone possible buttons too
+			if (sizeme_options.buttonize === "yes") {
+				$clone = $('.sm-buttonset:not(".cloned")').clone(true, true);
+				$clone.addClass("cloned");
+				$clone.find("*").addBack().each(function () {
+					$(this).addClass("cloned");
+					if (this.id) this.id = "clone_" + this.id;
+					if (this.name) this.name = "clone_" + this.name;
+				});			
+				
+				$(".sizeme_detailed_size_selection_section").append($clone);
+			}
 
 			// bind invokers for cloned elements
 			$(uiOptions.invokeElement + '.cloned').on(uiOptions.invokeEvent, function () {
 				var cloneVal = $(uiOptions.sizeSelectionElement + '.cloned').val();
-				// send value to original select and trigger change there
+				// send value to original select
 				$(uiOptions.sizeSelectionElement + ':not(".cloned")').val(cloneVal);
-				$(uiOptions.sizeSelectionElement + ':not(".cloned")').trigger("change");
+				// invoke event on invoker
+				$(uiOptions.invokeElement + ':not(".cloned")').trigger(uiOptions.invokeEvent);
 			});					
 					
 			var original_val = $(uiOptions.sizeSelectionElement + ':not(".cloned")').val();
@@ -2327,7 +2344,6 @@
 
         function buttonize() {
             selectToButtons(uiOptions.sizeSelectionElement);
-            $("#button_choose").remove();
         }
 
         function setProfileLink() {
