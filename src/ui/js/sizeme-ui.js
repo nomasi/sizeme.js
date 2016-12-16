@@ -1401,7 +1401,6 @@
                         $(".element_for_" + thisVal).addClass("sm-state-active");
                         $(uiOptions.sizeSelectionElement + ':not(".cloned")').val(thisVal);
                         $(uiOptions.invokeElement + ':not(".cloned")').trigger(uiOptions.invokeEvent);	// yell event at original invoker
-						console.log("Button clicked w/ "+thisVal);
                     });
                 $content.append($div);
             });
@@ -2378,9 +2377,7 @@
         var matchResponseHandler = function (responseMap) {
             // bind invokers
 			// for original elements
-			console.log("SizeMe: invokers bound");
             $(uiOptions.invokeElement + ':not(".cloned")').on(uiOptions.invokeEvent, function () {
-				console.log("SizeMe: invoker invoked!");
 				updateSlider();
 				SizeMe.trackEvent("sizeChanged", "Store: Product size changed");
             });	
