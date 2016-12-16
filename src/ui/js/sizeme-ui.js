@@ -1808,33 +1808,6 @@
 					
                 $("<div class='sizeme_detailed_section sizeme_detailed_size_selection_section'></div>")
                     .appendTo("#col2");
-					
-				// clone size select (and possible buttons) to detailed window
-				//checkAndCloneSizeSelect();
-					
-				/*
-
-                var $clone = $(uiOptions.sizeSelectionElement + ', .sm-buttonset').clone(true, true);
-                $clone.addClass("cloned");
-                $clone.find("*").addBack().each(function () {
-                    $(this).addClass("cloned");
-                    if (this.id) this.id = "clone_" + this.id;
-                    if (this.name) this.name = "clone_" + this.name;
-                });
-
-                $("<div class='sizeme_detailed_section sizeme_detailed_size_selection_section'></div>")
-                    .append("<h2>" + i18n.COMMON.selected_size + "</h2>")
-                    .append($clone)
-                    .appendTo("#col2");
-
-                // add change event to cloned select too (not possible buttonset)
-                $(uiOptions.sizeSelectionElement + '.cloned').change(function () {
-                    var thisVal = $(this).val();
-                    // send value to original select and trigger change there
-                    $(uiOptions.sizeSelectionElement + ':not(".cloned")').val(thisVal);
-                    $(uiOptions.sizeSelectionElement + ':not(".cloned")').trigger("change");
-                });
-				*/
 
                 // clone slider (without detailed view toggler and in content stuff)
                 var $slider_clone = $(".sizeme_slider")
@@ -1964,31 +1937,26 @@
         }
 
 		function checkAndCloneSizeSelect() {
-			console.log("Check and possibly cloning the size selector");
-			var num_actuals = $(uiOptions.sizeSelectionElement + ':not(".cloned")').find("[value]").length;
-			var num_clones = $(uiOptions.sizeSelectionElement + '.cloned').find("[value]").length;
+			// clone actual selection element and possible buttons too
+			var $clone = $(uiOptions.sizeSelectionElement + ':not(".cloned"), .sm-buttonset:not(".cloned")').clone(false, false);
+			$clone.addClass("cloned");
+			$clone.find("*").addBack().each(function () {
+				$(this).addClass("cloned");
+				if (this.id) this.id = "clone_" + this.id;
+				if (this.name) this.name = "clone_" + this.name;
+			});
 			
-			console.log("Original elements: " + num_actuals);
-			console.log("Clone elements: " + num_clones);
-			
-			// if num of either (original) has changed, rewrite clone
-			if (num_actuals != num_clones) {
-				// clone actual selection element and possible buttons too
-				var $clone = $(uiOptions.sizeSelectionElement + ':not(".cloned"), .sm-buttonset:not(".cloned")').clone(true, true);
-				$clone.addClass("cloned");
-                $clone.find("*").addBack().each(function () {
-                    $(this).addClass("cloned");
-                    if (this.id) this.id = "clone_" + this.id;
-                    if (this.name) this.name = "clone_" + this.name;
-                });
-				
-				console.log("SizeMe: cloning size selector");
+			$(".sizeme_detailed_size_selection_section")
+				.html("<h2>" + i18n.COMMON.selected_size + "</h2>")
+				.append($clone);
 
-                $(".sizeme_detailed_size_selection_section")
-                    .html("<h2>" + i18n.COMMON.selected_size + "</h2>")
-                    .append($clone);
-					
-			}
+			// bind invokers for cloned elements
+			$(uiOptions.invokeElement + '.cloned').on(uiOptions.invokeEvent, function () {
+				var cloneVal = $(uiOptions.sizeSelectionElement + '.cloned').val();
+				// send value to original select and trigger change there
+				$(uiOptions.sizeSelectionElement + ':not(".cloned")').val(cloneVal);
+				$(uiOptions.sizeSelectionElement + ':not(".cloned")').trigger("change");
+			});					
 					
 			var original_val = $(uiOptions.sizeSelectionElement + ':not(".cloned")').val();
 			// always make sure to relay original value to clone
@@ -2291,7 +2259,7 @@
 			var thisData = fitData[thisVal];
 			var thisSize = $thisEl.text();
             if (typeof thisData !== "undefined") {
-				$('.slider_bar, .slider_area, #detailed_table').show();
+				$(document.body).removeClass("sizeme_inactive");
                 var thisFit = thisData.totalFit;
                 var thisLabel = thisData.fitRangeLabel;
                 var matchMap = thisData.matchMap;
@@ -2306,7 +2274,7 @@
                 updateDetailedTable(matchMap, thisData.inputKey, thisData.missingMeasurements);
             } else {
 				checkAndCloneSizeSelect();
-				$('.slider_bar, .slider_area, #detailed_table').hide();
+				$(document.body).addClass("sizeme_inactive");
 			}
         }
 
@@ -2391,43 +2359,13 @@
         }
 
         var matchResponseHandler = function (responseMap) {
-			console.log("SizeMe: go thru matchResponseHandler");
             // bind invokers
 			// for original elements
-            $(document.body).on(uiOptions.invokeEvent, uiOptions.invokeElement + ':not(".cloned")', function () {
+            $(uiOptions.invokeElement + ':not(".cloned")').on(uiOptions.invokeEvent, function () {
 				updateSlider();
-				console.log("SizeMe: invoker element "+uiOptions.invokeEvent);
 				SizeMe.trackEvent("sizeChanged", "Store: Product size changed");
             });	
-
-			// for cloned elements
-            $(document.body).on(uiOptions.invokeEvent, uiOptions.invokeElement + '.cloned', function () {
-				var cloneVal = $(uiOptions.sizeSelectionElement + '.cloned').val();
-				// send value to original select and trigger change there
-				$(uiOptions.sizeSelectionElement + ':not(".cloned")').val(cloneVal);
-				$(uiOptions.sizeSelectionElement + ':not(".cloned")').trigger("change");
-			});
 			
-			/*
-			$(uiOptions.sizeSelectionElement + ':not(".cloned")').change(function () {
-				var thisVal = $(this).val();
-				// relay change to cloned (if exists), but do not trigger change there
-				$(uiOptions.sizeSelectionElement + '.cloned').val(thisVal);
-				// update slider and detailed view too
-			});
-			*/
-			
-
-			// if there are extra elements that change the size selector somehow, use this
-			/*
-			if (uiOptions.sizeChangeClickElement) {
-				console.log($(uiOptions.sizeChangeClickElement));
-				$(uiOptions.sizeChangeClickElement).on("click", function() {
-					$(uiOptions.sizeSelectionElement + ':not(".cloned")').trigger("change");
-				});
-			}
-			*/
-
 			var smallestOffset = 9999;
 			// reset fitData
 			fitData = {};
@@ -2579,7 +2517,7 @@
             $(".sizeme p").show();
 
             // bind invokers
-            $(document.body).on(uiOptions.invokeEvent, uiOptions.invokeElement + ':not(".cloned")', function () {
+            $(uiOptions.invokeElement + ':not(".cloned")').on(uiOptions.invokeEvent, function () {
                 var sizeVal = $(uiOptions.sizeSelectionElement + ':not(".cloned")').val();
                 updateDetailedTable("", sizeVal);
             });

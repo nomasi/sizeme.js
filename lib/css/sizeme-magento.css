@@ -1168,6 +1168,28 @@ a#sizeme_btn_re-activator {
   /* z-index: 40; */
 }
 
+/* Slider: Inactive */
+
+.sizeme_inactive .sizeme_slider .slider_container {
+  opacity: 0.2;
+}
+
+.sizeme_inactive .sizeme_slider .slider_container .slider_bar {
+  visibility: hidden;
+}
+
+.sizeme_inactive .sizeme_slider .slider_container .slider_area {
+  visibility: hidden;
+}
+
+.sizeme_inactive .sizeme_slider a.sm_detailed_view {
+  visibility: hidden;
+}
+
+.sizeme_inactive #detailed_table {
+  visibility: hidden;
+}
+
 #sizeme_detailed_view_content .sizeme_slider .slider_area {
   background-color: #999;
   border-left: 1px solid #666;
