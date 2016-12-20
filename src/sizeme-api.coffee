@@ -140,7 +140,7 @@ class SizeMe
     @param [Function] errorCallback function to execute if there was an error
   ###
   @getProductInfo = (sku, callback, errorCallback = defaultErrorCallback) ->
-    xhr = createCORSRequest("GET", "/api/products/#{sku}",
+    xhr = createCORSRequest("GET", "/api/products/#{encodeURIComponent(sku)}",
       (xhr) ->
         callback(JSON.parse(xhr.responseText))
     ,
