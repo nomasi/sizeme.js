@@ -129,7 +129,8 @@
         var sizeme_local_options = {
             fitAreaSlider: true,
             writeMessages: true,
-            writeOverlaps: true
+            writeOverlaps: true,
+			writeSliderFlags: true
         };
 
         // Cookie functions
@@ -1262,9 +1263,9 @@
         }
 
 
-        function writeSliderFlag(fitValue, fitLabel, thisSize, thisId) {
+        function writeSliderFlag(fitValue, fitLabel, thisSize, thisKey) {
             // first, out with the old
-            var sliderFlagHtml = "<div class='sliderFlag' id='sm_sf_" + thisSize + "'";
+            var sliderFlagHtml = "<div class='sliderFlag sm_sf_" + thisSize + "'";
             sliderFlagHtml += " style='width: " + sliderPos(fitValue, 0) + "%'>";
             sliderFlagHtml += "<a class='flagItself " + fitLabel + "' href='#'>" + thisSize + "</a>";
             sliderFlagHtml += "</div>";
@@ -1272,8 +1273,8 @@
             $(".sm_sf_" + thisSize).hover(function () {
                 $(this).toggleClass("activeFlag");
             }).click(function () {
-                $(thisId).prop("checked", true);
-                moveSlider(fitValue, true);
+                $(uiOptions.sizeSelectionElement + ':not(".cloned")').val(thisKey);
+                $(uiOptions.invokeElement + ':not(".cloned")').trigger(uiOptions.invokeEvent);
                 return false;
             });
         }
@@ -1381,7 +1382,7 @@
 
             $selectElement.hide();
             var $content = $(document.createElement("div")).addClass("sm-buttonset num_" + sizeCount);	// add 2 classes
-			
+
             $selectElement.find("[value]").each(function () {
 
                 var thisVal = $(this).val();
@@ -1404,7 +1405,7 @@
                     });
                 $content.append($div);
             });
-			
+
             $selectElement.after($content);
             $("#button_choose").remove();
         }
@@ -1808,7 +1809,7 @@
                     .append("<h2>" + i18n.COMMON.shopping_for + "</h2>")
                     .append("<div class='shopping_for'></div>")
                     .appendTo("#col2");
-					
+
                 $("<div class='sizeme_detailed_section sizeme_detailed_size_selection_section'></div>")
                     .appendTo("#col2");
 
@@ -1939,6 +1940,15 @@
             return "";
         }
 
+		function updateSliderFlags() {
+			// remove possible slider flags
+			$(".slider_container .sliderFlag").remove();
+			$.each(fitData, function (key, result) {
+				var thisLabel = sizeText($(uiOptions.sizeSelectionElement + ':not(".cloned")').find("[value='" + key + "']").text());
+				if (thisLabel) writeSliderFlag(result.totalFit, result.fitRangeLabel, thisLabel, key);
+			});
+		}
+
 		function checkAndCloneSizeSelect() {
 			// clone actual selection element
 			var $clone = $(uiOptions.sizeSelectionElement + ':not(".cloned")').clone(false, false);
@@ -1948,11 +1958,11 @@
 				if (this.id) this.id = "clone_" + this.id;
 				if (this.name) this.name = "clone_" + this.name;
 			});
-			
+
 			$(".sizeme_detailed_size_selection_section")
 				.html("<h2>" + i18n.COMMON.selected_size + "</h2>")
 				.append($clone);
-			
+
 			// clone possible buttons too
 			if (sizeme_options.buttonize === "yes") {
 				$clone = $('.sm-buttonset:not(".cloned")').clone(true, true);
@@ -1961,23 +1971,26 @@
 					$(this).addClass("cloned");
 					if (this.id) this.id = "clone_" + this.id;
 					if (this.name) this.name = "clone_" + this.name;
-				});			
-				
+				});
+
 				$(".sizeme_detailed_size_selection_section").append($clone);
 			}
+
+			// update flags
+			if (sizeme_local_options.writeSliderFlags) updateSliderFlags();
 
 			// bind invokers for cloned elements
 			$(uiOptions.invokeElement + '.cloned').on(uiOptions.invokeEvent, function () {
 				var cloneVal = $(uiOptions.sizeSelectionElement + '.cloned').val();
 				// send value to original select
 				$(uiOptions.sizeSelectionElement + ':not(".cloned")').val(cloneVal);
-				// invoke event on invoker
+				// invoke event on invoker				// invoke event on invoker
 				$(uiOptions.invokeElement + ':not(".cloned")').trigger(uiOptions.invokeEvent);
-			});					
-					
+			});
+
 			var original_val = $(uiOptions.sizeSelectionElement + ':not(".cloned")').val();
 			// always make sure to relay original value to clone
-			$(uiOptions.sizeSelectionElement + '.cloned').val(original_val);			
+			$(uiOptions.sizeSelectionElement + '.cloned').val(original_val);
 		}
 
 
@@ -2012,6 +2025,7 @@
 
                 if (sizeme_local_options.writeOverlaps) {
                     $row = $(document.createElement("tr")).addClass("data_row");
+                    // var $lifts = $(document.createElement("div")).addClass("lifts");
                     $.each(sizemeProduct.item.measurements[inputKey], function (measurement, value) {
                         var drawReason = 0;
                         var matchItem = matchMap[measurement];
@@ -2227,8 +2241,8 @@
 					var myVal = $(this).val();
 					var myText = $(this).text();
 					if (myVal) {
-						if (typeof sizeme_product !== "undefined") {
-							if (sizeme_product.item.measurements[myVal]) {
+						if (typeof sizemeProduct !== "undefined") {
+							if (sizemeProduct.item.measurements[myVal]) {
 								sizeKeys.push({key: myVal, sizeLabel: myText});
 							}
 						}
@@ -2380,49 +2394,52 @@
             $(uiOptions.invokeElement + ':not(".cloned")').on(uiOptions.invokeEvent, function () {
 				updateSlider();
 				SizeMe.trackEvent("sizeChanged", "Store: Product size changed");
-            });	
-			
+            });
+
+            // remove existing recommendation
+            $(".sm-buttonset").find(".sm-selectable").removeClass('sm-recommended');
+
+
 			var smallestOffset = 9999;
 			// reset fitData
 			fitData = {};
 
             $.each(responseMap, function (key, result) {
-                var classKey = ".element_for_" + key;
-                $(classKey)
-                    .removeClass('sm-too_small sm-slim sm-regular sm-loose sm-very_loose sm-huge sm-too_big')
-                    .addClass('sm-' + result.fitRangeLabel);
+				if (typeof result == "object") {
+					var classKey = ".element_for_" + key;
+					$(classKey)
+						.removeClass('sm-too_small sm-slim sm-regular sm-loose sm-very_loose sm-huge sm-too_big')
+						.addClass('sm-' + result.fitRangeLabel);
 
-                // Analyze fit for recommendations
-                var fitOffset = Math.abs(result.totalFit - OPTIMAL_FIT);
-                if (fitOffset < smallestOffset) {
-                    // check if recommended option exists (is for sale)
-                            if ($(uiOptions.sizeSelectionElement + ':not(".cloned")').find("[value='" + key + "']").length > 0) {
-                        smallestOffset = fitOffset;
-                        recommendedId = key;
-                        recommendedLabel = result.fitRangeLabel;
-                    }
-                }
+					// Analyze fit for recommendations
+					var fitOffset = Math.abs(result.totalFit - OPTIMAL_FIT);
+					if (fitOffset < smallestOffset) {
+						// check if recommended option exists (is for sale)
+						if ($(uiOptions.sizeSelectionElement + ':not(".cloned")').find("[value='" + key + "']").length > 0) {
+							smallestOffset = fitOffset;
+							recommendedId = key;
+							recommendedLabel = result.fitRangeLabel;
+						}
+					}
 
-                // check if there are results in the first place
-                if (result.accuracy < accuracyThreshold) {
-                    $('.slider_bar, .slider_area').hide();
-                } else {
-                    $('.slider_bar, .slider_area').show();
-                }
-				
-                // write data to fitData
-                fitData[key] = {
-                    totalFit: result.totalFit,
-                    fitRangeLabel: result.fitRangeLabel,
-                    matchMap: result.matchMap,
-                    missingMeasurements: result.missingMeasurements,
-                    accuracy: result.accuracy,
-                    inputKey: key
-                };
+					// check if there are results in the first place
+					if (result.accuracy < accuracyThreshold) {
+						$('.slider_bar, .slider_area').hide();
+					} else {
+						$('.slider_bar, .slider_area').show();
+					}
+
+					// write data to fitData
+					fitData[key] = {
+						totalFit: result.totalFit,
+						fitRangeLabel: result.fitRangeLabel,
+						matchMap: result.matchMap,
+						missingMeasurements: result.missingMeasurements,
+						accuracy: result.accuracy,
+						inputKey: key
+					};
+				}
             });
-
-            // remove existing recommendation
-            $(".sm-buttonset").find(".sm-selectable").removeClass('sm-recommended');
 
             // set selection to recommendation on first match
 			var thisData, thisSize;
@@ -2624,7 +2641,6 @@
                     } else {
                         SizeMe.trackEvent("addToCart", "Store: Product added to cart");
                     }
-
                 });
             }
         };
