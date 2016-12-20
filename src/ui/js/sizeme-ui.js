@@ -2025,6 +2025,7 @@
 
                 if (sizeme_local_options.writeOverlaps) {
                     $row = $(document.createElement("tr")).addClass("data_row");
+                    // var $lifts = $(document.createElement("div")).addClass("lifts");
                     $.each(sizemeProduct.item.measurements[inputKey], function (measurement, value) {
                         var drawReason = 0;
                         var matchItem = matchMap[measurement];
@@ -2240,8 +2241,8 @@
 					var myVal = $(this).val();
 					var myText = $(this).text();
 					if (myVal) {
-						if (typeof sizeme_product !== "undefined") {
-							if (sizeme_product.item.measurements[myVal]) {
+						if (typeof sizemeProduct !== "undefined") {
+							if (sizemeProduct.item.measurements[myVal]) {
 								sizeKeys.push({key: myVal, sizeLabel: myText});
 							}
 						}
