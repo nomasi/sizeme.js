@@ -140,7 +140,7 @@ class SizeMe
     @param [Function] errorCallback function to execute if there was an error
   ###
   @getProductInfo = (sku, callback, errorCallback = defaultErrorCallback) ->
-    xhr = createCORSRequest("GET", "/api/products/#{sku}",
+    xhr = createCORSRequest("GET", "/api/products/#{encodeURIComponent(sku)}",
       (xhr) ->
         callback(JSON.parse(xhr.responseText))
     ,
@@ -337,24 +337,6 @@ class SizeMe
 ###
 class SizeMe.Map
   constructor: ->
-
-  ###
-    Returns the keys of this map as an array
-    @return [Array]
-  ###
-  keys: -> (k for own k of @)
-
-  ###
-    Executes the callback function for each key in this map. The key and the
-    value corresponding to the key are passed as parameters to the callback
-    function. The value is also binded as <b>this</b> in the scope of the
-    callback
-
-    @param [Function] f the callback function
-  ###
-  each: (f) ->
-    f(k,v) for own k,v of @
-    undefined
 
   ###
     Adds an item to this map. Returns itself so that this method can be used
