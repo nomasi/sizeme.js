@@ -1173,7 +1173,7 @@ a#sizeme_btn_re-activator {
 .sizeme_slider .sliderFlag {
   position: absolute;
   top: 0;
-  left: 0;
+  left: 1px;
   z-index: 2;
   height: 9px;
   border-right: 1px solid #aaa;
@@ -1199,6 +1199,10 @@ a#sizeme_btn_re-activator {
   text-decoration: none!important;
 }
 
+.sizeme_slider .sliderFlag .flagItself.too_small {
+  background-color: #b55;
+}
+
 .sizeme_slider .sliderFlag .flagItself.slim {
   background-color: #457a4c;
 }
@@ -1209,6 +1213,10 @@ a#sizeme_btn_re-activator {
 
 .sizeme_slider .sliderFlag .flagItself.regular {
   background-color: #46a753;
+}
+
+.sizeme_slider .sliderFlag .flagItself.too_big {
+  background-color: #b55;
 }
 
 .sizeme_slider .sliderFlag.activeFlag {
@@ -1656,6 +1664,10 @@ table#detailed_table {
   width: 77px;
   height: 22px;
   padding: 0px 0px 0px 5px;
+}
+
+#sizeme_detailed_view_content .sizeme_advertisement .logo:focus {
+  outline: 0;
 }
 
 /* ui-overrides */
