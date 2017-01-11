@@ -130,7 +130,7 @@
             fitAreaSlider: true,
             writeMessages: true,
             writeOverlaps: true,
-			writeSliderFlags: true
+			writeSliderFlags: false
         };
 
         // Cookie functions
