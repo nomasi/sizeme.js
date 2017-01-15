@@ -109,8 +109,8 @@
 
                     var theProduct = $.extend({}, sizeme_product, { item: productItem });
                     productPromise.resolve(theProduct);
-                }, function () {
-                    productPromise.reject();
+                }, function (xhr, status) {
+                    productPromise.reject(status);
                 });
             } else {
                 productPromise.resolve(sizeme_product);
@@ -201,13 +201,19 @@
             // *** End
         };
 
+        var setupNoProduct = function (status) {
+            console.log("Product not found, status: " + status);
+        };
+
         $(function () {
             var sizemeDef = $.Deferred();
             initSizeme().always(function () {
                 sizemeDef.resolve();
             });
 
-            $.when(initProduct(), sizemeDef).then(setup);
+            $.when(initProduct(), sizemeDef)
+                .done(setup)
+                .fail(setupNoProduct);
         });
 
     };
