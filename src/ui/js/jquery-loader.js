@@ -8,9 +8,7 @@
         jQuery(document).ready(function () {
             SizeMe.sizemeDeps(jQuery);
             SizeMe.sizemeInit(jQuery);
-            if (!noConflict) {
-                jQuery.noConflict(true);
-            }
+			jQuery.noConflict(true);
         });
     };
 
