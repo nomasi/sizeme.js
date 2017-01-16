@@ -4,11 +4,11 @@
     "use strict";
     var init, maybeLoadJq;
 
-    init = function (initCallObject) {
+    init = function (callNoConflict) {
         jQuery(document).ready(function () {
             SizeMe.sizemeDeps(jQuery);
             SizeMe.sizemeInit(jQuery);
-            if (initCallObject) {
+            if (callNoConflict) {
                 jQuery.noConflict(true);
             }
         });
@@ -19,11 +19,11 @@
         if (!window.jQuery || !jQuery().jquery.startsWith("1")) {
             jQ = document.createElement('script');
             jQ.type = 'text/javascript';
-            jQ.onload = jQ.onreadystatechange = init;
+            jQ.onload = jQ.onreadystatechange = function () { init(true); }
             jQ.src = '//code.jquery.com/jquery-1.12.4.min.js';
             return document.body.appendChild(jQ);
         } else {
-            return init(null);
+            return init(false);
         }
     };
 
