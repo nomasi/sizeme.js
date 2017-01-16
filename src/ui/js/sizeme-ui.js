@@ -2627,7 +2627,7 @@
             }
             i18n = SizeMe.I18N.get(sizemeLang);
 
-            loadArrows(false); // everyone needs arrows
+            if (sizemeProduct) loadArrows(false); // if there is a product, we need arrows
 
             // buttonize
             if (typeof sizeme_options !== 'undefined' && sizeme_options.buttonize === "yes") {
@@ -2635,13 +2635,23 @@
             }
 
             if (uiOptions.addToCartEvent) {
-                $(uiOptions.addToCartElement).on(uiOptions.addToCartEvent, function () {
-                    if (tokenHelper.isLoggedIn()) {
-                        SizeMe.trackEvent("addToCartSM", "Store: Product added to cart by SizeMe user");
-                    } else {
-                        SizeMe.trackEvent("addToCart", "Store: Product added to cart");
-                    }
-                });
+				if (sizemeProduct) {	// we have product information in some form
+					$(uiOptions.addToCartElement).on(uiOptions.addToCartEvent, function () {
+						if (tokenHelper.isLoggedIn()) {
+							SizeMe.trackEvent("addToCartSM", "Store: Product added to cart by SizeMe user");
+						} else {
+							SizeMe.trackEvent("addToCart", "Store: Product added to cart");
+						}
+					});
+				} else {				// not a SM-compatible product
+					$(uiOptions.addToCartElement).on(uiOptions.addToCartEvent, function () {
+						if (tokenHelper.isLoggedIn()) {
+							SizeMe.trackEvent("addNonSMToCartSM", "Store: Non-SizeMe product added to cart by SizeMe user");
+						} else {
+							SizeMe.trackEvent("addNonSMToCart", "Store: Non-SizeMe product added to cart");
+						}
+					});
+				}
             }
         };
 
