@@ -181,9 +181,9 @@
 
             var systemsGo = !!sizeme_options &&
                 sizeme_options.service_status !== "off" &&
-                product.item.itemType !== 0 &&
-                checkMaxMeasurement() &&
-                (sizemeUI = SizeMe.UI($, product, tokenHelper));
+                product.item.itemType !== 0 &&						// empty string equals zero
+                checkMaxMeasurement() &&							// at least one measurement is not zero
+                (sizemeUI = SizeMe.UI($, product, tokenHelper));	// also inits SizeMe.UI
 
             if (systemsGo) {
                 if (sizemeUI.noThanks()) {
@@ -196,13 +196,22 @@
                     SizeMe.trackEvent("productPageLoggedOut", "Store: Product page load, logged out");
                     loggedOutCb();
                 }
-
             }
             // *** End
         };
 
         var setupNoProduct = function (status) {
-            console.log("Product not found, status: " + status);
+            //console.log("Product not found, status: " + status);
+			sizemeUI = SizeMe.UI($, null, tokenHelper);
+	
+			// yell events
+			if (sizemeUI.noThanks()) {
+				SizeMe.trackEvent("productPageNonSMNoSM", "Store: Product page load, SizeMe refused");
+			} else if (tokenHelper.isLoggedIn()) {
+				SizeMe.trackEvent("productPageNonSMLoggedIn", "Store: Product page load, logged in");
+			} else {
+				SizeMe.trackEvent("productPageNonSMLoggedOut", "Store: Product page load, logged out");
+			}
         };
 
         $(function () {
