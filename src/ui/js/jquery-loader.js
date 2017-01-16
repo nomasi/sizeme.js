@@ -4,11 +4,13 @@
     "use strict";
     var init, maybeLoadJq;
 
-    init = function (noConflict) {
+    init = function (initCallObject) {
         jQuery(document).ready(function () {
             SizeMe.sizemeDeps(jQuery);
             SizeMe.sizemeInit(jQuery);
-			jQuery.noConflict(true);
+            if (initCallObject) {
+                jQuery.noConflict(true);
+            }
         });
     };
 
@@ -21,7 +23,7 @@
             jQ.src = '//code.jquery.com/jquery-1.12.4.min.js';
             return document.body.appendChild(jQ);
         } else {
-            return init(true);
+            return init(null);
         }
     };
 
