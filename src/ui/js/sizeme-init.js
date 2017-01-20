@@ -207,15 +207,18 @@
         var setupNoProduct = function (status) {
             //console.log("Product not found, status: " + status);
 			var sizemeUI = SizeMe.UI($, null, tokenHelper);
-	
-			// yell events
-			if (sizemeUI.noThanks()) {
-				SizeMe.trackEvent("productPageNonSMNoSM", "Store: Product page load, SizeMe refused");
-			} else if (tokenHelper.isLoggedIn()) {
-				SizeMe.trackEvent("productPageNonSMLoggedIn", "Store: Product page load, logged in");
-			} else {
-				SizeMe.trackEvent("productPageNonSMLoggedOut", "Store: Product page load, logged out");
+			
+			if (typeof sizeme_product !== 'undefined') {
+				// yell events
+				if (sizemeUI.noThanks()) {
+					SizeMe.trackEvent("productPageNonSMNoSM", "Store: Product page load, SizeMe refused");
+				} else if (tokenHelper.isLoggedIn()) {
+					SizeMe.trackEvent("productPageNonSMLoggedIn", "Store: Product page load, logged in");
+				} else {
+					SizeMe.trackEvent("productPageNonSMLoggedOut", "Store: Product page load, logged out");
+				}
 			}
+			
         };
 
         $(function () {
