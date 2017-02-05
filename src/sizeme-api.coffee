@@ -20,7 +20,7 @@ class SizeMe
   ###
     Version of the API
   ###
-  @version = "2.1"
+  @version = "2.3"
 
   _authToken = undefined
   _facepalm = not ("withCredentials" of new XMLHttpRequest())
@@ -398,9 +398,10 @@ class SizeMe.Item
     @param [Number] itemLayer optional layer information
     @param [Number] itemThickness optional thickness value of the Item
     @param [Number] itemStretch optional stretch value of the Item
+    @param [Number] fitRecommendation optional value for a fit recommendation
   ###
   constructor: (@itemType, @itemLayer = 0,
-  @itemThickness = 0, @itemStretch = 0) ->
+  @itemThickness = 0, @itemStretch = 0, @fitRecommendation = 0) ->
     @measurements = new SizeMe.Map()
 
   ###
