@@ -12,6 +12,7 @@ class SizeMe
   ###
   @contextAddress = "https://www.sizeme.com"
   @gaTrackingID = "UA-40735596-1"
+  @pluginVersion = "UNKNOWN"
 
   gaEnabled = false
   ga ->
@@ -62,11 +63,15 @@ class SizeMe
       xhr.setRequestHeader(
         "X-Analytics-Enabled", "true"
       ) if gaEnabled
+      xhr.setRequestHeader(
+        "X-Sizeme-Pluginversion", SizeMe.pluginVersion
+      )
     else if XDomainRequest?
       xhr = new XDomainRequest()
       url = "#{url}?_tm=#{new Date().getTime()}"
       url = "#{url}&authToken=#{_authToken}" if _authToken?
       url = "#{url}&analyticsEnabled=true" if gaEnabled
+      url = "#{url}&pluginVersion=#{SizeMe.pluginVersion}"
       xhr.onload = -> callback(xhr)
       xhr.onerror = -> errorCallback(xhr)
       xhr.open(method, url, true)
