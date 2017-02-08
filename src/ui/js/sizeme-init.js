@@ -49,9 +49,8 @@
                     if (storedTokenObj !== null) {
                         storedToken = JSON.parse(storedTokenObj);
                         if (storedToken.expires !== undefined) {
-                            storedToken.expires = Date.parse(storedToken.expires);
                             // Has token expired?
-                            if (storedToken.expires > new Date().getTime()) {
+                            if (Date.parse(storedToken.expires) > new Date().getTime()) {
                                 if (storedToken.token !== undefined) {
                                     deferred.resolve(storedToken.token);
                                 } else {
