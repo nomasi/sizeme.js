@@ -12,6 +12,7 @@ class SizeMe
   ###
   @contextAddress = "https://www.sizeme.com"
   @gaTrackingID = "UA-40735596-1"
+  @pluginVersion = "UNKNOWN"
 
   gaEnabled = false
   ga ->
@@ -20,7 +21,7 @@ class SizeMe
   ###
     Version of the API
   ###
-  @version = "2.1"
+  @version = "2.3"
 
   _authToken = undefined
   _facepalm = not ("withCredentials" of new XMLHttpRequest())
@@ -62,11 +63,15 @@ class SizeMe
       xhr.setRequestHeader(
         "X-Analytics-Enabled", "true"
       ) if gaEnabled
+      xhr.setRequestHeader(
+        "X-Sizeme-Pluginversion", SizeMe.pluginVersion
+      )
     else if XDomainRequest?
       xhr = new XDomainRequest()
       url = "#{url}?_tm=#{new Date().getTime()}"
       url = "#{url}&authToken=#{_authToken}" if _authToken?
       url = "#{url}&analyticsEnabled=true" if gaEnabled
+      url = "#{url}&pluginVersion=#{SizeMe.pluginVersion}"
       xhr.onload = -> callback(xhr)
       xhr.onerror = -> errorCallback(xhr)
       xhr.open(method, url, true)
@@ -398,9 +403,10 @@ class SizeMe.Item
     @param [Number] itemLayer optional layer information
     @param [Number] itemThickness optional thickness value of the Item
     @param [Number] itemStretch optional stretch value of the Item
+    @param [Number] fitRecommendation optional value for a fit recommendation
   ###
   constructor: (@itemType, @itemLayer = 0,
-  @itemThickness = 0, @itemStretch = 0) ->
+  @itemThickness = 0, @itemStretch = 0, @fitRecommendation = 0) ->
     @measurements = new SizeMe.Map()
 
   ###
