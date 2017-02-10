@@ -134,6 +134,15 @@
                 });
                 return maxVal !== 0;
             };
+			
+			var preFlightCheck = function () {
+				if (!product.item.itemType) return false;
+				if (!sizeme_options) return false;
+				if (sizeme_options.service_status === "off") return false;
+				if (!checkMaxMeasurement()) return false;
+				if (!sizemeUI) return false;
+				return true;
+			};
 
             var doMatch = function (selectedProfile) {
                 var item;
@@ -182,14 +191,11 @@
                     initSizeme().then(loggedInCb);
                 });
             };
+			
+			// init UI
+			sizemeUI = SizeMe.UI($, product, tokenHelper);
 
-            var systemsGo = !!sizeme_options &&
-                sizeme_options.service_status !== "off" &&
-                product.item.itemType !== 0 &&						// empty string equals zero
-                checkMaxMeasurement() &&							// at least one measurement is not zero
-                (sizemeUI = SizeMe.UI($, product, tokenHelper));	// also inits SizeMe.UI
-
-            if (systemsGo) {
+            if (preFlightCheck()) {
                 if (sizemeUI.noThanks()) {
                     SizeMe.trackEvent("productPageNoSM", "Store: Product page load, SizeMe refused");
                     loggedOutCb();
@@ -207,7 +213,7 @@
         var setupNoProduct = function (status) {
             //console.log("Product not found, status: " + status);
 			var sizemeUI = SizeMe.UI($, null, tokenHelper);
-			
+
 			if (typeof sizeme_product !== 'undefined') {
 				// yell events
 				if (sizemeUI.noThanks()) {
@@ -218,7 +224,7 @@
 					SizeMe.trackEvent("productPageNonSMLoggedOut", "Store: Product page load, logged out");
 				}
 			}
-			
+
         };
 
         $(function () {

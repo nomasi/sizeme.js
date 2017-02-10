@@ -2630,7 +2630,7 @@
 					throw Error("No selection elements found with id " + uiOptions.sizeSelectionElement);
 				}				
 			}
-
+			
             // buttonize
             if (typeof sizeme_options !== 'undefined' && sizeme_options.buttonize === "yes") {
                 buttonize();
